@@ -1,0 +1,100 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="Register">Register</string>
+    <string name="SignIn">Login</string>
+    <string name="Password">Password</string>
+    <string name="Email">Email address</string>
+    <string name="PasswordHint">Password</string>
+    <string name="ConfirmTitle">Confirm Password</string>
+    <string name="Confirm">Confirm</string>
+    <string name="ok">OK</string>
+    <string name="ID">ID</string>
+    <string name="AddDevice">Add Device</string>
+    <string name="title_activity_map_location">Map</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">SMS</string>
+    <string name="CALL_HISTORY">Call Log</string>
+    <string name="LOCATION_HISTORY">GPS History</string>
+    <string name="URL_HISTORY">URL History</string>
+    <string name="CONTACT_HISTORY">Contact</string>
+    <string name="PHOTO_HISTORY">Photo</string>
+    <string name="APPLICATION_USAGE">App Usage</string>
+    <string name="PHONE_CALL_RECORDING">Call Recording</string>
+    <string name="WHATSAPP_HISTORY">WhatsApp</string>
+    <string name="VIBER_HISTORY">Viber</string>
+    <string name="FACEBOOK_HISTORY">Messenger</string>
+    <string name="SKYPE_HISTORY">Skype</string>
+    <string name="NOTES_HISTORY">Notes</string>
+    <string name="VIDEO_HISTORY">Video</string>
+    <string name="VOICE_MEMOS">Voice Memos</string>
+    <string name="AMBIENT_VOICE_RECORDING">Voice Recording</string>
+    <string name="KEYLOGGER_HISTORY">Keylogger</string>
+    <string name="HANGOUTS_HISTORY">Hangouts</string>
+    <string name="BBM_HISTORY">BBM</string>
+    <string name="APP_INSTALL" translatable="false">App Installed</string>
+    <string name="NOTIFICATION_HISTORY" translatable="false">Notification</string>
+    <string name="CALENDAR_HISTORY" translatable="false">Calendar</string>
+    <string name="WIFI_HISTORY" translatable="false">WiFi Logger</string>
+    <string name="Alert_HISTORY" translatable="false">Alert</string>
+    <string name="CLIPBOARD_HISTORY" translatable="false">Clipboard</string>
+    <string name="LINE_HISTORY">LINE</string>
+    <string name="KIK_HISTORY">KIK</string>
+    <string name="INSTAGRAM_HISTORY" translatable="false">Instagram</string>
+
+    <string name="ContactInformation">Contact Information</string>
+    <string name="Subject">Subject</string>
+    <string name="Message">Message</string>
+    <string name="SendLogFile">Send Log File</string>
+    <string name="SendFeedBack">SEND FEEDBACK</string>
+    <string name="LogViewer">Log viewer</string>
+    <string name="AccessCode">Access Code</string>
+    <string name="Note_AccessCode">Make a call with  this number to show/hide Icon of Application.</string>
+    <string name="Note_Access">Note: the access code must start with # and end with *</string>
+    <string name="Save">OK</string>
+    <string name="PhoneNumberCall">Phone Number</string>
+    <string name="MakeACall">Make A Call</string>
+    <string name="SendMessages">Send Messages</string>
+    <string name="ShareContact">Share Contact</string>
+    <string name="AddFavorites">Add Favorites</string>
+    <string name="BlockThisCaller">Block this Caller</string>
+    <string name="CopyNumber">Copy number</string>
+    <string name="DeviceOS">Device OS</string>
+    <string name="TargetVersion">Target App Version</string>
+    <string name="LastSync">Last Sync</string>
+    <string name="AdvantedOption">ADVANCED OPTIONS</string>
+    <string name="SaveBattery">Save Battery</string>
+    <string name="GPSInterval">GPS Interval</string>
+    <string name="minutes"> minute(s)</string>
+    <string name="meters" translatable="false"> meters</string>
+    <string name="RemoveDevice">Remove Device</string>
+    <string name="x_minutes">%1$d minute(s)</string>
+    <string name="Version">Version</string>
+    <string name="ExpiryDate">Expiry date: </string>
+    <string name="DeviceList">Device List</string>
+    <string name="YouHaveLinkedDevice" tools:ignore="MissingTranslation">You have %1$d device(s) linked to this account.</string>
+    <string name="LogOut">Log Out</string>
+    <string name="AboutUs"><u>About</u></string>
+    <string name="ForgetPassword"><u>Forget Password ?</u></string>
+    <string name="Language"><u>Language ?</u></string>
+    <string name="SaveAndSync">Save &amp; Sync</string>
+    <string name="SyncSetting" translatable="false">Sync Settings</string>
+    <string name="Loading">Loading</string>
+    <string name="NoData">No data to display.</string>
+    <string name="JustAMoment">Just a moment</string>
+    <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
+    <string name="TurnOn">Internet no connect!</string>
+    <string name="Renew"><u>Renew</u></string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="addedOn">Added on</string>
+    <string name="gps_status" translatable="false">GPS Status</string>
+    <string name="delete">Deleting</string>
+    <string name="Transfer_multimedia_data" tools:ignore="MissingTranslation" translatable="false">Transfer multimedia data:</string>
+    <string name="Force_opening_internet" tools:ignore="MissingTranslation" translatable="false">Force opening internet connection</string>
+    <string name="Auto_Turn_ON_Wifi" tools:ignore="MissingTranslation" translatable="false">Auto Turn ON Wifi/Edge/3G...If Needs</string>
+    <string name="sync_Data_Every" tools:ignore="MissingTranslation" translatable="false">Sync data every</string>
+    <string name="sync_Distance_Filter" translatable="false">Distance Filter</string>
+    <string name="auto_turn_on_wifi" translatable="false">Auto Turn ON Wifi If Needs</string>
+    <string name="force_opening_internet" translatable="false">Force opening internet connection:</string>
+
+</resources>

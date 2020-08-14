@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:clickable="false"
+    android:background="#fff"
+    android:layout_marginBottom="6dp"
+    android:id="@+id/card_view_URL"
+    android:layout_marginTop="6dp"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="15dp"
+            android:id="@+id/txt_Date_URL"
+            android:paddingBottom="5dp"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:id="@+id/lnl_URL_Selected"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="45dp"
+                    android:src="@drawable/url_background_icon"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/img_URL_History"
+                    android:layout_height="45dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="T"
+                    android:id="@+id/img_Text_URL"
+                    android:textColor="#fff"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:textStyle="normal"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text="https://google.com"
+                    android:textColor="#494848"
+                    android:textSize="20sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:paddingBottom="1dp"
+                    android:id="@+id/txt_name_URL_History"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="2020-06-14 01:53:37"
+                    android:textSize="15sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:id="@+id/txt_Date_URL_History"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

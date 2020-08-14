@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--FRANCE-->
+    <string name="Register">Registre</string>
+    <string name="SignIn">Se connecter</string>
+    <string name="Password">Mot de passe</string>
+    <string name="Email">Email</string>
+    <string name="PasswordHint">Mot de passe</string>
+    <string name="ConfirmTitle">Confirmer le mot de passe</string>
+    <string name="Confirm">Confirmer</string>
+    <string name="ok">D\'accord</string>
+    <string name="ID">ID</string>
+    <string name="AddDevice">Ajouter un appareil</string>
+    <string name="title_activity_map_location">Carte</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">Historique SMS</string>
+    <string name="CALL_HISTORY">Historique des appels</string>
+    <string name="LOCATION_HISTORY">Histoire l\'emplacement</string>
+    <string name="URL_HISTORY">Histoire d\'URL</string>
+    <string name="CONTACT_HISTORY">Histoire Contact</string>
+    <string name="PHOTO_HISTORY">Histoire photo</string>
+    <string name="APPLICATION_USAGE">Historique d\'utilisation de l\'application</string>
+    <string name="PHONE_CALL_RECORDING">Enregistrement d\'appel téléphonique</string>
+    <string name="WHATSAPP_HISTORY">Histoire WhatsApp</string>
+    <string name="VIBER_HISTORY">Histoire Viber</string>
+    <string name="FACEBOOK_HISTORY">Histoire Facebook</string>
+    <string name="SKYPE_HISTORY">Histoire Skype</string>
+    <string name="NOTES_HISTORY">Notes Historique</string>
+    <string name="VIDEO_HISTORY">Histoire vidéo</string>
+    <string name="VOICE_MEMOS">Histoire voix</string>
+    <string name="AMBIENT_VOICE_RECORDING">Enregistrement vocal ambiant</string>
+    <string name="KEYLOGGER_HISTORY">Historique KeyLogger</string>
+    <string name="HANGOUTS_HISTORY">Hangouts Histoire</string>
+    <string name="BBM_HISTORY">Histoire BBM</string>
+    <string name="LINE_HISTORY">Histoire LINE</string>
+    <string name="KIK_HISTORY">Histoire KIK</string>
+
+    <string name="ContactInformation">Informations de contact</string>
+    <string name="Subject">Assujettir</string>
+    <string name="Message">Message</string>
+    <string name="SendLogFile">Envoyer le fichier journal</string>
+    <string name="SendFeedBack">ENVOYER DU FEEDBACK</string>
+    <string name="LogViewer">Visionneuse de journaux</string>
+    <string name="AccessCode">Code d\'acc\ès</string>
+    <string name="Note_AccessCode">Passer un appel avec ce numéro pour afficher / masquer l\'icône de l\'application.</string>
+    <string name="Note_Access">Remarque: le code d\'accès doit commencer par # et se terminer par *.</string>
+    <string name="Save">sauvegarder</string>
+    <string name="PhoneNumberCall">Numéro de téléphone</string>
+    <string name="MakeACall">Passer un coup de téléphone</string>
+    <string name="SendMessages">Envoyer des messages</string>
+    <string name="ShareContact">Partager le contact</string>
+    <string name="AddFavorites">Ajouter des favoris</string>
+    <string name="BlockThisCaller">Bloquer cet appelant</string>
+    <string name="CopyNumber">Numéro de copie</string>
+    <string name="DeviceOS">OS du périphérique</string>
+    <string name="TargetVersion">Version cible</string>
+    <string name="LastSync">Dernière Synchronisation</string>
+    <string name="AdvantedOption">OPTION AVANCÉE</string>
+    <string name="SaveBattery">Économiser la batterie</string>
+    <string name="GPSInterval">Intervalle GPS</string>
+    <string name="minutes"> minutes</string>
+    <string name="RemoveDevice">Enlevez l\'appareil</string>
+    <string name="x_minutes">%1$d minutes</string>
+    <string name="Version">Version</string>
+    <string name="ExpiryDate">Date d\'expiration</string>
+    <string name="DeviceList">LISTE DES PÉRIPHÉRIQUES</string>
+    <string name="LogOut">Connectez - Out</string>
+    <string name="AboutUs"><u>À propos de nous</u></string>
+    <string name="ForgetPassword"><u>Mot de passe oublié ?</u></string>
+    <string name="Language"><u>Language ?</u></string>
+    <string name="SaveAndSync" >Enregistrer et synchroniser</string>
+    <string name="Loading" >Chargement</string>
+    <string name="NoData" >Aucune donnée à afficher.</string>
+    <string name="JustAMoment">Juste un moment</string>
+    <string name="TurnOn">Internet no connect!</string>
+    <string name="Renew"><u>Renouveler</u></string>
+    <string name="addedOn">Créer un rendez-vous</string>
+    <string name="JustMinutesAgo">Just %1$d minutes ago</string>
+    <string name="YouHaveLinkedDevice">You have %1$d device(s) linked to this account.</string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="delete">Deleting</string>
+</resources>

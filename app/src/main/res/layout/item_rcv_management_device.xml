@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="15dp"
+    android:background="@android:color/transparent"
+    android:layout_marginRight="15dp"
+    android:clickable="false"
+    android:layout_height="wrap_content">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            app:cardCornerRadius="9dp"
+            android:clickable="false"
+            android:id="@+id/btn_Device"
+            app:cardBackgroundColor="#fff"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="5dp"
+            >
+
+            <View
+                android:layout_width="3dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="#2c4db6"
+                android:layout_height="match_parent"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start|center_vertical"
+                    android:id="@+id/lnlText"
+                    android:clickable="false"
+                    android:background="@android:color/transparent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="2dp"
+                        android:textColor="#000"
+                        android:clickable="false"
+                        android:text="Google PX2"
+                        android:id="@+id/txtDevice"
+                        android:layout_height="wrap_content" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:textStyle="normal"-->
+<!--                        android:layout_marginTop="1dp"-->
+<!--                        android:text="@string/gps_status"-->
+<!--                        android:layout_marginStart="12dp"-->
+<!--                        android:textColor="@color/grey_600"-->
+<!--                        android:clickable="false"-->
+<!--                        android:id="@+id/txt_GPS_Status"-->
+<!--                        android:layout_height="wrap_content" />-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:textStyle="normal"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/addedOn"
+                        android:layout_marginStart="12dp"
+                        android:textColor="@color/grey_600"
+                        android:clickable="false"
+                        android:id="@+id/txt_CreateDate"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="50dp"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/imgDevice"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="false"
+                    android:src="@drawable/android_icon"
+                    android:layout_height="50dp"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="@android:color/transparent"/>
+
+            </RelativeLayout>
+
+
+
+
+
+
+
+        </android.support.v7.widget.CardView>
+<!--        <Button-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:id="@+id/btn_Device"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:layout_height="match_parent" />-->
+    </FrameLayout>
+</LinearLayout>

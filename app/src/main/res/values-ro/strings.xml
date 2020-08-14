@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--ROMANIA-->
+    <string name="Register">Inregistreaza-te</string>
+    <string name="SignIn">Conectare</string>
+    <string name="Password">Parola</string>
+    <string name="Email">E-mail</string>
+    <string name="PasswordHint">Parola</string>
+    <string name="ConfirmTitle">Confirma parola</string>
+    <string name="Confirm">Confirma</string>
+    <string name="ok">O.K</string>
+    <string name="ID">ID</string>
+    <string name="AddDevice">Adăugați dispozitiv</string>
+    <string name="title_activity_map_location">Hartă</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">Istoric SMS</string>
+    <string name="CALL_HISTORY">Istoricul apelurilor</string>
+    <string name="LOCATION_HISTORY">Istoricul locațiilor</string>
+    <string name="URL_HISTORY">Istoricul adreselor URL</string>
+    <string name="CONTACT_HISTORY">Contact Istoric</string>
+    <string name="PHOTO_HISTORY">Istoria fotografiei</string>
+    <string name="APPLICATION_USAGE">Istoria utilizării aplicației</string>
+    <string name="PHONE_CALL_RECORDING">Înregistrarea apelurilor telefonice</string>
+    <string name="WHATSAPP_HISTORY">WhatsApp Istorie</string>
+    <string name="VIBER_HISTORY">Viber Istorie</string>
+    <string name="FACEBOOK_HISTORY">Facebook Istorie</string>
+    <string name="SKYPE_HISTORY">Istoric Skype</string>
+    <string name="NOTES_HISTORY">Note Istorie</string>
+    <string name="VIDEO_HISTORY">Istoricul videoclipurilor</string>
+    <string name="VOICE_MEMOS">Istoria vocii</string>
+    <string name="AMBIENT_VOICE_RECORDING">Înregistrare vocală internă</string>
+    <string name="KEYLOGGER_HISTORY">Istoric KeyLogger</string>
+    <string name="HANGOUTS_HISTORY">Istoricul Hangouts</string>
+    <string name="BBM_HISTORY">Istoria BBM</string>
+    <string name="LINE_HISTORY">LINE Istorie</string>
+    <string name="KIK_HISTORY">Istoria KIK</string>
+
+    <string name="ContactInformation">Informatii de contact</string>
+    <string name="Subject">Subiect</string>
+    <string name="Message">Mesaj</string>
+    <string name="SendLogFile">Trimiteți fișierul jurnal</string>
+    <string name="SendFeedBack">TRIMITE FEEDBACK</string>
+    <string name="LogViewer">Vizualizator de jurnale</string>
+    <string name="AccessCode">Cod de acces</string>
+    <string name="Note_AccessCode">Efectuați un apel cu acest număr pentru a afișa / ascunde pictograma de aplicare</string>
+    <string name="Note_Access">Notă: codul de acces trebuie să înceapă cu # și să se încheie cu *.</string>
+    <string name="Save">Salvați</string>
+    <string name="PhoneNumberCall">Numar de telefon</string>
+    <string name="MakeACall">Efectua un apel</string>
+    <string name="SendMessages">Trimite mesaje</string>
+    <string name="ShareContact">Distribuie contact</string>
+    <string name="AddFavorites">Adaugă favorite</string>
+    <string name="BlockThisCaller">Blocați acest apelant</string>
+    <string name="CopyNumber">Copiați numărul</string>
+    <string name="DeviceOS">OS sistem</string>
+    <string name="TargetVersion">Versiune țintă</string>
+    <string name="LastSync">Ultima Syncronize</string>
+    <string name="AdvantedOption">OPȚIUNE ADVANTATĂ</string>
+    <string name="SaveBattery">Economisiți bateria</string>
+    <string name="GPSInterval">Intervalul GPS</string>
+    <string name="minutes"> minute</string>
+    <string name="RemoveDevice">Indepartati dispozitivul</string>
+    <string name="x_minutes">%1$d minutes</string>
+    <string name="Version">Versiune</string>
+    <string name="ExpiryDate">Data expirarii</string>
+    <string name="DeviceList">LIST DE DISPOZITIVE</string>
+    <string name="LogOut">Deconectați-vă</string>
+    <string name="AboutUs"><u>Despre noi</u></string>
+    <string name="ForgetPassword"><u>Parola uitata ?</u></string>
+    <string name="Language"><u>Limba ?</u></string>
+    <string name="SaveAndSync" >Salvați și sincronizați</string>
+    <string name="Loading" >Se incarca</string>
+    <string name="NoData" >Nu sunt date de afișat.</string>
+    <string name="JustAMoment">Doar un moment</string>
+    <string name="TurnOn">Internet no connect!</string>
+    <string name="Renew"><u>Reînnoi</u></string>
+    <string name="addedOn">Creeaza o data</string>
+    <string name="JustMinutesAgo">Just %1$d minutes ago</string>
+    <string name="YouHaveLinkedDevice">You have %1$d device(s) linked to this account.</string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="delete">Deleting</string>
+</resources>

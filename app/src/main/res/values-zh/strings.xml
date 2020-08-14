@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--CHINESE-->
+    <string name="Register">寄存器</string>
+    <string name="SignIn">登入</string>
+    <string name="Password">密码</string>
+    <string name="Email">电子邮件</string>
+    <string name="PasswordHint">密码</string>
+    <string name="ConfirmTitle">确认密码</string>
+    <string name="Confirm">确认</string>
+    <string name="ok">好</string>
+    <string name="ID">ID</string>
+    <string name="AddDevice">添加设备</string>
+    <string name="title_activity_map_location">地图</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">短信历史</string>
+    <string name="CALL_HISTORY">通话记录</string>
+    <string name="LOCATION_HISTORY">位置记录</string>
+    <string name="URL_HISTORY">网址历史记录</string>
+    <string name="CONTACT_HISTORY">联系历史</string>
+    <string name="PHOTO_HISTORY">照片历史</string>
+    <string name="APPLICATION_USAGE">应用使用历史</string>
+    <string name="PHONE_CALL_RECORDING">电话录音</string>
+    <string name="WHATSAPP_HISTORY">WhatsApp历史</string>
+    <string name="VIBER_HISTORY">Viber历史</string>
+    <string name="FACEBOOK_HISTORY">Facebook历史</string>
+    <string name="SKYPE_HISTORY">Skype历史</string>
+    <string name="NOTES_HISTORY">Note历史</string>
+    <string name="VIDEO_HISTORY">视频历史</string>
+    <string name="VOICE_MEMOS">语音历史</string>
+    <string name="AMBIENT_VOICE_RECORDING">环境录音</string>
+    <string name="KEYLOGGER_HISTORY">KeyLogger历史</string>
+    <string name="HANGOUTS_HISTORY">Hangouts历史</string>
+    <string name="BBM_HISTORY">BBM历史</string>
+    <string name="LINE_HISTORY">LINE历史</string>
+    <string name="KIK_HISTORY">KIK历史</string>
+
+    <string name="ContactInformation">联系信息</string>
+    <string name="Subject">学科</string>
+    <string name="Message">信息</string>
+    <string name="SendLogFile">发送日志文件</string>
+    <string name="SendFeedBack">发送反馈</string>
+    <string name="LogViewer">日志查看器</string>
+    <string name="AccessCode">访问代码</string>
+    <string name="Note_AccessCode">使用此号码拨打电话以显示/隐藏应用程序图标。</string>
+    <string name="Note_Access">注意：访问代码必须以＃开头，以*结尾。</string>
+    <string name="Save">保存</string>
+    <string name="PhoneNumberCall">电话号码</string>
+    <string name="MakeACall">打个电话</string>
+    <string name="SendMessages">发送信息</string>
+    <string name="ShareContact">分享联系</string>
+    <string name="AddFavorites">添加收藏夹</string>
+    <string name="BlockThisCaller">阻止此来电者</string>
+    <string name="CopyNumber">复制号码</string>
+    <string name="DeviceOS">设备OS</string>
+    <string name="TargetVersion">目标版本</string>
+    <string name="LastSync">上次同步</string>
+    <string name="AdvantedOption">有利的选择</string>
+    <string name="SaveBattery">节省电池</string>
+    <string name="GPSInterval">GPS间隔</string>
+    <string name="minutes"> 分钟</string>
+    <string name="RemoveDevice">删除设备</string>
+    <string name="x_minutes">%1$d 分钟</string>
+    <string name="Version">版</string>
+    <string name="ExpiryDate">到期日</string>
+    <string name="DeviceList">设备清单</string>
+    <string name="LogOut">登出</string>
+    <string name="AboutUs"><u>关于我们</u></string>
+    <string name="ForgetPassword"><u>忘记密码 ?</u></string>
+    <string name="Language"><u>语言 ?</u></string>
+    <string name="SaveAndSync" >保存并同步</string>
+    <string name="Loading" >载入中</string>
+    <string name="NoData" >没有数据显示。</string>
+    <string name="JustAMoment">一会儿</string>
+    <string name="TurnOn">Internet no connect!</string>
+    <string name="Renew"><u>更新</u></string>
+    <string name="addedOn">创建日期</string>
+    <string name="JustMinutesAgo">Just %1$d minutes ago</string>
+    <string name="YouHaveLinkedDevice">You have %1$d device(s) linked to this account.</string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="delete">Deleting</string>
+</resources>

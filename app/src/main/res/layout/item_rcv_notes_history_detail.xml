@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10"
+    android:background="#fcefa8"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:text="2018-08-29 20:02:03"
+        android:layout_weight="0.5"
+        android:layout_marginTop="35dp"
+        android:textColor="@color/bgLogo"
+        android:gravity="center_horizontal"
+        android:id="@+id/txt_Time_Notes_Detail"
+        android:layout_height="0dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="8"
+        android:layout_marginLeft="5dp"
+        android:background="#fcefa8"
+        android:layout_marginRight="5dp"
+        android:gravity="center_horizontal"
+        android:layout_height="0dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:text="Loading"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:textSize="15sp"
+                android:textColor="#623617"
+                android:id="@+id/txt_Content_Notes_History"
+                android:layout_height="match_parent" />
+        </ScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1.5"
+        android:gravity="center_horizontal"
+        android:layout_height="0dp">
+        <Button
+            android:layout_width="110dp"
+            android:text="Delete"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textAllCaps="false"
+            android:layout_height="55dp"
+            android:id="@+id/btn_Delete_Notes_History"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+
+</LinearLayout>

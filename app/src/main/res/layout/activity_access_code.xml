@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".View.AccessCode">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/bgToolbar"
+        android:gravity="center_horizontal"
+        android:text="@string/AccessCode"
+        />
+    <android.support.design.widget.TextInputEditText
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text=""
+        android:id="@+id/edt_AccessCode"
+        android:layout_marginTop="40dp"
+        android:textStyle="bold"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="match_parent"
+        android:paddingStart="10dp"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:paddingBottom="3dp"
+        android:text="@string/Note_AccessCode"
+        tools:ignore="RtlSymmetry" />
+    <TextView
+        android:layout_width="match_parent"
+        android:textColor="#000"
+        android:paddingStart="10dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Note_Access"
+        tools:ignore="RtlSymmetry" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:text="@string/Save"
+        android:textColor="#fff"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:id="@+id/btn_Save_AccseesCode"
+        android:layout_gravity="center_horizontal"
+        android:background="#4dcc01"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

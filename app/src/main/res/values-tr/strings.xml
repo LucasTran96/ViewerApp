@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--TURKEY-->
+    <string name="Register">Kayıt olmak</string>
+    <string name="SignIn">Oturum aç</string>
+    <string name="Password">Parola</string>
+    <string name="Email">E-posta</string>
+    <string name="PasswordHint">Parola</string>
+    <string name="ConfirmTitle">Şifreyi Onayla</string>
+    <string name="Confirm">Onaylamak</string>
+    <string name="ok">tamam</string>
+    <string name="ID">İD</string>
+    <string name="AddDevice">Cihaz ekle</string>
+    <string name="title_activity_map_location">harita</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">SMS Geçmişi</string>
+    <string name="CALL_HISTORY">Arama geçmişi</string>
+    <string name="LOCATION_HISTORY">Konum Geçmişi</string>
+    <string name="URL_HISTORY">URL Geçmişi</string>
+    <string name="CONTACT_HISTORY">İletişim Geçmişi</string>
+    <string name="PHOTO_HISTORY">Fotoğraf Tarihi</string>
+    <string name="APPLICATION_USAGE">Uygulama Kullanım Tarihi</string>
+    <string name="PHONE_CALL_RECORDING">Telefon görüşmesi kayıt</string>
+    <string name="WHATSAPP_HISTORY">WhatsApp Geçmişi</string>
+    <string name="VIBER_HISTORY">Viber Tarihi</string>
+    <string name="FACEBOOK_HISTORY">Facebook Tarihi</string>
+    <string name="SKYPE_HISTORY">Skype Geçmişi</string>
+    <string name="NOTES_HISTORY">Notlar Geçmişi</string>
+    <string name="VIDEO_HISTORY">Video Geçmişi</string>
+    <string name="VOICE_MEMOS">Ses Tarihi</string>
+    <string name="AMBIENT_VOICE_RECORDING">Ortam Ses Kaydı</string>
+    <string name="KEYLOGGER_HISTORY">KeyLogger Geçmişi</string>
+    <string name="HANGOUTS_HISTORY">Hangouts Geçmişi</string>
+    <string name="BBM_HISTORY">BBM Geçmişi</string>
+    <string name="LINE_HISTORY">LINE Geçmişi</string>
+    <string name="KIK_HISTORY">KIK Tarihçesi</string>
+
+    <string name="ContactInformation">İletişim bilgileri</string>
+    <string name="Subject">konu</string>
+    <string name="Message">Mesaj</string>
+    <string name="SendLogFile">Günlük Dosyası Gönder</string>
+    <string name="SendFeedBack">GERİBİLDİRİM YOLLA</string>
+    <string name="LogViewer">Günlük görüntüleyici</string>
+    <string name="AccessCode">Giriş kodu</string>
+    <string name="Note_AccessCode">Uygulama Simgesini göstermek / gizlemek için bu numarayla arama yapın.</string>
+    <string name="Note_Access">Not: erişim kodu # ile başlamalı ve * ile bitmelidir.</string>
+    <string name="Save">Kayıt etmek</string>
+    <string name="PhoneNumberCall">Telefon numarası</string>
+    <string name="MakeACall">Arama yap</string>
+    <string name="SendMessages">Mesaj yolla</string>
+    <string name="ShareContact">Bağlantı Paylaş</string>
+    <string name="AddFavorites">Favorilerini ekle</string>
+    <string name="BlockThisCaller">Bu Arayüzü Engelle</string>
+    <string name="CopyNumber">Numarayı kopyala</string>
+    <string name="DeviceOS">Cihaz işletim sistemi</string>
+    <string name="TargetVersion">Hedef sürümü</string>
+    <string name="LastSync">Son Senkronizasyon</string>
+    <string name="AdvantedOption">AVANTAJLI OPSİYON</string>
+    <string name="SaveBattery">Pil tasarrufu</string>
+    <string name="GPSInterval">GPS Aralığı</string>
+    <string name="minutes"> dakika</string>
+    <string name="RemoveDevice">Aygıtı kaldır</string>
+    <string name="x_minutes">%1$d dakika</string>
+    <string name="Version">Versiyon</string>
+    <string name="ExpiryDate">Son kullanma tarihi</string>
+    <string name="DeviceList">CİHAZ LİSTESİ</string>
+    <string name="LogOut">Çıkış Yap</string>
+    <string name="AboutUs"><u>Hakkımızda</u></string>
+    <string name="ForgetPassword"><u>FŞifreyi unut ?</u></string>
+    <string name="Language"><u>Dil ?</u></string>
+    <string name="SaveAndSync" >Kaydet ve Senkronize Et</string>
+    <string name="Loading" >Yükleniyor</string>
+    <string name="NoData" >Gösterilecek bilgi yok.</string>
+    <string name="JustAMoment">Bir dakika</string>
+    <string name="TurnOn">Internet no connect!</string>
+    <string name="Renew"><u>Yenilemek</u></string>
+    <string name="addedOn">Oluşturma Tarihi</string>
+    <string name="JustMinutesAgo">Just %1$d minutes ago</string>
+    <string name="YouHaveLinkedDevice">You have %1$d device(s) linked to this account.</string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="delete">Deleting</string>
+</resources>

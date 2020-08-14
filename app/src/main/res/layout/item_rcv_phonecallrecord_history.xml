@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:id="@+id/cv_PhoneCallRecord_History"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:background="#f4f4f6"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_marginLeft="3dp"
+        android:layout_height="60dp">
+        <ImageView
+            android:layout_width="35dp"
+            android:src="@drawable/icons_circled"
+            android:clickable="false"
+            android:layout_gravity="center_vertical"
+            android:layout_height="35dp" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:layout_weight="9.8"
+            android:paddingBottom="3dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bgToolbar"
+                android:id="@+id/txt_Name_PhoneCallRecord_History"
+                android:textSize="18sp"
+                android:paddingTop="5dp"
+                android:singleLine="true"
+                android:text="Anh Dang O Dau Day Anh "/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:id="@+id/txt_time_PhoneCallRecord_History"
+                    android:layout_height="wrap_content"
+                    android:text="9:32s"/>
+                <TextView
+                    android:layout_marginLeft="40dp"
+                    android:layout_width="match_parent"
+                    android:id="@+id/txt_Date_PhoneCallRecord_History"
+                    android:layout_height="wrap_content"
+                    android:text="2018-11-21 12:00"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:id="@+id/img_Detail_PhoneCallRecord"
+            android:src="@drawable/micro_sd_card"
+            android:clickable="false"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="30dp" />
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

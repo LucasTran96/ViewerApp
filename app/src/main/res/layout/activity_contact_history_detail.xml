@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="70dp"
+            android:textSize="17sp"
+            android:src="@drawable/user"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_height="70dp"
+            tools:ignore="ContentDescription" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="#242425"
+            android:textSize="17sp"
+            android:maxLines="1"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:id="@+id/txt_name_Contact_Detail"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="#242425"
+            android:textSize="17sp"
+            android:maxLines="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:id="@+id/txt_Number_Contact_Detail"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:id="@+id/txt_MakeCall_Contact_Detail_History"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="@string/MakeACall" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:id="@+id/txt_SendMessager_Contact_Detail_History"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="@string/SendMessages" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:id="@+id/txt_CopyNumber_Contact_Detail_History"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="@string/CopyNumber" />
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="@string/ShareContact" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="@string/AddFavorites" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+    </LinearLayout>
+
+
+</ScrollView>

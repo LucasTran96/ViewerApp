@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--HINDI-->
+    <string name="Register">रजिस्टर</string>
+    <string name="SignIn">दाखिल करना</string>
+    <string name="Password">पारण शब्द</string>
+    <string name="Email">ईमेल</string>
+    <string name="PasswordHint">पारण शब्द</string>
+    <string name="ConfirmTitle">पासवर्ड की पुष्टि कीजिये</string>
+    <string name="Confirm">की पुष्टि करें</string>
+    <string name="ok">ठीक</string>
+    <string name="ID">ID</string>
+    <string name="AddDevice">डिवाइस जोडे</string>
+    <string name="title_activity_map_location">नक्शा</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">एसएमएस इतिहास</string>
+    <string name="CALL_HISTORY">कॉल इतिहास</string>
+    <string name="LOCATION_HISTORY">स्थान इतिहास</string>
+    <string name="URL_HISTORY">यूआरएल इतिहास</string>
+    <string name="CONTACT_HISTORY">संपर्क इतिहास</string>
+    <string name="PHOTO_HISTORY">फोटो इतिहास</string>
+    <string name="APPLICATION_USAGE">आवेदन उपयोग इतिहास</string>
+    <string name="PHONE_CALL_RECORDING">फोन कॉल रिकॉर्डिंग</string>
+    <string name="WHATSAPP_HISTORY">WhatsApp इतिहास</string>
+    <string name="VIBER_HISTORY">Viber इतिहास</string>
+    <string name="FACEBOOK_HISTORY">Facebook इतिहास</string>
+    <string name="SKYPE_HISTORY">Skype इतिहास</string>
+    <string name="NOTES_HISTORY">Notes इतिहास</string>
+    <string name="VIDEO_HISTORY">वीडियो इतिहास</string>
+    <string name="VOICE_MEMOS">आवाज इतिहास</string>
+    <string name="AMBIENT_VOICE_RECORDING">परिवेश आवाज रिकॉर्डिंग</string>
+    <string name="KEYLOGGER_HISTORY">KeyLogger इतिहास</string>
+    <string name="HANGOUTS_HISTORY">Hangouts इतिहास</string>
+    <string name="BBM_HISTORY">BBM इतिहास</string>
+    <string name="LINE_HISTORY">LINE इतिहास</string>
+    <string name="KIK_HISTORY">KIK इतिहास</string>
+
+    <string name="ContactInformation">संपर्क जानकारी</string>
+    <string name="Subject">विषय</string>
+    <string name="Message">संदेश</string>
+    <string name="SendLogFile">लॉग फ़ाइल भेजें</string>
+    <string name="SendFeedBack">प्रतिक्रिया भेजें</string>
+    <string name="LogViewer">लॉग देखने वाला</string>
+    <string name="AccessCode">एक्सेस कोड</string>
+    <string name="Note_AccessCode">एप्लिकेशन के चिह्न को दिखाने / छिपाने के लिए इस नंबर के साथ कॉल करें</string>
+    <string name="Note_Access">नोट: एक्सेस कोड # के साथ शुरू होना चाहिए और * के साथ समाप्त होना चाहिए।</string>
+    <string name="Save">बचाना</string>
+    <string name="PhoneNumberCall">फ़ोन नंबर</string>
+    <string name="MakeACall">कॉल करें</string>
+    <string name="SendMessages">संदेश भेजो</string>
+    <string name="ShareContact">संपर्क साझा करें</string>
+    <string name="AddFavorites">पसंदीदा मे समूह करना</string>
+    <string name="BlockThisCaller">इस कॉलर को अवरुद्ध करें</string>
+    <string name="CopyNumber">प्रतिलिपि संख्या</string>
+    <string name="DeviceOS">डिवाइस ओएस</string>
+    <string name="TargetVersion">लक्ष्य संस्करण</string>
+    <string name="LastSync">अंतिम सिंक</string>
+    <string name="AdvantedOption">उन्नत विकल्प</string>
+    <string name="SaveBattery">बैटरी बचाओ</string>
+    <string name="GPSInterval">जीपीएस अंतराल</string>
+    <string name="minutes"> मिनट</string>
+    <string name="RemoveDevice">यन्त्र को निकालो</string>
+    <string name="x_minutes">%1$d मिनट</string>
+    <string name="Version">संस्करण</string>
+    <string name="ExpiryDate">समाप्ति तिथि</string>
+    <string name="DeviceList">उपकरण सूची</string>
+    <string name="LogOut">लोग आउट</string>
+    <string name="AboutUs"><u>हमारे बारे में</u></string>
+    <string name="ForgetPassword"><u>पासवर्ड भूल गए ?</u></string>
+    <string name="Language"><u>भाषा ?</u></string>
+    <string name="SaveAndSync" >सहेजें और सिंक करें</string>
+    <string name="Loading" >लोड हो रहा है</string>
+    <string name="NoData" >डेटा प्रदर्शित करने के लिए उपलब्ध नहीं हैं।</string>
+    <string name="JustAMoment">Internet no connect!</string>
+    <string name="TurnOn">सेलुलर डेटा चालू करें या डेटा तक पहुंचने के लिए वाई-फाई का उपयोग करें</string>
+    <string name="Renew"><u>नवीकरण</u></string>
+    <string name="addedOn">तारीख बनाना</string>
+    <string name="JustMinutesAgo">Just %1$d minutes ago</string>
+    <string name="YouHaveLinkedDevice">You have %1$d device(s) linked to this account.</string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="delete">Deleting</string>
+</resources>

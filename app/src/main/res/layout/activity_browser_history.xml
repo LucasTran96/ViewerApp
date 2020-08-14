@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/swp_URL"
+    android:background="#f4f4f6"
+    android:layout_height="match_parent"
+    tools:context=".View.URLHistory">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="#f4f4f6"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:background="@color/bgToolbar"
+            android:id="@+id/toolbar_URL"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="#fff"/>
+       <FrameLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_alignParentBottom="true"
+                   android:id="@+id/txt_No_Data_URL"
+                   android:textStyle="bold|italic"
+                   android:textSize="15sp"
+                   android:layout_centerHorizontal="true"
+                   android:minWidth="200dp"
+                   android:paddingLeft="10dp"
+                   android:paddingRight="10dp"
+                   android:gravity="center_horizontal"
+                   android:paddingTop="5dp"
+                   android:paddingBottom="5dp"
+                   android:textColor="#252424"
+                   android:background="@drawable/customlastupdate"
+                   android:layout_height="wrap_content"
+                   />
+               <android.support.v7.widget.RecyclerView
+                   android:layout_width="match_parent"
+                   android:background="#fff"
+                   android:layout_above="@+id/txt_No_Data_URL"
+                   android:id="@+id/rcl_URL_History"
+                   android:layout_height="match_parent">
+               </android.support.v7.widget.RecyclerView>
+               <ProgressBar
+                   android:layout_width="wrap_content"
+                   android:id="@+id/progressBar_URL"
+                   android:layout_marginBottom="50dp"
+                   android:layout_centerHorizontal="true"
+                   android:layout_alignParentBottom="true"
+                   android:layout_height="wrap_content" />
+
+           </RelativeLayout>
+       </FrameLayout>
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

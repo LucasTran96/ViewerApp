@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/ln_Photo"
+android:layout_margin="2dp"
+android:layout_width="match_parent"
+android:layout_height="128dp">
+
+    <ImageView
+        android:id="@+id/img_photo_History"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:src="@drawable/spinner"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"/>
+
+    <View
+        android:id="@+id/view_Show"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="#82413838"
+        android:adjustViewBounds="true"
+        />
+    <CheckBox
+        android:layout_marginTop="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:id="@+id/cb_Check_PhotoListDelete"
+        android:button="@drawable/checkbox_custom_photo"
+        android:layout_marginLeft="6dp"
+        />
+</FrameLayout>

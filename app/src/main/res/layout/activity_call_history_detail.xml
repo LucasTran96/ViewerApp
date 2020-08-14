@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".View.CallHistoryDetail">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginStart="5dp"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="80dp"
+            android:layout_margin="5dp"
+            android:layout_marginStart="2dp"
+            android:id="@+id/imgUser_SMS"
+            android:src="@drawable/user"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            app:civ_border_color="#a4a2a2"
+            app:civ_border_width="1dp"
+            android:layout_height="80dp"  />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text=""
+            android:paddingStart="10dp"
+            android:id="@+id/txt_Name_User_Call_Detail_History"
+            android:textColor="@color/bgToolbar"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            android:layout_height="wrap_content"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text=""
+                android:layout_marginTop="5dp"
+                android:textColor="#000"
+                android:id="@+id/txt_Time_Call_Detail_History"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:id="@+id/txt_Tatus_Call_Detail_History"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""
+            android:layout_marginStart="20dp"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:id="@+id/txt_TimeCall_Call_Detail_History"
+            android:paddingEnd="40dp"
+            android:gravity="right|bottom"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/PhoneNumberCall"
+                android:layout_marginTop="5dp"
+                android:textColor="#000"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="17sp"
+                android:id="@+id/txt_Phonenumber_Call_Detail_History"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/phone"
+                android:id="@+id/img_Make_Call"
+                android:layout_gravity="right"
+                android:layout_marginRight="40dp"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="17sp"
+        android:id="@+id/txt_MakeCall_Call_Detail_History"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginStart="15dp"
+        android:gravity="center_vertical"
+        android:text="@string/MakeACall" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="17sp"
+        android:id="@+id/txt_SendMessager_Call_Detail_History"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginStart="15dp"
+        android:gravity="center_vertical"
+        android:text="@string/SendMessages" />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="17sp"
+        android:id="@+id/txt_ShareContact"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:gravity="center_vertical"
+        android:text="@string/ShareContact" />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="17sp"
+        android:id="@+id/txt_AddFavorites"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:gravity="center_vertical"
+        android:text="@string/AddFavorites" />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="17sp"
+        android:id="@+id/txt_Block_Call"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:gravity="center_vertical"
+        android:text="@string/BlockThisCaller" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_marginStart="15dp"
+        android:layout_height="0.5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:gravity="center_vertical"
+            android:text="" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_marginStart="15dp"
+            android:layout_height="0.5dp" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,30 @@
+
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+    <style name="AppTheme.NoActionBar">
+        android:theme="@android:style/Theme.Translucent"
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+
+    </style>
+    <style name="AppTheme.NoActionBarTranslucent">
+        android:theme="@android:style/Theme.Translucent"
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+
+    </style>
+    <style name="StyleEdit">
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+
+</resources>

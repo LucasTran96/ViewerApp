@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--GERMANY-->
+    <string name="Register">Registrieren</string>
+    <string name="SignIn">Einloggen</string>
+    <string name="Password">Passwort</string>
+    <string name="Email">Email</string>
+    <string name="PasswordHint">Passwort</string>
+    <string name="ConfirmTitle">Passwort bestätigen</string>
+    <string name="Confirm">Bestätigen</string>
+    <string name="ok">OK</string>
+    <string name="ID">ID</string>
+    <string name="AddDevice">Gerät hinzufügen</string>
+    <string name="title_activity_map_location">Karte</string>
+
+    <!-- set name Toolbar -->
+    <string name="SMS_HISTORY">SMS-Verlauf</string>
+    <string name="CALL_HISTORY">Anrufsverlauf</string>
+    <string name="LOCATION_HISTORY">Standortverlauf</string>
+    <string name="URL_HISTORY">URL-Verlauf</string>
+    <string name="CONTACT_HISTORY">Kontakt Geschichte</string>
+    <string name="PHOTO_HISTORY">Foto Geschichte</string>
+    <string name="APPLICATION_USAGE">Verlauf der Anwendungsnutzung</string>
+    <string name="PHONE_CALL_RECORDING">Telefonanruf-Aufnahme</string>
+    <string name="WHATSAPP_HISTORY">WhatsApp Geschichte</string>
+    <string name="VIBER_HISTORY">Viber Geschichte</string>
+    <string name="FACEBOOK_HISTORY">Facebook Geschichte</string>
+    <string name="SKYPE_HISTORY">Skype-Verlauf</string>
+    <string name="NOTES_HISTORY">Notizen Geschichte</string>
+    <string name="VIDEO_HISTORY">Videoverlauf</string>
+    <string name="VOICE_MEMOS">Stimmgeschichte</string>
+    <string name="AMBIENT_VOICE_RECORDING">Ambient-Sprachaufnahme</string>
+    <string name="KEYLOGGER_HISTORY">KeyLogger Geschichte</string>
+    <string name="HANGOUTS_HISTORY">Hangouts-Verlauf</string>
+    <string name="BBM_HISTORY">BBM Geschichte</string>
+    <string name="LINE_HISTORY">LINE Geschichte</string>
+    <string name="KIK_HISTORY">KIK Geschichte</string>
+
+    <string name="ContactInformation">Kontaktinformation</string>
+    <string name="Subject">Gegenstand</string>
+    <string name="Message">Botschaft</string>
+    <string name="SendLogFile">Sende Protokolldatei</string>
+    <string name="SendFeedBack">FEEDBACK ABSCHICKEN</string>
+    <string name="LogViewer">Eintrags Ansicht</string>
+    <string name="AccessCode">Zugangscode</string>
+    <string name="Note_AccessCode">Tätigen Sie einen Anruf mit dieser Nummer, um das Symbol der Anwendung anzuzeigen / auszublenden.</string>
+    <string name="Note_Access">Hinweis: Der Zugangscode muss mit # beginnen und mit * enden.</string>
+    <string name="Save">sparen</string>
+    <string name="PhoneNumberCall">Telefonnummer</string>
+    <string name="MakeACall">Einen Anruf tätigen</string>
+    <string name="SendMessages">Sende Nachrichten</string>
+    <string name="ShareContact">Kontakt teilen</string>
+    <string name="AddFavorites">Füge Favoriten hinzu</string>
+    <string name="BlockThisCaller">Blockiere diesen Anrufer</string>
+    <string name="CopyNumber">Nummer kopieren</string>
+    <string name="DeviceOS">Betriebssystem des Geräts</string>
+    <string name="TargetVersion">Zielversion</string>
+    <string name="LastSync">Letzte Synchronisierung</string>
+    <string name="AdvantedOption">Vorteilhafte Option</string>
+    <string name="SaveBattery">Batterie sparen</string>
+    <string name="GPSInterval">GPS-Intervall</string>
+    <string name="minutes"> Protokoll</string>
+    <string name="RemoveDevice">Gerät entfernen</string>
+    <string name="x_minutes">%1$d Minuten</string>
+    <string name="Version">Ausführung</string>
+    <string name="ExpiryDate">Verfallsdatum</string>
+    <string name="DeviceList">GERÄTELISTE</string>
+    <string name="LogOut">Ausloggen</string>
+    <string name="AboutUs"><u>Über uns</u></string>
+    <string name="ForgetPassword"><u>Passwort vergessen ?</u></string>
+    <string name="Language"><u>Language ?</u></string>
+    <string name="SaveAndSync" >Speichern und synchronisieren</string>
+    <string name="Loading" >Wird geladen</string>
+    <string name="NoData" >Keine Daten zum Anzeigen.</string>
+    <string name="JustAMoment">Einen Augenblick</string>
+    <string name="TurnOn">Internet no connect!</string>
+    <string name="Renew"><u>Erneuern</u></string>
+    <string name="addedOn">Erstellungsdatum</string>
+    <string name="JustMinutesAgo">Just %1$d minutes ago</string>
+    <string name="YouHaveLinkedDevice">You have %1$d device(s) linked to this account.</string>
+    <string name="NoDevice">No account does not have any devices linked.</string>
+    <string name="delete">Deleting</string>
+</resources>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.jexpa.secondclone">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.BATTERY_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Add permissions only if using external storage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Add permissions only if using external Call -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <!-- Hide - unHide app -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Change the app icon and label here! @drawable/iconappsecondclone -->
+    <application
+        android:name=".View.MyApplication"
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/iconappsecondclone"
+        android:label="SecondClone.Server"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/iconappsecondclone_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning,InnerclassSeparator">
+        <activity
+            android:name=".View.LaunchScreen"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".View.SyncSettings"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.ManagementDevice"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.Authentication"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.AccessCode"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".View.MapLocation"
+            android:label="@string/title_activity_map_location"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.HistoryLocation"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.SMSHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.SMSHistoryDetail"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.DashBoard"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.CallHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.CallHistoryDetail"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.ContactHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.ContactHistoryDetail"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.URLHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.NotesHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.NotesHistoryDetail"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.ApplicationUsageHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.PhotoHistory"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator"/>
+        <activity
+            android:name=".View.PhotoHistoryDetail"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".View.PhoneCallRecordHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
+        <!--
+             Optionally, register AnalyticsReceiver and AnalyticsService to support background
+             dispatching on non-Google Play devices
+           -->
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!--
+             Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
+             installation campaign reporting
+        -->
+        <receiver
+            tools:ignore="ExportedReceiver"
+            android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
+
+    </application>
+
+</manifest>
