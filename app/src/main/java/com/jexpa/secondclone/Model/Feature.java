@@ -11,13 +11,23 @@ import java.io.Serializable;
 public class Feature implements Serializable {
     int image;
     String featureName;
+    String functionName;
 
-    public Feature(int image, String featureName) {
+    public Feature(int image, String featureName, String functionName) {
         this.image = image;
         this.featureName = featureName;
+        this.functionName = functionName;
     }
 
     public Feature() {
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
     public int getImage() {

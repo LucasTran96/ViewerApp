@@ -26,6 +26,8 @@ import java.util.List;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_END;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_START;
 import static com.jexpa.secondclone.API.Global.TAG;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.TABLE_AMBIENTRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.COLUMN_APP_ID_APPLICATION;
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.COLUMN_APP_NAME_APPLICATION;
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.COLUMN_APP_TYPE_APPLICATION;
@@ -38,16 +40,19 @@ import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.DATAB
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.DATABASE_VERSION_APPLICATION_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.TABLE_APPLICATION_HISTORY;
 
-public class DatabaseApplicationUsage extends SQLiteOpenHelper {
-    SQLiteDatabase database;
-
+public class DatabaseApplicationUsage
+{
+    private Context context;
+    private DatabaseHelper database;
     public DatabaseApplicationUsage(Context context) {
 
-        super(context, DATABASE_NAME_APPLICATION_HISTORY, null, DATABASE_VERSION_APPLICATION_HISTORY);
+        this.context = context;
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_APPLICATION_HISTORY))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    private void createTable() {
 
 
         Log.i(Global.TAG, "DatabaseApplicationUsage.onCreate ... " + TABLE_APPLICATION_HISTORY);
@@ -56,34 +61,26 @@ public class DatabaseApplicationUsage extends SQLiteOpenHelper {
                 + COLUMN_APP_NAME_APPLICATION + " TEXT," + COLUMN_CLIENT_APPLICATION_TIME + " TEXT,"
                 + COLUMN_APP_ID_APPLICATION + " TEXT," +
                 COLUMN_CREATED_DATE_APPLICATION + " TEXT" + ")";
-        sqLiteDatabase.execSQL(scriptTable);
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_APPLICATION_HISTORY);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
-
-    }
 
     public void addDevice_Application(List<ApplicationUsage> application_usage) {
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+
+        database.getWritableDatabase().beginTransaction();
 
         try {
             for (int i = 0; i < application_usage.size(); i++) {
                 //  contentValues1 receives the value from the method API_Add_Database()
                 ContentValues contentValues1 = APIDatabase.API_Add_Database(application_usage.get(i),false);
                 // Insert a row of data into the table.
-                database.insert(TABLE_APPLICATION_HISTORY, null, contentValues1);
+                database.getWritableDatabase().insert(TABLE_APPLICATION_HISTORY, null, contentValues1);
             }
 
-            database.setTransactionSuccessful();
+            database.getWritableDatabase().setTransactionSuccessful();
 
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
         //  Close the database connection.
         database.close();
@@ -97,8 +94,8 @@ public class DatabaseApplicationUsage extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_APPLICATION_HISTORY + " ORDER BY " + COLUMN_CLIENT_APPLICATION_TIME + " DESC ";
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
@@ -134,8 +131,8 @@ public class DatabaseApplicationUsage extends SQLiteOpenHelper {
         //String selectQuery = "SELECT  * FROM " + TABLE_APPLICATION_HISTORY +" WHERE "+ COLUMN_DEVICE_ID_APPLICATION+ " = '"+deviceID+"'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         String selectQuery = "SELECT  * FROM " + TABLE_APPLICATION_HISTORY + " WHERE " + COLUMN_DEVICE_ID_APPLICATION + " = '" + deviceID + "' AND " + COLUMN_CLIENT_APPLICATION_TIME + " BETWEEN " + "'" + dateStart + DEFAULT_TIME_START + "' AND " + "'" + dateStart + DEFAULT_TIME_END + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
@@ -152,9 +149,9 @@ public class DatabaseApplicationUsage extends SQLiteOpenHelper {
 
     public int get_ApplicationCount_DeviceID(String deviceID) {
         Log.i(Global.TAG, "DatabaseApplicationUsage.get_ApplicationCount_DeviceID ... " + TABLE_APPLICATION_HISTORY);
-        database = this.getReadableDatabase();
+
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.query(TABLE_APPLICATION_HISTORY, new String[]{COLUMN_DEVICE_ID_APPLICATION
+        Cursor cursor = database.getWritableDatabase().query(TABLE_APPLICATION_HISTORY, new String[]{COLUMN_DEVICE_ID_APPLICATION
                 }, COLUMN_DEVICE_ID_APPLICATION + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -165,8 +162,8 @@ public class DatabaseApplicationUsage extends SQLiteOpenHelper {
 
     public void delete_Application_History(ApplicationUsage application_usage) {
         Log.i(Global.TAG, "DatabaseApplicationUsage.delete_Application_History... " + application_usage.getID());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_APPLICATION_HISTORY, COLUMN_ID_APPLICATION + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_APPLICATION_HISTORY, COLUMN_ID_APPLICATION + " = ?",
                 new String[]{String.valueOf(application_usage.getID())});
         database.close();
     }

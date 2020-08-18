@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import static android.content.ContentValues.TAG;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.AccountEntity.TABLE_USER;
 import static com.jexpa.secondclone.Database.Entity.UserEntity.COLUMN_CREATED_DATE_USER;
 import static com.jexpa.secondclone.Database.Entity.UserEntity.COLUMN_EXPIRY_DATE;
 import static com.jexpa.secondclone.Database.Entity.UserEntity.COLUMN_ID_USERINFO;
@@ -42,16 +44,18 @@ import static com.jexpa.secondclone.Database.Entity.UserEntity.DATABASE_NAME_USE
 import static com.jexpa.secondclone.Database.Entity.UserEntity.DATABASE_VERSION_USER_INFO;
 import static com.jexpa.secondclone.Database.Entity.UserEntity.TABLE_USER_INFO;
 
-public class DatabaseUserInfo extends SQLiteOpenHelper {
-    SQLiteDatabase database;
+public class DatabaseUserInfo
+{
+    private DatabaseHelper database;
 
     public DatabaseUserInfo(Context context) {
-        super(context, DATABASE_NAME_USER_INFO, null, DATABASE_VERSION_USER_INFO);
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_USER_INFO))
+            createTable();
     }
 
     // Create tables.
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void createTable() {
         Log.i(TAG, "DatabaseUser.onCreate ... " + TABLE_USER_INFO);
         // Script create table.
         String scriptTable = "CREATE TABLE " + TABLE_USER_INFO + "("
@@ -62,23 +66,15 @@ public class DatabaseUserInfo extends SQLiteOpenHelper {
                 + COLUMN_PACKAGE_ID + " TEXT," + COLUMN_TRACKING_LEVEL + " TEXT," +
                 COLUMN_LAST_IP_ACCESS + " TEXT," + COLUMN_LAST_TIME_ACCESS + " TEXT," + COLUMN_TIME_ZONE_ID + " TEXT" + ")";
         // Run create table command.
-        db.execSQL(scriptTable);
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //  Delete the old table if it already exists.
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_INFO);
-        // And recreate the table.
-        onCreate(db);
-    }
 
     public void addUserInfo(AccountInFo accountInFo) {
-        database = this.getWritableDatabase();
         ContentValues values ;
         values = API_Add_Database(accountInFo,false);
         // Insert a row of data into the table.
-        database.insert(TABLE_USER_INFO, null, values);
+        database.getWritableDatabase().insert(TABLE_USER_INFO, null, values);
         //Close the database connection.
         database.close();
 
@@ -94,8 +90,7 @@ public class DatabaseUserInfo extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_USER_INFO;
 
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+        @SuppressLint("Recycle") Cursor cursor =  database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
@@ -126,8 +121,7 @@ public class DatabaseUserInfo extends SQLiteOpenHelper {
     public int getUserInfoCount() {
         // Log.i(TAG, "DatabaseUser.getNotesCount ... " );
         String countQuery = "SELECT  * FROM " + TABLE_USER_INFO;
-        database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery(countQuery, null);
+        Cursor cursor =  database.getWritableDatabase().rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
         // return count
@@ -136,8 +130,8 @@ public class DatabaseUserInfo extends SQLiteOpenHelper {
 
     public void deleteUserInfo(AccountInFo accountInFo) {
         Log.i(TAG, "DatabaseUser.updateNote ... " + accountInFo.getLogin_Name());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_USER_INFO, COLUMN_ID_USERINFO + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_USER_INFO, COLUMN_ID_USERINFO + " = ?",
                 new String[]{String.valueOf(accountInFo.getID())});
         database.close();
     }

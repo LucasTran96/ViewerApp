@@ -125,15 +125,12 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         getPhotoHistoryInfo();
-        mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
+       /* mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
         mAdapter = new AdapterPhotoHistory(PhotoHistory.this, mData);
         mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();*/
         swipeRefreshLayout();
-        if(mData.size()>= NumberLoad)
-        {
-            initScrollListener();
-        }
+
     }
 
     /**
@@ -367,10 +364,15 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 }
 
                 mData.clear();
+                Log.d("phota", mData.size()+" SIZE");
                 mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
                 mAdapter = new AdapterPhotoHistory(PhotoHistory.this, mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                if(mData.size()>= NumberLoad)
+                {
+                    initScrollListener();
+                }
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_PHOTO, Date_max, table.getDevice_ID());
                 if (mData.size() == 0) {
                     //txt_No_Data_Photo.setVisibility(View.VISIBLE);

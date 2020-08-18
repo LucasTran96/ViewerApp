@@ -36,7 +36,6 @@ import com.jexpa.secondclone.Database.DatabaseDevice;
 import com.jexpa.secondclone.Database.DatabaseGetSetting;
 import com.jexpa.secondclone.Model.Body;
 import com.jexpa.secondclone.Model.Data;
-import com.jexpa.secondclone.Model.DeviceFeature;
 import com.jexpa.secondclone.Model.DeviceFeatures;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;

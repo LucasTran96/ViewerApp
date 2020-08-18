@@ -25,6 +25,8 @@ import com.jexpa.secondclone.Model.Table;
 import java.util.ArrayList;
 
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ManagementDeviceEntity.COLUMN_APP_VERSION_NUMBER;
 import static com.jexpa.secondclone.Database.Entity.ManagementDeviceEntity.COLUMN_BATTERY;
 import static com.jexpa.secondclone.Database.Entity.ManagementDeviceEntity.COLUMN_BRAND_ID;
@@ -54,16 +56,20 @@ import static com.jexpa.secondclone.Database.Entity.ManagementDeviceEntity.COLUM
 import static com.jexpa.secondclone.Database.Entity.ManagementDeviceEntity.TABLE_DEVICE;
 import static com.jexpa.secondclone.API.Global.TAG;
 
-public class DatabaseDevice extends SQLiteOpenHelper {
-    SQLiteDatabase database = this.getWritableDatabase();
-
+public class DatabaseDevice
+{
+    private Context context;
+    private DatabaseHelper database;
     public DatabaseDevice(Context context) {
-        super(context, DATABASE_NAME_DEVICE, null, DATABASE_VERSION_DEVICE);
+        this.context = context;
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_DEVICE))
+            createTable();
     }
 
     // Create tables name Device.
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+
+    private void createTable() {
         Log.i(TAG, "DatabaseUser.onCreate ... " + TABLE_DEVICE);
         // Script create tables.
         String scriptTable = "CREATE TABLE " + TABLE_DEVICE + "("
@@ -92,24 +98,16 @@ public class DatabaseDevice extends SQLiteOpenHelper {
                 + COLUMN_BATTERY + " TEXT,"
                 + COLUMN_LAST_ONLINE + " TEXT"+")";
         // Run create table command.
-        db.execSQL(scriptTable);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Delete old table if it already exists.
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEVICE);
-        // And recreate the table.
-        onCreate(db);
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
     //  The method adds the Table object to the device table
     public void addDevice(Table table) {
-        database = this.getWritableDatabase();
+
         //  contentValues1 receives the value from the method API_Add_Database()
         ContentValues contentValues1 = API_Add_Database(table,false);
         // Insert a row of data into the table.
-        database.insert(TABLE_DEVICE, null, contentValues1);
+        database.getWritableDatabase().insert(TABLE_DEVICE, null, contentValues1);
         //  Close the database connection.
         database.close();
 
@@ -122,8 +120,8 @@ public class DatabaseDevice extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_DEVICE;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
@@ -165,8 +163,8 @@ public class DatabaseDevice extends SQLiteOpenHelper {
     public int getDeviceCount() {
         Log.i(TAG, "DatabaseUser.getDeviceCount ... " + TABLE_DEVICE);
         String countQuery = "SELECT  * FROM " + TABLE_DEVICE;
-        database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery(countQuery, null);
+
+        Cursor cursor = database.getWritableDatabase().rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
         // return count
@@ -176,8 +174,8 @@ public class DatabaseDevice extends SQLiteOpenHelper {
 
     public void deleteDevice(Table table) {
         Log.i(TAG, "DatabaseUser.updateNote ... " + table.getDevice_Name());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_DEVICE, COLUMN_ID + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_DEVICE, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(table.getID())});
         database.close();
     }

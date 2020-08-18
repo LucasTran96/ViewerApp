@@ -38,7 +38,7 @@ public class Global {
      * Default date format.
      */
 
-    static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd 00:00:00";
+    static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String DEFAULT_DATE_FORMAT_MMM = "MMM dd, yyyy";
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
@@ -79,7 +79,7 @@ public class Global {
      */
 
     public static int ON_BACK = 1;
-    public static int NumberLoad = 30;
+    public static int NumberLoad = 20;
 
     /**
      * Distributing

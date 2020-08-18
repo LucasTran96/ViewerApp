@@ -15,6 +15,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -41,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
 import static com.jexpa.secondclone.API.APIDatabase.formatDate;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
@@ -174,16 +177,42 @@ public class APIMethod {
                 Log.d("totalRow"," totalRow = "+ totalRow);
                 if(totalRow != null)
                 {
-                    SharedPreferences prefs = context.getSharedPreferences(SETTINGS, Activity.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.apply();
-                    editor.putLong(name_Log,Long.parseLong(totalRow));
-                    editor.commit();
+                    setSharedPreferLong(context,name_Log,Long.parseLong(totalRow));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    public static void setSharedPreferLong(Context context,String name, long value)
+    {
+        SharedPreferences.Editor editor = context.getSharedPreferences(SETTINGS, MODE_PRIVATE).edit();
+        editor.putLong(name, value);
+        editor.commit();
+    }
+
+    public static long getSharedPreferLong(Context context,String name)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+        return preferences.getLong(name, 0);
+    }
+
+    /**
+     * checkItemExist This is a support method to check whether this record already exists in the database or not and add it to the database.
+     */
+    public static boolean checkItemExistString(SQLiteDatabase database, String tableName, String rawDeviceID, String deviceID, String rawIdContact, String nameFile){
+
+        String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", tableName, rawDeviceID, deviceID, rawIdContact, nameFile);
+        Cursor cursor = database.rawQuery(query, null);
+        if (cursor.moveToFirst())
+        {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
         }
     }
 }

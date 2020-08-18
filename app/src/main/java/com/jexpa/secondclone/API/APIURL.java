@@ -121,6 +121,17 @@ public class APIURL {
     public static Body fromJson(JSONObject jsonObject) {
         // Deserialize json into object fields
         try {
+            /*
+    "Id": 40900,
+    "IsSuccess": 1,
+    "ResultId": 1,
+    "Data": {},
+    "Code": "S_GETAMBIENT_001",
+    "Description": "Get ambient has been successfully.",
+    "DateTimeFormatPattern": "yyyy-MM-dd HH:mm:ss",
+    "DebugInfo": null,
+    "FormatData": nul
+             */
             bodyLogin.setIsSuccess(jsonObject.getString("IsSuccess"));
             bodyLogin.setResultId(jsonObject.getString("ResultId"));
             bodyLogin.setData(jsonObject.getString("Data"));

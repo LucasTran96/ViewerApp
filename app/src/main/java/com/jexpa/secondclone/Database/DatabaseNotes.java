@@ -29,6 +29,8 @@ import static com.jexpa.secondclone.API.Global.TAG;
 
 import java.util.List;
 
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.DeviceEntity.TABLE_GET_SETTING;
 import static com.jexpa.secondclone.Database.Entity.NotesEntity.COLUMN_CLIENT_NOTE_TIME;
 import static com.jexpa.secondclone.Database.Entity.NotesEntity.COLUMN_CONTENT_NOTE;
 import static com.jexpa.secondclone.Database.Entity.NotesEntity.COLUMN_CREATED_DATE_NOTE;
@@ -39,48 +41,40 @@ import static com.jexpa.secondclone.Database.Entity.NotesEntity.DATABASE_NAME_NO
 import static com.jexpa.secondclone.Database.Entity.NotesEntity.DATABASE_VERSION_NOTE_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.NotesEntity.TABLE_NOTE_HISTORY;
 
-public class DatabaseNotes extends SQLiteOpenHelper {
-    SQLiteDatabase database;
+public class DatabaseNotes  {
+    private DatabaseHelper database;
 
     public DatabaseNotes(Context context) {
-        super(context, DATABASE_NAME_NOTE_HISTORY, null, DATABASE_VERSION_NOTE_HISTORY);
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_NOTE_HISTORY))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void createTable() {
 
         Log.i(Global.TAG, "DatabaseNotes.onCreate ... " + TABLE_NOTE_HISTORY);
         String scriptTable = " CREATE TABLE " + TABLE_NOTE_HISTORY + "(" + COLUMN_ROWINDEX_NOTE + " INTEGER ," + COLUMN_ID_NOTE + " INTEGER,"
                 + COLUMN_DEVICE_ID_NOTE + " TEXT," + COLUMN_CLIENT_NOTE_TIME + " TEXT," + COLUMN_CONTENT_NOTE + " TEXT,"
                 + COLUMN_CREATED_DATE_NOTE + " TEXT" + ")";
-        sqLiteDatabase.execSQL(scriptTable);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE_HISTORY);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
-
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
     public void addDevice_Notes(List<Notes> notes) {
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+
+        database.getWritableDatabase().beginTransaction();
         Log.i("addNotes", "dataURL add: " + notes.get(0).getID());
         try {
             for (int i = 0; i < notes.size(); i++) {
                 //  contentValues1 receives the value from the method API_Add_Database()
                 ContentValues contentValues1 = APIDatabase.API_Add_Database(notes.get(i),false);
                 // Insert a row of data into the table.
-                database.insert(TABLE_NOTE_HISTORY, null, contentValues1);
+                database.getWritableDatabase().insert(TABLE_NOTE_HISTORY, null, contentValues1);
             }
 
-            database.setTransactionSuccessful();
+            database.getWritableDatabase().setTransactionSuccessful();
 
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
         //  Close the database connection.
         database.close();
@@ -94,8 +88,8 @@ public class DatabaseNotes extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NOTE_HISTORY + " ORDER BY " + COLUMN_CLIENT_NOTE_TIME + " DESC ";
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
@@ -128,8 +122,8 @@ public class DatabaseNotes extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NOTE_HISTORY + " WHERE " + COLUMN_DEVICE_ID_NOTE + " = '" + deviceID + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
@@ -148,9 +142,9 @@ public class DatabaseNotes extends SQLiteOpenHelper {
 
     public int get_NotesCount_DeviceID(String deviceID) {
         Log.i(Global.TAG, "DatabaseNotes.get_NotesCount_DeviceID ... " + TABLE_NOTE_HISTORY);
-        database = this.getReadableDatabase();
+
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.query(TABLE_NOTE_HISTORY, new String[]{COLUMN_DEVICE_ID_NOTE
+        Cursor cursor = database.getWritableDatabase().query(TABLE_NOTE_HISTORY, new String[]{COLUMN_DEVICE_ID_NOTE
                 }, COLUMN_DEVICE_ID_NOTE + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -161,8 +155,8 @@ public class DatabaseNotes extends SQLiteOpenHelper {
 
     public void delete_Contact_History(Notes notes) {
         Log.i(Global.TAG, "DatabaseNotes.delete_Contact_History ... " + notes.getID());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_NOTE_HISTORY, COLUMN_ID_NOTE + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_NOTE_HISTORY, COLUMN_ID_NOTE + " = ?",
                 new String[]{String.valueOf(notes.getID())});
         database.close();
     }

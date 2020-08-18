@@ -14,18 +14,16 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import com.jexpa.secondclone.Model.PhoneCallRecord;
-
+import com.jexpa.secondclone.Model.AudioGroup;
+import com.jexpa.secondclone.Model.PhoneCallRecordJson;
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN_AUDIO_NAME_PHONECALLRECORD;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN_AUDIO_SIZE_PHONECALLRECORD;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN_CDN_URL_PHONECALLRECORD;
@@ -42,22 +40,20 @@ import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN_MEDIA_URL_PHONECALLRECORD;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN_PHONE_NUMBER_PHONECALLRECORD;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.COLUMN_ROWINDEX_PHONECALLRECORD;
-import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.DATABASE_NAME_PHONECALLRECORD_HISTORY;
-import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.DATABASE_VERSION_PHONECALLRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.TABLE_PHONECALLRECORD_HISTORY;
 
-public class DatabasePhoneCallRecord extends SQLiteOpenHelper {
+public class DatabasePhoneCallRecord {
 
-    SQLiteDatabase database;
-
+    private DatabaseHelper database;
 
     public DatabasePhoneCallRecord(Context context) {
-        super(context, DATABASE_NAME_PHONECALLRECORD_HISTORY, null, DATABASE_VERSION_PHONECALLRECORD_HISTORY);
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_PHONECALLRECORD_HISTORY))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
+    public void createTable() {
 
         Log.i(TAG, "DatabasePhoneCallRecord.onCreate ... " + TABLE_PHONECALLRECORD_HISTORY);
         String scriptTable = " CREATE TABLE " + TABLE_PHONECALLRECORD_HISTORY + "(" + COLUMN_ROWINDEX_PHONECALLRECORD + " INTEGER ," + COLUMN_ID_PHONECALLRECORD + " INTEGER,"
@@ -65,54 +61,67 @@ public class DatabasePhoneCallRecord extends SQLiteOpenHelper {
                 + COLUMN_CONTENT_TYPE_PHONECALLRECORD + " TEXT," + COLUMN_DURATION_PHONECALLRECORD + " INTEGER," + COLUMN_DIRECTION_TYPE_PHONECALLRECORD + " INTEGER," +
                 COLUMN_PHONE_NUMBER_PHONECALLRECORD + " TEXT," + COLUMN_CONTACT_NAME_PHONECALLRECORD + " TEXT," + COLUMN_AUDIO_SIZE_PHONECALLRECORD + " INTEGER," + COLUMN_EXT_PHONECALLRECORD + " TEXT," + COLUMN_MEDIA_URL_PHONECALLRECORD + " TEXT," +
                 COLUMN_CREATED_DATE_PHONECALLRECORD + " TEXT," + COLUMN_CDN_URL_PHONECALLRECORD + " TEXT" + ")";
-        sqLiteDatabase.execSQL(scriptTable);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PHONECALLRECORD_HISTORY);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
+        database.getWritableDatabase().execSQL(scriptTable);
 
     }
 
-    public void addDevice_PhoneCallRecord_Fast(List<PhoneCallRecord> phoneCallRecords) {
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+    boolean checkTableExist(String tableName){
+
+        if (tableName == null || database == null || !database.getWritableDatabase().isOpen())
+            return false;
+
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?", new String[] {"table", tableName});
+        if (!cursor.moveToFirst())
+        {
+            cursor.close();
+            return false;
+        }
+
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count > 0;
+    }
+
+
+
+    public void addDevice_PhoneCallRecord_Fast(List<PhoneCallRecordJson> phoneCallRecords) {
+
+        database.getWritableDatabase().beginTransaction();
         Log.i("addPhoneCallRecord", "dataPhoneCallRecord add: " + phoneCallRecords.get(0).getID());
         try {
             for (int i = 0; i < phoneCallRecords.size(); i++) {
-                ContentValues contentValues1 = API_Add_Database(phoneCallRecords.get(i),false);
-                // Insert a row of data into the table.
-                database.insert(TABLE_PHONECALLRECORD_HISTORY, null, contentValues1);
+                if(!checkItemExist(database.getWritableDatabase(),TABLE_PHONECALLRECORD_HISTORY, COLUMN_DEVICE_ID_PHONECALLRECORD,phoneCallRecords.get(i).getDevice_ID(), COLUMN_ID_PHONECALLRECORD, phoneCallRecords.get(i).getID()))
+                {
+                    ContentValues contentValues1 = API_Add_Database(phoneCallRecords.get(i),false);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_PHONECALLRECORD_HISTORY, null, contentValues1);
+                }
+
             }
 
-            database.setTransactionSuccessful();
+            database.getWritableDatabase().setTransactionSuccessful();
 
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
-
     }
 
-
-    public List<PhoneCallRecord> getAll_PhoneCallRecord_ID_History(String deviceID, int offSet) {
+    public List<AudioGroup> getAll_PhoneCallRecord_ID_History(String deviceID, int offSet) {
 
         Log.i(TAG, "DatabasePhoneCallRecord.getAll_PhoneCallRecord... " + TABLE_PHONECALLRECORD_HISTORY);
-        List<PhoneCallRecord> phoneCallRecords = new ArrayList<>();
+        List<AudioGroup> audioGroups = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_PHONECALLRECORD_HISTORY +" WHERE Device_ID = '"+ deviceID + "' ORDER BY " + COLUMN_CLIENT_CAPTURED_DATE_PHONECALLRECORD + " DESC LIMIT "+ NumberLoad + " OFFSET "+ offSet;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
                 //if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHONECALLRECORD)).equals(deviceID)) {
 
-                    PhoneCallRecord phoneCallRecord = new PhoneCallRecord();
+               /* PhoneCallRecordJson phoneCallRecord = new PhoneCallRecordJson();
                     phoneCallRecord.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_PHONECALLRECORD)));
                     phoneCallRecord.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_PHONECALLRECORD)));
                     phoneCallRecord.setIsSaved(cursor.getInt(cursor.getColumnIndex(COLUMN_ISSAVED_PHONECALLRECORD)));
@@ -128,28 +137,39 @@ public class DatabasePhoneCallRecord extends SQLiteOpenHelper {
                     phoneCallRecord.setExt(cursor.getString(cursor.getColumnIndex(COLUMN_EXT_PHONECALLRECORD)));
                     phoneCallRecord.setMedia_URL(cursor.getString(cursor.getColumnIndex(COLUMN_MEDIA_URL_PHONECALLRECORD)));
                     phoneCallRecord.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_PHONECALLRECORD)));
-                    phoneCallRecord.setCDN_URL(cursor.getString(cursor.getColumnIndex(COLUMN_CDN_URL_PHONECALLRECORD)));
+                    phoneCallRecord.setCDN_URL(cursor.getString(cursor.getColumnIndex(COLUMN_CDN_URL_PHONECALLRECORD)));*/
+
+                AudioGroup audioGroup = new AudioGroup();
+                audioGroup.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_PHONECALLRECORD)));
+                audioGroup.setDeviceID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHONECALLRECORD)));
+                audioGroup.setDuration(String.valueOf(cursor.getInt(cursor.getColumnIndex(COLUMN_DURATION_PHONECALLRECORD))));
+                audioGroup.setContactName(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_NAME_PHONECALLRECORD)));
+                audioGroup.setAudioName(cursor.getString(cursor.getColumnIndex(COLUMN_AUDIO_NAME_PHONECALLRECORD)));
+                audioGroup.setURL_Audio(cursor.getString(cursor.getColumnIndex(COLUMN_CDN_URL_PHONECALLRECORD)) + cursor.getString(cursor.getColumnIndex(COLUMN_MEDIA_URL_PHONECALLRECORD))+ "." + cursor.getString(cursor.getColumnIndex(COLUMN_EXT_PHONECALLRECORD)));
+                audioGroup.setIsSave(cursor.getInt(cursor.getColumnIndex(COLUMN_ISSAVED_PHONECALLRECORD)));
+                audioGroup.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_PHONECALLRECORD)));
+                audioGroup.setIsAmbient(0);
                     // Add in List.
-                    phoneCallRecords.add(phoneCallRecord);
+                audioGroups.add(audioGroup);
                 //}
 
             } while (cursor.moveToNext());
         }
         // return note list
         database.close();
-        return phoneCallRecords;
+        return audioGroups;
     }
 
 
     public void update_PhoneCallRecord_History(int value, String nameDeviceID, int phoneCallRecordID) {
 
-        database = this.getWritableDatabase();
+
         Log.d("isLoading = ", COLUMN_ISSAVED_PHONECALLRECORD + "=" + value + "");
         ContentValues contentValues1 = new ContentValues();
         contentValues1.put(COLUMN_ISSAVED_PHONECALLRECORD, value);
-        database.update(TABLE_PHONECALLRECORD_HISTORY, contentValues1, COLUMN_DEVICE_ID_PHONECALLRECORD + " = ?" + " AND " + COLUMN_ID_PHONECALLRECORD + "=?",
+        database.getWritableDatabase().update(TABLE_PHONECALLRECORD_HISTORY, contentValues1, COLUMN_DEVICE_ID_PHONECALLRECORD + " = ?" + " AND " + COLUMN_ID_PHONECALLRECORD + "=?",
                 new String[]{String.valueOf(nameDeviceID), String.valueOf(phoneCallRecordID)});
-        //  Close the database connection.
+        // Close the database connection.
         database.close();
     }
 
@@ -157,8 +177,8 @@ public class DatabasePhoneCallRecord extends SQLiteOpenHelper {
         Log.i(TAG, "DatabasePhoneCallRecord.getPhoneCallRecordCount ... " + TABLE_PHONECALLRECORD_HISTORY);
 
         //String countQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY;
-        database = this.getWritableDatabase();
-        Cursor cursor = database.query(TABLE_PHONECALLRECORD_HISTORY, new String[]{COLUMN_DEVICE_ID_PHONECALLRECORD
+
+        Cursor cursor = database.getWritableDatabase().query(TABLE_PHONECALLRECORD_HISTORY, new String[]{COLUMN_DEVICE_ID_PHONECALLRECORD
                 }, COLUMN_DEVICE_ID_PHONECALLRECORD + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -168,22 +188,22 @@ public class DatabasePhoneCallRecord extends SQLiteOpenHelper {
 
     }
 
-    public void delete_PhoneCallRecord_History(PhoneCallRecord phoneCallRecord) {
-        Log.i("deletePhoneCallRecord", "DatabasePhoneCallRecord.deletePhoneCallRecord ... " + phoneCallRecord.getID() + "== " + phoneCallRecord.getAudio_Name());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_PHONECALLRECORD_HISTORY, COLUMN_ID_PHONECALLRECORD + " = ?",
+    public void delete_PhoneCallRecord_History(AudioGroup phoneCallRecord) {
+        Log.i("deletePhoneCallRecord", "DatabasePhoneCallRecord.deletePhoneCallRecord ... " + phoneCallRecord.getID() + "== " + phoneCallRecord.getAudioName());
+
+        database.getWritableDatabase().delete(TABLE_PHONECALLRECORD_HISTORY, COLUMN_ID_PHONECALLRECORD + " = ?",
                 new String[]{String.valueOf(phoneCallRecord.getID())});
         database.close();
     }
 
     public List<Integer> getAll_PhoneCallRecord_ID_History_Date(String deviceID, String date) {
-        database = this.getWritableDatabase();
+
         Log.i(TAG, "DatabasePhoneCallRecord.getAll_PhoneCallRecord... " + TABLE_PHONECALLRECORD_HISTORY);
         List<Integer> phoneCallRecord_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_PHONECALLRECORD_HISTORY + " WHERE " + COLUMN_DEVICE_ID_PHONECALLRECORD + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         //SQLiteDatabase database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {

@@ -44,6 +44,7 @@ import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
+import static com.jexpa.secondclone.API.APIURL.getDateNowInMaxDate;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
@@ -193,7 +194,7 @@ public class SMSHistory extends AppCompatActivity {
             // max_Date is get all the location from the min_date to the max_Date days
             //min_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE,table.getDevice_ID());
             min_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
-            String max_time = getTimeNow().substring(0, 10) + " 23:59:59";
+            String max_time = getDateNowInMaxDate();
             date_max = getTimeNow();
             Log.d("min_time", min_time + "");
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_time + " \" Max_Date=\"" + max_time + " \" Type=\"" + style + "\" />";

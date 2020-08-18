@@ -33,8 +33,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.jexpa.secondclone.Database.DatabaseAmbientRecord;
 import com.jexpa.secondclone.Database.DatabasePhoneCallRecord;
-import com.jexpa.secondclone.Model.PhoneCallRecord;
+import com.jexpa.secondclone.Model.AudioGroup;
+import com.jexpa.secondclone.Model.PhoneCallRecordJson;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.MyApplication;
 import com.jexpa.secondclone.View.PhoneCallRecordHistory;
@@ -52,16 +55,19 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_PRODUCT_NAME;
 public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterPhoneCallRecordHistory.ViewHolder> {
 
     private Activity mActivity;
-    private static List<PhoneCallRecord> mData;
+    private static List<AudioGroup> mData;
     private ImageView imageViewSaving, imageViewPlay;
     private SeekBar seekBarPlay;
     private TextView txt_saving, txt_Star, txt_end;
     private String fileName, urlAudio;
-    private PhoneCallRecord phoneCallRecorded;
+    private AudioGroup phoneCallRecorded;
     private int totalTime;
     private boolean mediaPlayerStart;
     private static MediaPlayer mp;
     private DatabasePhoneCallRecord databasePhoneCallRecord;
+    private DatabaseAmbientRecord databaseAmbientRecord;
+    private boolean checkAmbient = true;
+
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
@@ -97,8 +103,9 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
             if (com.jexpa.secondclone.View.PhoneCallRecordHistory.isInActionMode) {
                 ((com.jexpa.secondclone.View.PhoneCallRecordHistory) mActivity).prepareSelection(getAdapterPosition());
                 notifyItemChanged(getAdapterPosition());
-            } else if (position != RecyclerView.NO_POSITION) {
-                PhoneCallRecord phoneCallRecord = mData.get(position);
+            } else if (position != RecyclerView.NO_POSITION)
+            {
+                AudioGroup phoneCallRecord = mData.get(position);
                 if (PhoneCallRecordHistory.request) {
                     final AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
                     @SuppressLint("InflateParams") View mView = LayoutInflater.from(mActivity).inflate(R.layout.item_dialog_phonecallrecord, null);
@@ -116,7 +123,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     dialog.show();
                     txt_saving = txt_ContactName_PhoneCallRecord;
-                    txt_ContactName_PhoneCallRecord.setText(phoneCallRecord.getContact_Name() + " : " + phoneCallRecord.getAudio_Name() + "");
+                    txt_ContactName_PhoneCallRecord.setText(phoneCallRecord.getContactName());
                     txt_Time_End_PhoneCallRecord.setText("-:-");
                     txt_Time_Start_PhoneCallRecord.setText("-:-");
                     imageViewPlay = img_Play_PhoneCallRecord;
@@ -125,7 +132,8 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     seekBarPlay = sb_Play_PhoneCallRecord;
                     imageViewSaving = img_Loading_PhoneCallRecord;
                     phoneCallRecorded = phoneCallRecord;
-                    if (phoneCallRecord.getIsSaved() == 1) {
+                    Log.d("textIS", phoneCallRecord.getIsSave()+"");
+                    if (phoneCallRecord.getIsSave() == 1) {
                         img_Play_PhoneCallRecord.setEnabled(true);
                         sb_Play_PhoneCallRecord.setEnabled(true);
                         playAudio();
@@ -134,11 +142,11 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                         if (isConnected(mActivity)) {
                             img_Play_PhoneCallRecord.setEnabled(false);
                             sb_Play_PhoneCallRecord.setEnabled(false);
-                            fileName = phoneCallRecord.getMedia_URL().substring(phoneCallRecord.getMedia_URL().lastIndexOf("/", phoneCallRecord.getMedia_URL().length()) + 1, phoneCallRecord.getMedia_URL().length()) + "." + phoneCallRecord.getExt();
+                            fileName = phoneCallRecord.getAudioName();
                             // txt_ContactName_PhoneCallRecord.setText("Loading...");
                             Log.d("fileName", fileName);
-                            urlAudio = phoneCallRecord.getCDN_URL() + phoneCallRecord.getMedia_URL() + "." + phoneCallRecord.getExt();
-                            txt_ContactName_PhoneCallRecord.setText(fileName);
+                            urlAudio = phoneCallRecord.getURL_Audio();
+                            txt_ContactName_PhoneCallRecord.setText(phoneCallRecord.getContactName());
                             img_Loading_PhoneCallRecord.setImageResource(R.drawable.download);
                             new DownloadPhoneCallRecordTask().execute();
                         } else {
@@ -149,7 +157,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
                             if (mediaPlayerStart) {
-                                mp.stop();
+                                        mp.stop();
                             }
                             ((com.jexpa.secondclone.View.PhoneCallRecordHistory) mActivity).reload();
                         }
@@ -164,7 +172,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
     private void playAudio() {
         MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
         mediaPlayerStart = true;
-        String fileName = "/" + DEFAULT_PRODUCT_NAME + "/" + phoneCallRecorded.getMedia_URL().substring(phoneCallRecorded.getMedia_URL().lastIndexOf("/", phoneCallRecorded.getMedia_URL().length()) + 1, phoneCallRecorded.getMedia_URL().length()) + "." + phoneCallRecorded.getExt();
+        String fileName = "/" + DEFAULT_PRODUCT_NAME + "/" + phoneCallRecorded.getAudioName();
         mp = MediaPlayer.create(mActivity, Uri.parse(Environment.getExternalStorageDirectory() + fileName));
         mp.setLooping(true);
         mp.seekTo(0);
@@ -251,10 +259,12 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         return timeLabel;
     }
 
-    public AdapterPhoneCallRecordHistory(Activity activity, List<PhoneCallRecord> myData) {
+
+    public AdapterPhoneCallRecordHistory(Activity activity, List<AudioGroup> myData) {
         mActivity = activity;
         mData = myData;
         databasePhoneCallRecord = new DatabasePhoneCallRecord(mActivity);
+        databaseAmbientRecord = new DatabaseAmbientRecord(mActivity);
     }
 
     @NonNull
@@ -269,15 +279,18 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PhoneCallRecord phoneCallRecord = mData.get(position);
+        AudioGroup phoneCallRecord = mData.get(position);
         if(phoneCallRecord != null)
         {
             holder.mView.setBackgroundResource(R.color.white);
-            holder.txt_Name_PhoneCallRecord_History.setText(phoneCallRecord.getContact_Name() + " : " + phoneCallRecord.getAudio_Name());
+            holder.txt_Name_PhoneCallRecord_History.setText(phoneCallRecord.getContactName());
             holder.txt_time_PhoneCallRecord_History.setText(phoneCallRecord.getDuration() + "s");
-            holder.txt_Date_PhoneCallRecord_History.setText(phoneCallRecord.getClient_Recorded_Date());
-            if (phoneCallRecord.getIsSaved() == 0) {
+            holder.txt_Date_PhoneCallRecord_History.setText(phoneCallRecord.getDate());
+            if (phoneCallRecord.getIsSave() == 0) {
                 holder.img_Detail_PhoneCallRecord.setImageResource(R.drawable.download);
+            }
+            else {
+                holder.img_Detail_PhoneCallRecord.setImageResource(R.drawable.micro_sd_card);
             }
             if (com.jexpa.secondclone.View.PhoneCallRecordHistory.isInActionMode) {
                 if (com.jexpa.secondclone.View.PhoneCallRecordHistory.selectionList.contains(mData.get(position))) {
@@ -294,8 +307,8 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         return mData.size();
     }
 
-    public void removeData(ArrayList<PhoneCallRecord> list) {
-        for (PhoneCallRecord phoneCallRecord : list) {
+    public void removeData(ArrayList<AudioGroup> list) {
+        for (AudioGroup phoneCallRecord : list) {
             mData.remove(phoneCallRecord);
         }
         notifyDataSetChanged();
@@ -318,7 +331,14 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         protected void onPostExecute(Void result) {
             try {
                 if (outputFile != null) {
-                    databasePhoneCallRecord.update_PhoneCallRecord_History(1, phoneCallRecorded.getDevice_ID(), phoneCallRecorded.getID());
+                    if (phoneCallRecorded.getIsAmbient() == 0)
+                    {
+                        Log.d("ddsds",  phoneCallRecorded.getDeviceID()+ " ==== "+ phoneCallRecorded.getID());
+                        databasePhoneCallRecord.update_PhoneCallRecord_History(1, phoneCallRecorded.getDeviceID(), phoneCallRecorded.getID());
+                    }else {
+                        databaseAmbientRecord.update_AmbientRecord_History(1, phoneCallRecorded.getDeviceID(), phoneCallRecorded.getContactName());
+                    }
+
                     // phoneCallRecorded.setIsSaved(1);
                     imageViewPlay.setEnabled(true);
                     seekBarPlay.setEnabled(true);
@@ -353,7 +373,8 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(Void... arg0)
+        {
             try {
                 URL url = new URL(urlAudio);//Create Download URl
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection

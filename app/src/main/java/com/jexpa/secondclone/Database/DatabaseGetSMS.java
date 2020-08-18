@@ -26,6 +26,8 @@ import java.util.List;
 
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.TAG;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.DeviceEntity.TABLE_GET_SETTING;
 import static com.jexpa.secondclone.Database.Entity.SMSEntity.COLUMN_CLIENT_MESSAGE_TIME_SMS;
 import static com.jexpa.secondclone.Database.Entity.SMSEntity.COLUMN_CONTACT_NAME_SMS;
 import static com.jexpa.secondclone.Database.Entity.SMSEntity.COLUMN_CREATED_DATE_SMS;
@@ -47,11 +49,16 @@ import static com.jexpa.secondclone.Database.Entity.SMSEntity.TABLE_GET_SMS;
 import static com.jexpa.secondclone.Database.Entity.SMSEntity.TABLE_GET_VIBER;
 import static com.jexpa.secondclone.Database.Entity.SMSEntity.TABLE_GET_WHATSAPP;
 
-public class DatabaseGetSMS extends SQLiteOpenHelper {
-    SQLiteDatabase database;
+public class DatabaseGetSMS
+{
+
+    private Context context;
+    private DatabaseHelper database;
 
     public DatabaseGetSMS(Context context) {
-        super(context, DATABASE_NAME_SMS, null, DATABASE_VERSION_SMS);
+        this.context = context;
+        this.database = getInstance(context);
+        createTable();
     }
 
     private static final String CREATE_TABLE_SMS = " CREATE TABLE " + TABLE_GET_SMS + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
@@ -98,41 +105,33 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+    public void createTable() {
         Log.i(TAG, "DatabaseSMS.onCreate ... " + TABLE_GET_SMS);
-        sqLiteDatabase.execSQL(CREATE_TABLE_SMS);
-        sqLiteDatabase.execSQL(CREATE_TABLE_WHATSAPP);
-        sqLiteDatabase.execSQL(CREATE_TABLE_VIBER);
-        sqLiteDatabase.execSQL(CREATE_TABLE_FACEBOOK);
-        sqLiteDatabase.execSQL(CREATE_TABLE_SKYPE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_HANGOUTS);
-        sqLiteDatabase.execSQL(CREATE_TABLE_BBM);
-        sqLiteDatabase.execSQL(CREATE_TABLE_LINE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_KIK);
+        if(!database.checkTableExist(TABLE_GET_SMS))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_SMS);
+        if(!database.checkTableExist(TABLE_GET_WHATSAPP))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_WHATSAPP);
+        if(!database.checkTableExist(TABLE_GET_VIBER))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_VIBER);
+        if(!database.checkTableExist(TABLE_GET_FACEBOOK))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_FACEBOOK);
+        if(!database.checkTableExist(TABLE_GET_SKYPE))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_SKYPE);
+        if(!database.checkTableExist(TABLE_GET_HANGOUTS))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_HANGOUTS);
+        if(!database.checkTableExist(TABLE_GET_BBM))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_BBM);
+        if(!database.checkTableExist(TABLE_GET_LINE))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_LINE);
+        if(!database.checkTableExist(TABLE_GET_KIK))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_KIK);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_SMS);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_WHATSAPP);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_VIBER);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_FACEBOOK);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_SKYPE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_HANGOUTS);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_BBM);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_LINE);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_KIK);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
-
-    }
 
     public void addDevice_SMS(List<SMS> sms, String tableName) {
         Log.i(TAG, "DatabaseSMS.addDevice ... " + tableName);
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+        database.getWritableDatabase().beginTransaction();
         //  contentValues1 receives the value from the method API_Add_Database()
         //ContentValues contentValues_SMS = API_Add_Database(sms);
         try {
@@ -148,12 +147,12 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
                 contentValues_SMS.put(COLUMN_CONTACT_NAME_SMS, sms.get(i).getContact_Name());
                 contentValues_SMS.put(COLUMN_CREATED_DATE_SMS, sms.get(i).getCreated_Date());
                 // Insert a row of data into the table.
-                database.insert(tableName, null, contentValues_SMS);
+                database.getWritableDatabase().insert(tableName, null, contentValues_SMS);
 
             }
-            database.setTransactionSuccessful();
+            database.getWritableDatabase().setTransactionSuccessful();
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
         //  Close the database connection.
         database.close();
@@ -166,8 +165,8 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + tableName + " ORDER BY " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " ";
         //String selectQuery = "SELECT  * FROM " + tableName +" WHERE Device_ID = '"+deviceID+ "' AND Device_ID = '"+ Name + "' ORDER BY " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " ASC LIMIT "+NumberLoad+" OFFSET "+ offSET;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
@@ -200,8 +199,8 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + tableName +" WHERE Contact_Name = '"+ Name + "' ORDER BY " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " DESC LIMIT "+NumberLoad+" OFFSET "+ offSet;
         //String selectQuery = "SELECT  * FROM " + tableName +" WHERE Device_ID = '"+deviceID+ "' AND Contact_Name = '"+ Name + "' ORDER BY " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " ASC LIMIT "+NumberLoad+" OFFSET "+ offSet;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
@@ -232,8 +231,8 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
         String selectQuery1 = "SELECT * FROM " + tableName + " WHERE " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " IN( SELECT MAX(" + COLUMN_CLIENT_MESSAGE_TIME_SMS  + ") FROM " + tableName  + " GROUP BY  " + COLUMN_CONTACT_NAME_SMS + ")" + " ORDER BY " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " DESC ";
 
         String selectQuery = "select tb.* from "+ tableName +" tb inner join (select Contact_Name, max(Client_Message_Time) as maxtime from "+ tableName +" group by Contact_Name ) filter on tb.Contact_Name = filter.Contact_Name and tb.Client_Message_Time = filter.maxtime "+ " ORDER BY " + COLUMN_CLIENT_MESSAGE_TIME_SMS + " DESC " ;
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // COLUMN_CLIENT_MESSAGE_TIME_SMS
 
         // Browse on the cursor, and add it to the list.
@@ -269,8 +268,8 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + tableName + " WHERE " + COLUMN_DEVICE_ID_SMS + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
@@ -290,10 +289,10 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
     // The method get a row of data into the table
     public List<SMS> getSMS_Contact_Name(String name, String tableName) {
         Log.i(TAG, "DatabaseSMS.getSMS ... " + name);
-        database = this.getReadableDatabase();
+
         List<SMS> list_SMS = new ArrayList<>();
         //  Cursor retrieves the values ​​of 1 row in the Location table via the cast id
-        @SuppressLint("Recycle") Cursor cursor = database.query(tableName, new String[]{COLUMN_ID_SMS, COLUMN_DEVICE_ID_SMS, COLUMN_CLIENT_MESSAGE_TIME_SMS,
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().query(tableName, new String[]{COLUMN_ID_SMS, COLUMN_DEVICE_ID_SMS, COLUMN_CLIENT_MESSAGE_TIME_SMS,
                         COLUMN_PHONE_NUMBER_SIM_SMS, COLUMN_PHONE_NUMBER_SMS, COLUMN_DIRECTION_SMS, COLUMN_TEXT_MESSAGE_SMS, COLUMN_CONTACT_NAME_SMS, COLUMN_CREATED_DATE_SMS
                 }, COLUMN_CONTACT_NAME_SMS + "=?",
                 new String[]{name}, null, null, null, null);
@@ -324,9 +323,9 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
     public int getSMSCount(String tableName, String deviceID) {
         Log.i(TAG, "DatabaseSMS.getSMSCount ... " + tableName);
         //String countQuery = "SELECT  * FROM " + tableName;
-        database = this.getReadableDatabase();
+
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.query(tableName, new String[]{COLUMN_DEVICE_ID_SMS
+        Cursor cursor = database.getWritableDatabase().query(tableName, new String[]{COLUMN_DEVICE_ID_SMS
                 }, COLUMN_DEVICE_ID_SMS + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -338,17 +337,17 @@ public class DatabaseGetSMS extends SQLiteOpenHelper {
     // method delete rows by each row when ID_SMS = sms.getID ().
     public void deleteSMS(SMS sms, String tableName) {
         Log.i(TAG, "DatabaseSMS.deleteSMS ... " + sms.getID());
-        database = this.getWritableDatabase();
+
         //String countQuery = "DELETE FROM Students WHERE DEVICE_ID_SMS = "+sms.getDevice_ID()+" AND "+ CONTACT_NAME_SMS + " = "+ " ";
-        database.delete(tableName, COLUMN_CONTACT_NAME_SMS + " = ?",
+        database.getWritableDatabase().delete(tableName, COLUMN_CONTACT_NAME_SMS + " = ?",
                 new String[]{String.valueOf(sms.getContact_Name())});
         database.close();
     }
 
     public void deleteSMS_ID(SMS sms, String tableName) {
         Log.i(TAG, "DatabaseSMS.deleteSMS ... " + sms.getID());
-        database = this.getWritableDatabase();
-        database.delete(tableName, COLUMN_ID_SMS + " = ?",
+
+        database.getWritableDatabase().delete(tableName, COLUMN_ID_SMS + " = ?",
                 new String[]{String.valueOf(sms.getID())});
         database.close();
     }

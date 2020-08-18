@@ -150,7 +150,7 @@ public class HistoryLocation extends AppCompatActivity {
             min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
             max_Date = getTimeNow().substring(0, 10) + " 23:59:59";
             Log.d("min_time", min + "="+min_Time);
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_Time + "\" Max_Date=\"" + max_Date + "\" Type=\"0\" />";
+            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_Time + "\" Max_Date=\"" + max_Date + "\"/>";
             String function = "GetLocations";
             return APIURL.POST(value, function);
         }

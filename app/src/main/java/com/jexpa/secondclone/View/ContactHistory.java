@@ -54,6 +54,7 @@ import java.util.Random;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
@@ -86,9 +87,11 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     private ProgressBar progressBar_Contacts;
     private SwipeRefreshLayout swp_Contact;
     private String max_Date = "";
-    private String min_Time = "",Date_max;
+    private String Date_max;
+    private boolean checkLoadMore = false;
     boolean isLoading = false;
     boolean endLoading = false;
+    private int currentSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +131,9 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
         if (isConnected(this)) {
-            new contactAsyncTask().execute();
-        } else {
+            new contactAsyncTask(0).execute();
+        }
+        else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = database_contact.get_ContactCount_DeviceID(table.getDevice_ID());
@@ -143,6 +147,10 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 mAdapter = new AdapterContactHistory(this, (ArrayList<Contact>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                if(mData.size() >= NumberLoad)
+                {
+                    initScrollListener();
+                }
                 txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 getThread(APIMethod.progressDialog);
             }
@@ -176,29 +184,51 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
     private void loadMore() {
         try {
-            mData.add(null);
-            mAdapter.notifyItemInserted(mData.size() - 1);
             //progressBar_Locations.setVisibility(View.VISIBLE);
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mData.remove(mData.size() - 1);
-                    int scrollPosition = mData.size();
-                    mAdapter.notifyItemRemoved(scrollPosition);
-                    int currentSize = scrollPosition;
-                    List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
 
-                    mData.addAll(mDataStamp);
-                    if(mDataStamp.size()< NumberLoad)
+
+                    currentSize =  mData.size();
+
+                    if(isConnected(getApplicationContext()))
                     {
-                        endLoading = true;
+                        checkLoadMore = true;
+                        // Here is the total item value contact of device current has on CPanel
+                        long totalContact = getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL);
+                        new contactAsyncTask(currentSize+1).execute();
+//                        List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
+//
+//                        mData.addAll(mDataStamp);
+                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+                        if((mData.size()+1) >= totalContact)
+                        {
+                            endLoading = true;
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        //progressBar_Locations.setVisibility(View.GONE);
+                        isLoading = false;
+                        progressBar_Contacts.setVisibility(View.GONE);
                     }
-                    mAdapter.notifyDataSetChanged();
-                    //progressBar_Locations.setVisibility(View.GONE);
-                    isLoading = false;
-                    progressBar_Contacts.setVisibility(View.GONE);
+                    else {
+                        List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
+                        // Here is the total item value contact of device current has on Cpanel
+                        int insertIndex = mData.size();
+                        mData.addAll(insertIndex,mDataStamp);
+                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataStamp.size() );
+                        if(mDataStamp.size()< NumberLoad)
+                        {
+                            endLoading = true;
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        //progressBar_Locations.setVisibility(View.GONE);
+                        isLoading = false;
+                        progressBar_Contacts.setVisibility(View.GONE);
+                    }
+
                 }
             }, 2000);
 
@@ -224,21 +254,28 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
     // location get method from sever
     @SuppressLint("StaticFieldLeak")
-    private class contactAsyncTask extends AsyncTask<String, Void, String> {
+    public class contactAsyncTask extends AsyncTask<String, Void, String> {
+
+        long startIndex;
+
+        public contactAsyncTask(long startIndex) {
+            this.startIndex = startIndex;
+        }
+
         @Override
         protected String doInBackground(String... strings) {
 
             Log.d("ContactId", table.getDevice_ID() + "");
             // max_Date is get all the location from the min_date to the max_Date days
-            min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
             max_Date = getDateNowInMaxDate();
             Date_max = getTimeNow();
             Log.d("totalRow", max_Date + "");
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"200\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" + max_Date + "\"  />";
+            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\""+this.startIndex+"\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" + max_Date + "\" />";
             String function = "GetContacts";
             return APIURL.POST(value, function);
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String s) {
             try {
@@ -247,25 +284,12 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
                 setToTalLog(GPSJsonTable1, CONTACT_TOTAL, getApplicationContext());
-               /* SharedPreferences prefs = getSharedPreferences(SETTINGS, Activity.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.apply();
-                if(GPSJsonTable1.length() !=0)
-                {
-                    String totalRow = GPSJsonTable1.getJSONObject(0).getString("TotalRow");
-                    Log.d("totalRow"," totalRow = "+ totalRow);
-                    if(totalRow != null)
-                    {
-                        editor.putLong(CONTACT_TOTAL,Long.parseLong(totalRow));
-                        editor.commit();
-                    }
-                }*/
 
                 if (GPSJson.length() != 0) {
 
-                    List<Integer> listDateCheck = database_contact.getAll_Contact_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
-                    int save;
-                    Log.d("DateCheck", "ContactHistory = " + listDateCheck.size());
+                    //List<Integer> listDateCheck = database_contact.getAll_Contact_ID_History_Date(table.getDevice_ID());
+                    //int save;
+                    //Log.d("DateCheck", "ContactHistory = " + listDateCheck.size());
                     for (int i = 0; i < GPSJson.length(); i++) {
 
                         Gson gson = new Gson();
@@ -273,38 +297,41 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         int[] androidColors = getResources().getIntArray(R.array.androidcolors);
                         int randomAndroidColor = androidColors[new Random().nextInt(androidColors.length)];
                         contact.setColor(randomAndroidColor);
-                        mAdapter.notifyDataSetChanged();
+                        //mAdapter.notifyDataSetChanged();
                         Log.d("contacta", contact.getColor() + "");
-                        //database_contact.addDevice_Application(contact);
-                        save = 0;
-                        if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
-                                if (contact.getID() == listCheck) {
-                                    save = 1;
-                                    break;
-                                }
-                            }
-                            if (save == 0) {
-                                contactListAdd.add(contact);
-                            }
-                        } else {
-                            contactListAdd.add(contact);
-                        }
+                        contactListAdd.add(contact);
+                        Log.d("ContactHistory"," Add Contact = "+  contact.getContact_Name());
 
                     }
                     if (contactListAdd.size() != 0) {
                         database_contact.addDevice_Contact(contactListAdd);
                     }
                 }
-                mData.clear();
-                mData = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),0);
-                if(mData.size()>= NumberLoad)
+                //mData.clear();
+                Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                List<Contact> mDataTamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
+                //mData.addAll(mDataTamp);
+
+
+                if(checkLoadMore)
                 {
-                    initScrollListener();
+                    int insertIndex = mData.size();
+                    mData.addAll(insertIndex, mDataTamp);
+                    mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
+                    Log.d("ContactHistory"," checkLoadMore Contact = "+ true);
+
                 }
-                mAdapter = new AdapterContactHistory(ContactHistory.this, (ArrayList<Contact>) mData);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
+                else {
+                    Log.d("ContactHistory"," checkLoadMore Contact = "+ false);
+                    mData.addAll(mDataTamp);
+                    if(mData.size() >= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
+                    mAdapter = new AdapterContactHistory(ContactHistory.this, (ArrayList<Contact>) mData);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
 
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_CONTACT, Date_max, table.getDevice_ID());
                 String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID());
@@ -314,8 +341,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     //txt_No_Data_Contact.setVisibility(View.VISIBLE);
                     txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+" Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
-                // get Method getThread()
-                //progressDialog.dismiss();
                 getThread(APIMethod.progressDialog);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
@@ -337,8 +362,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint("Search name contact");
         searchView.setOnQueryTextListener(this);
-
-
         return true;
     }
 
@@ -519,7 +542,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         contactListAdd.clear();
                         clearActionMode();
-                        new contactAsyncTask().execute();
+                        new contactAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

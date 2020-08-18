@@ -12,7 +12,7 @@ public class PhoneCallRecordEntity {
 
     public static final String TABLE_PHONECALLRECORD_HISTORY = "PhoneCallRecordHistory";
     public static final String DATABASE_NAME_PHONECALLRECORD_HISTORY = "PhoneCallRecordManager";
-    public static final int DATABASE_VERSION_PHONECALLRECORD_HISTORY = 1;
+    public static final int DATABASE_VERSION_PHONECALLRECORD_HISTORY = 5;
     public static final String COLUMN_ROWINDEX_PHONECALLRECORD = "RowIndex";
     public static final String COLUMN_ID_PHONECALLRECORD = "ID";
     public static final String COLUMN_DEVICE_ID_PHONECALLRECORD = "Device_ID";

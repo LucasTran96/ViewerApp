@@ -112,9 +112,17 @@ public class AdapterSMSHistory extends RecyclerView.Adapter<AdapterSMSHistory.Vi
         String time_SMS;
         time_SMS = checkValueStringT(sms.getClient_Message_Time());
         String date = getTimeItem(time_SMS,null);
+        Log.d("dssdsd", "date = "+date);
         String dateFinal [] = date.split(" ");
         holder.txt_time_SMS.setText(dateFinal[0]);
-        holder.txt_minutes__SMS.setText((dateFinal.length>2)?(dateFinal[1]+" "+dateFinal[2]):dateFinal[1]);
+        if(dateFinal.length>1)
+        {
+            holder.txt_minutes__SMS.setText((dateFinal.length>2)?(dateFinal[1]+" "+dateFinal[2]):dateFinal[1]);
+        }
+        else {
+            holder.txt_minutes__SMS.setText(dateFinal[0]);
+        }
+
 
         if (SMSHistory.isInActionMode_SMS) {
             if (SMSHistory.selectionList.contains(mDataSet.get(position))) {

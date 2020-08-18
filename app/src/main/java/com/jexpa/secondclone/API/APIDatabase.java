@@ -248,6 +248,7 @@ public class APIDatabase {
 
                 switch (timeEqual) {
                     case "Equals":
+                        Log.d("zdate","timeDefault = "+timeDefault);
                         dateChange = "Today "+timeDefault;
                         break;
                     case "Before":
@@ -297,7 +298,7 @@ public class APIDatabase {
                     dateChange = formatDateE(dateString,typeFormatDate);
                 }
             }
-
+            Log.d("dssdsd", "dateChange = "+ dateChange);
             return dateChange;
     }
 

@@ -26,6 +26,8 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.TABLE_PHONECALLRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.COLUMN_CAPTION_PHOTO;
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.COLUMN_CDN_URL_PHOTO;
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.COLUMN_CLIENT_CAPTURED_DATE_PHOTO;
@@ -41,17 +43,18 @@ import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.DATABASE_
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.DATABASE_VERSION_PHOTO_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.TABLE_PHOTO_HISTORY;
 
-public class DatabasePhotos extends SQLiteOpenHelper {
+public class DatabasePhotos {
 
-    SQLiteDatabase database;
-
+    private DatabaseHelper database;
 
     public DatabasePhotos(Context context) {
-        super(context, DATABASE_NAME_PHOTO_HISTORY, null, DATABASE_VERSION_PHOTO_HISTORY);
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_PHOTO_HISTORY))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+    public void createTable() {
 
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_PHOTO_HISTORY);
@@ -59,31 +62,23 @@ public class DatabasePhotos extends SQLiteOpenHelper {
                 + COLUMN_ISLOADED_PHOTO + " INTEGER," + COLUMN_DEVICE_ID_PHOTO + " TEXT," + COLUMN_CLIENT_CAPTURED_DATE_PHOTO + " TEXT," + COLUMN_CAPTION_PHOTO + " TEXT,"
                 + COLUMN_FILE_NAME_PHOTO + " TEXT," + COLUMN_EXT_PHOTO + " TEXT," + COLUMN_MEDIA_URL_PHOTO + " TEXT," +
                 COLUMN_CREATED_DATE_PHOTO + " TEXT," + COLUMN_CDN_URL_PHOTO + " TEXT" + ")";
-        sqLiteDatabase.execSQL(scriptTable);
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTO_HISTORY);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
-
-    }
 
     public void addDevice_Photos_Fast(List<Photo> photos) {
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+
+        database.getWritableDatabase().beginTransaction();
         Log.i("addPhoto", "dataURLPhotos add: " + photos.get(0).getID());
         try {
             for (int i = 0; i < photos.size(); i++) {
                 ContentValues contentValues1 = API_Add_Database(photos.get(i),false);
                 // Insert a row of data into the table.
-                database.insert(TABLE_PHOTO_HISTORY, null, contentValues1);
+                database.getWritableDatabase().insert(TABLE_PHOTO_HISTORY, null, contentValues1);
             }
-            database.setTransactionSuccessful();
+            database.getWritableDatabase().setTransactionSuccessful();
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
 
     }
@@ -97,8 +92,8 @@ public class DatabasePhotos extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY +" WHERE Device_ID = '"+deviceID+ "' ORDER BY " + COLUMN_CLIENT_CAPTURED_DATE_PHOTO + " DESC LIMIT "+ NumberLoad +" OFFSET "+offSet;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
@@ -130,12 +125,12 @@ public class DatabasePhotos extends SQLiteOpenHelper {
     }
 
     public void update_Photos_History(int value, String nameDeviceID, int photoID) {
-        database = this.getWritableDatabase();
+
         // contentValues1 receives the value from the method API_Add_Database()
         Log.d("isLoading = ", COLUMN_ISLOADED_PHOTO + "=" + value + "");
         ContentValues contentValues1 = new ContentValues();
         contentValues1.put(COLUMN_ISLOADED_PHOTO, value);
-        database.update(TABLE_PHOTO_HISTORY, contentValues1, COLUMN_DEVICE_ID_PHOTO + " = ?" + " AND " + COLUMN_ID_PHOTO + "=?",
+        database.getWritableDatabase().update(TABLE_PHOTO_HISTORY, contentValues1, COLUMN_DEVICE_ID_PHOTO + " = ?" + " AND " + COLUMN_ID_PHOTO + "=?",
                 new String[]{String.valueOf(nameDeviceID), String.valueOf(photoID)});
         //  Close the database connection.
         database.close();
@@ -145,8 +140,8 @@ public class DatabasePhotos extends SQLiteOpenHelper {
         Log.i(TAG, "DatabasePhotos.getPhotoCount ... " + TABLE_PHOTO_HISTORY);
 
         //String countQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY;
-        database = this.getWritableDatabase();
-        Cursor cursor = database.query(TABLE_PHOTO_HISTORY, new String[]{COLUMN_DEVICE_ID_PHOTO
+
+        Cursor cursor = database.getWritableDatabase().query(TABLE_PHOTO_HISTORY, new String[]{COLUMN_DEVICE_ID_PHOTO
                 }, COLUMN_DEVICE_ID_PHOTO + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -158,16 +153,16 @@ public class DatabasePhotos extends SQLiteOpenHelper {
 
     public void delete_Photos_History(Photo photo) {
         Log.i("deletePhoto", "DatabasePhotos.deletePhoto ... " + photo.getID() + "== " + photo.getCaption());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_PHOTO_HISTORY, COLUMN_ID_PHOTO + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_PHOTO_HISTORY, COLUMN_ID_PHOTO + " = ?",
                 new String[]{String.valueOf(photo.getID())});
         database.close();
     }
 
     public void delete_Photos_History_File(int id) {
         Log.i("deletePhoto", "DatabasePhotos.deletePhoto ... " + id);
-        database = this.getWritableDatabase();
-        database.delete(TABLE_PHOTO_HISTORY, COLUMN_ID_PHOTO + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_PHOTO_HISTORY, COLUMN_ID_PHOTO + " = ?",
                 new String[]{String.valueOf(id)});
         database.close();
     }
@@ -180,8 +175,8 @@ public class DatabasePhotos extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY + " WHERE " + COLUMN_DEVICE_ID_PHOTO + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {

@@ -16,7 +16,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.jexpa.secondclone.Model.Contact;
 import com.jexpa.secondclone.API.APIDatabase;
@@ -24,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_ADDRESS_CONTACT;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_CLIENT_CONTACT_TIME;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_COLOR_CONTACT;
@@ -35,56 +36,70 @@ import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_ID_CONT
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_ORGANIZATION_CONTACT;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_PHONE_CONTACT;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_ROWINDEX_CONTACT;
-import static com.jexpa.secondclone.Database.Entity.ContactEntity.DATABASE_NAME_CONTACT_HISTORY;
-import static com.jexpa.secondclone.Database.Entity.ContactEntity.DATABASE_VERSION_CONTACT_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.TABLE_CONTACT_HISTORY;
 
-public class DatabaseContact extends SQLiteOpenHelper {
-    SQLiteDatabase database;
+public class DatabaseContact  {
 
+    private Context context;
+    private DatabaseHelper database;
     public DatabaseContact(Context context) {
-        super(context, DATABASE_NAME_CONTACT_HISTORY, null, DATABASE_VERSION_CONTACT_HISTORY);
+        this.context = context;
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_CONTACT_HISTORY))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    private void createTable() {
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_CONTACT_HISTORY);
         String scriptTable = " CREATE TABLE " + TABLE_CONTACT_HISTORY + "(" + COLUMN_ROWINDEX_CONTACT + " INTEGER ," + COLUMN_ID_CONTACT + " INTEGER,"
                 + COLUMN_DEVICE_ID_CONTACT + " TEXT," + COLUMN_CLIENT_CONTACT_TIME + " TEXT," + COLUMN_CONTACT_NAME + " TEXT,"
                 + COLUMN_PHONE_CONTACT + " TEXT," + COLUMN_EMAIL_CONTACT + " INTEGER," + COLUMN_ORGANIZATION_CONTACT + " INTEGER," +
                 COLUMN_ADDRESS_CONTACT + " TEXT," + COLUMN_CREATED_DATE_CONTACT + " TEXT," + COLUMN_COLOR_CONTACT + " INTEGER" + ")";
-        sqLiteDatabase.execSQL(scriptTable);
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACT_HISTORY);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
+    public void addDevice_Contact(List<Contact> contact)
+    {
 
-    }
-
-    public void addDevice_Contact(List<Contact> contact) {
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+        database.getWritableDatabase().beginTransaction();
         try {
             for (int i = 0; i < contact.size(); i++) {
-                //  contentValues1 receives the value from the method API_Add_Database()
-                ContentValues contentValues1 = APIDatabase.API_Add_Database(contact.get(i),false);
-                // Insert a row of data into the table.
-                database.insert(TABLE_CONTACT_HISTORY, null, contentValues1);
+
+                if(!checkItemExist(database.getWritableDatabase(),TABLE_CONTACT_HISTORY,COLUMN_DEVICE_ID_CONTACT,contact.get(i).getDevice_ID(),COLUMN_ID_CONTACT,contact.get(i).getID()))
+                {
+                    //  contentValues1 receives the value from the method API_Add_Database()
+                    ContentValues contentValues1 = APIDatabase.API_Add_Database(contact.get(i),false);
+                    Log.d("ContactHistory"," Add Contact = "+  contentValues1);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_CONTACT_HISTORY, null, contentValues1);
+                }
             }
-
-            database.setTransactionSuccessful();
-
+            database.getWritableDatabase().setTransactionSuccessful();
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
 
         //  Close the database connection.
         database.close();
+
+    }
+
+    /**
+     * checkItemExist This is a support method to check whether this record already exists in the database or not and add it to the database.
+     */
+    public static boolean checkItemExist(SQLiteDatabase database, String tableName,String rawDeviceID, String deviceID,String rawIdContact, int idContact){
+
+        String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = %s", tableName, rawDeviceID, deviceID, rawIdContact, idContact);
+        Cursor cursor = database.rawQuery(query, null);
+        if (cursor.moveToFirst())
+        {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
     }
 
     public List<Contact> getAll_Contact_ID_History(String deviceID, int offSET) {
@@ -93,8 +108,8 @@ public class DatabaseContact extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACT_HISTORY +" WHERE Device_ID = '"+deviceID+ "' ORDER BY " + COLUMN_CLIENT_CONTACT_TIME + " DESC LIMIT "+ NumberLoad +" OFFSET "+ offSET;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
@@ -122,33 +137,33 @@ public class DatabaseContact extends SQLiteOpenHelper {
     }
 
     // Method retrieving data by date to compare.
-    public List<Integer> getAll_Contact_ID_History_Date(String deviceID, String date) {
+    public List<Integer> getAll_Contact_ID_History_Date(String deviceID) {
 
         Log.i(TAG, "DatabaseContact.getAll_Contact_ID_History_Date..." + TABLE_CONTACT_HISTORY);
 
         List<Integer> contact_List = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_CONTACT_HISTORY + " WHERE " + COLUMN_DEVICE_ID_CONTACT + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACT_HISTORY + " WHERE " + COLUMN_DEVICE_ID_CONTACT + " = '" + deviceID + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
-        if (cursor.moveToFirst()) do {
-            if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CONTACT_TIME)).substring(0, 10).equals(date)) {
+        if (cursor.moveToFirst()) {
+            do {
                 contact_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_CONTACT)));
+                // Add in List.
             }
-            // Add in List.
-
-        } while (cursor.moveToNext());
+            while (cursor.moveToNext());
+        }
         database.close();
         return contact_List;
     }
 
     public int get_Contact_Count(String deviceID) {
         Log.i(TAG, "DatabaseContact.get_Contact_Count ... " + TABLE_CONTACT_HISTORY);
-        database = this.getReadableDatabase();
-        Cursor cursor = database.query(TABLE_CONTACT_HISTORY, new String[]{COLUMN_DEVICE_ID_CONTACT
+
+        Cursor cursor = database.getWritableDatabase().query(TABLE_CONTACT_HISTORY, new String[]{COLUMN_DEVICE_ID_CONTACT
                 }, COLUMN_DEVICE_ID_CONTACT + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -158,9 +173,9 @@ public class DatabaseContact extends SQLiteOpenHelper {
 
     public int get_ContactCount_DeviceID(String deviceID) {
         Log.i(TAG, "DatabaseSMS.getSMSCount ... " + TABLE_CONTACT_HISTORY);
-        database = this.getReadableDatabase();
+
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.query(TABLE_CONTACT_HISTORY, new String[]{COLUMN_DEVICE_ID_CONTACT
+        Cursor cursor = database.getWritableDatabase().query(TABLE_CONTACT_HISTORY, new String[]{COLUMN_DEVICE_ID_CONTACT
                 }, COLUMN_DEVICE_ID_CONTACT + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -170,8 +185,7 @@ public class DatabaseContact extends SQLiteOpenHelper {
 
     public void delete_Contact_History(Contact contact) {
         Log.i(TAG, "DatabaseCall.deleteLocation ... " + contact.getID());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_CONTACT_HISTORY, COLUMN_ID_CONTACT + " = ?",
+        database.getWritableDatabase().delete(TABLE_CONTACT_HISTORY, COLUMN_ID_CONTACT + " = ?",
                 new String[]{String.valueOf(contact.getID())});
         database.close();
     }

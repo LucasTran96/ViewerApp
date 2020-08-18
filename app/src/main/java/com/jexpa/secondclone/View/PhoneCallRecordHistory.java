@@ -37,9 +37,11 @@ import com.google.gson.Gson;
 import com.jexpa.secondclone.API.APIMethod;
 import com.jexpa.secondclone.API.APIURL;
 import com.jexpa.secondclone.Adapter.AdapterPhoneCallRecordHistory;
+import com.jexpa.secondclone.Database.DatabaseAmbientRecord;
 import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Database.DatabasePhoneCallRecord;
-import com.jexpa.secondclone.Model.PhoneCallRecord;
+import com.jexpa.secondclone.Model.AmbientRecord;
+import com.jexpa.secondclone.Model.AudioGroup;
 import com.jexpa.secondclone.Model.PhoneCallRecordJson;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
@@ -60,6 +62,7 @@ import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_PHONE_CALL_RECORD;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
+import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHONE_CALL_RECORDING;
@@ -70,16 +73,19 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    List<PhoneCallRecord> mData = new ArrayList<>();
+    List<AudioGroup> mData = new ArrayList<>();
     public static boolean isInActionMode = false;
-    public static ArrayList<PhoneCallRecord> selectionList = new ArrayList<>();
+    public static ArrayList<AudioGroup> selectionList = new ArrayList<>();
     public static DatabasePhoneCallRecord databasePhoneCallRecord;
+    public static DatabaseAmbientRecord databaseAmbientRecord;
     private DatabaseLastUpdate database_last_update;
     private Table table;
+    private String functionName;
     private final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 26;
     private TextView txt_No_Data_PhoneCallRecord;
     private SwipeRefreshLayout swp_PhoneCallRecord;
-    private  List<PhoneCallRecord> phoneCallRecordList = new ArrayList<>();
+    private  List<PhoneCallRecordJson> phoneCallRecordList = new ArrayList<>();
+    private  List<AmbientRecord> ambientRecordList = new ArrayList<>();
     private String min_Time = "",Date_max;
     public static boolean request;
     boolean isLoading = false;
@@ -92,6 +98,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_call_record);
         databasePhoneCallRecord = new DatabasePhoneCallRecord(this);
+        databaseAmbientRecord = new DatabaseAmbientRecord(this);
         database_last_update = new DatabaseLastUpdate(this);
         toolbar = findViewById(R.id.toolbar_PhoneCallRecord);
         toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.PHONE_CALL_RECORDING));
@@ -100,6 +107,8 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mRecyclerView = findViewById(R.id.rcl_PhoneCallRecord_History);
         table = (Table) getIntent().getSerializableExtra("tablePhoneCallRecord");
+        functionName =  getIntent().getStringExtra("nameFeature");
+        Log.d("AmbientMediaLink", functionName);
         txt_No_Data_PhoneCallRecord = findViewById(R.id.txt_No_Data_PhoneCallRecord);
         progressBar_PhoneCall = findViewById(R.id.progressBar_PhoneCall);
         progressBar_PhoneCall.setVisibility(View.GONE);
@@ -114,11 +123,11 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
             request = true;
         }
         getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
-        getPhotoHistoryInfo();
-        mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
-        mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        getPhoneCallHistoryInfo();
+//        mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+//        mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
+//        mRecyclerView.setAdapter(mAdapter);
+//        mAdapter.notifyDataSetChanged();
         swipeRefreshLayout();
         if(mData.size() >= NumberLoad)
         {
@@ -126,7 +135,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         }
     }
 
-    private void getPhotoHistoryInfo() {
+    private void getPhoneCallHistoryInfo() {
 
         if (isConnected(this)) {
             new getPhoneCallRecordAsyncTask().execute();
@@ -139,6 +148,15 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                 getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
+                /*
+                    tên
+                    duration
+                    name
+                    date
+                    deviceID
+                    isSave
+                    Url
+                 */
                 mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
                 mAdapter = new AdapterPhoneCallRecordHistory(this, mData);
                 mRecyclerView.setAdapter(mAdapter);
@@ -191,8 +209,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                     int scrollPosition = mData.size();
                     mAdapter.notifyItemRemoved(scrollPosition);
                     int currentSize = scrollPosition;
-                    List<PhoneCallRecord> mDataStamp = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),currentSize);
-
+                    List<AudioGroup> mDataStamp = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),currentSize);
                     mData.addAll(mDataStamp);
                     if(mDataStamp.size()< NumberLoad)
                     {
@@ -218,11 +235,11 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
 
-            min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
+
             String max_Date = getTimeNow().substring(0, 10) + " 23:59:59";
             Date_max = getTimeNow();
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Min_Date=\"" + min_Time + "\" Max_Date= \"" + max_Date + " \" Start=\"0\" Length=\"1000\" />";
-            String function = "GetPhoneRecording";
+            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Min_Date=\"" + MIN_TIME + "\" Max_Date= \"" + max_Date + " \" Start=\"0\" Length=\"1000\" />";
+            String function = functionName;
             return APIURL.POST(value, function);
         }
 
@@ -237,71 +254,88 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
                 deviceObject(s);
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
-                JSONObject jsonObjData = jsonObj.getJSONObject("Data");
-                String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
-                JSONArray GPSJson = jsonObjData.getJSONArray("Table");
-                if (GPSJson.length() != 0) {
 
-                    List<Integer> listDateCheck = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
-                    Log.d("DateCheck", "PhoneCallRecordHistory = " + listDateCheck.size());
-                    int save;
-                    for (int i = 0; i < GPSJson.length(); i++) {
+                 if(functionName.equals("GetPhoneRecording"))
+                 {
+                     JSONObject jsonObjData = jsonObj.getJSONObject("Data");
+                     Log.d("AmbientMediaLink", functionName);
+                     String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
+                     JSONArray GPSJson = jsonObjData.getJSONArray("Table");
+                     if (GPSJson.length() != 0) {
 
-                        Gson gson = new Gson();
-                        PhoneCallRecordJson phoneCallRecordJson = gson.fromJson(String.valueOf(GPSJson.get(i)), PhoneCallRecordJson.class);
-                        PhoneCallRecord phoneCallRecord = new PhoneCallRecord();
-                        phoneCallRecord.setRowIndex(phoneCallRecordJson.getRowIndex());
-                        phoneCallRecord.setID(phoneCallRecordJson.getID());
-                        phoneCallRecord.setIsSaved(0);
-                        phoneCallRecord.setDevice_ID(phoneCallRecordJson.getDevice_ID());
-                        phoneCallRecord.setClient_Recorded_Date(phoneCallRecordJson.getClient_Recorded_Date());
-                        phoneCallRecord.setAudio_Name(phoneCallRecordJson.getAudio_Name());
-                        phoneCallRecord.setContent_Type(phoneCallRecordJson.getContent_Type());
-                        phoneCallRecord.setDuration(phoneCallRecordJson.getDuration());
-                        phoneCallRecord.setDirection(phoneCallRecordJson.getDirection());
-                        phoneCallRecord.setPhone_Number(phoneCallRecordJson.getPhone_Number());
-                        phoneCallRecord.setContact_Name(phoneCallRecordJson.getContact_Name());
-                        phoneCallRecord.setAudio_Size(phoneCallRecordJson.getAudio_Size());
-                        phoneCallRecord.setExt(phoneCallRecordJson.getExt());
-                        phoneCallRecord.setMedia_URL(phoneCallRecordJson.getMedia_URL());
-                        phoneCallRecord.setCreated_Date(phoneCallRecordJson.getCreated_Date());
-                        phoneCallRecord.setCDN_URL(jsonObjCDN_URL);
-                        save = 0;
-                        if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
-                                if (phoneCallRecord.getID() == listCheck) {
 
-                                    save = 1;
-                                    break;
-                                }
-                            }
-                            if (save == 0) {
 
-                                phoneCallRecordList.add(phoneCallRecord);
-                            }
-                        } else {
+                         for (int i = 0; i < GPSJson.length(); i++)
+                         {
+                             Gson gson = new Gson();
+                             PhoneCallRecordJson phoneCallRecordJson = gson.fromJson(String.valueOf(GPSJson.get(i)), PhoneCallRecordJson.class);
+                             phoneCallRecordJson.setIsSaved(0);
+                             phoneCallRecordJson.setCDN_URL(jsonObjCDN_URL);
+                             phoneCallRecordList.add(phoneCallRecordJson);
+                         }
+                         if (phoneCallRecordList.size() != 0) {
+                             databasePhoneCallRecord.addDevice_PhoneCallRecord_Fast(phoneCallRecordList);
+                         }
+                     }
+                     mData.clear();
+                     mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+                     mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
+                     mRecyclerView.setAdapter(mAdapter);
+                     mAdapter.notifyDataSetChanged();
+                     database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_PHONE_CALL_RECORDING, Date_max, table.getDevice_ID());
 
-                            phoneCallRecordList.add(phoneCallRecord);
+                     if (mData.size() == 0) {
+
+                         txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                     }else {
+                         txt_No_Data_PhoneCallRecord.setText("Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                     }
+                     getThread(APIMethod.progressDialog);
+                 }
+                 else {
+
+                     /*
+                     {
+                        "date": "8/11/2020 9:42:16 AM",
+                        "fileName": "358333086268268_0.mp4",
+                        "duration": "00:04:15",
+                        "size": 1044656
                         }
-                    }
-                    if (phoneCallRecordList.size() != 0) {
-                        databasePhoneCallRecord.addDevice_PhoneCallRecord_Fast(phoneCallRecordList);
-                    }
-                }
-                mData.clear();
-                mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
-                mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_PHONE_CALL_RECORDING, Date_max, table.getDevice_ID());
+                      */
+                     Log.d("AmbientMediaLink", functionName);
+                     String jsonObjAmbientMediaLink = jsonObj.getString("AmbientMediaLink");
+                     JSONArray GPSJson = jsonObj.getJSONArray("Rows");
+                     if (GPSJson.length() != 0) {
 
-                if (mData.size() == 0) {
+                         for (int i = 0; i < GPSJson.length(); i++) {
+                             Gson gson = new Gson();
+                             AmbientRecord ambientRecord = gson.fromJson(String.valueOf(GPSJson.get(i)), AmbientRecord.class);
+                             ambientRecord.setAmbientMediaLink(jsonObjAmbientMediaLink);
+                             ambientRecord.setIsSaved(0);
+                             ambientRecord.setDeviceID(table.getDevice_ID());
 
-                    txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                }else {
-                    txt_No_Data_PhoneCallRecord.setText("Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                }
-                getThread(APIMethod.progressDialog);
+                              ambientRecordList.add(ambientRecord);
+                         }
+                         if (ambientRecordList.size() != 0) {
+                             databaseAmbientRecord.addDevice_AmbientRecord_Fast(ambientRecordList);
+                         }
+                     }
+                     mData.clear();
+                     mData = databaseAmbientRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(), 0);
+                     Log.d("mdaaata", mData.size() +" SIZE");
+                     mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
+                     mRecyclerView.setAdapter(mAdapter);
+                     mAdapter.notifyDataSetChanged();
+                     database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_PHONE_CALL_RECORDING, Date_max, table.getDevice_ID());
+
+                     if (mData.size() == 0) {
+
+                         txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData) + "  " + "Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()), null));
+                     } else {
+                         txt_No_Data_PhoneCallRecord.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()), null));
+                     }
+                     getThread(APIMethod.progressDialog);
+                 }
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
@@ -439,19 +473,26 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         }
     }
 
-    public void clearDataSQLite(ArrayList<PhoneCallRecord> selectionList) {
-        for (PhoneCallRecord phoneCallRecord : selectionList) {
+    public void clearDataSQLite(ArrayList<AudioGroup> selectionList) {
+        for (AudioGroup phoneCallRecord : selectionList) {
 
-            databasePhoneCallRecord.delete_PhoneCallRecord_History(phoneCallRecord);
+            if(functionName.equals("GetPhoneRecording"))
+            {
+                databasePhoneCallRecord.delete_PhoneCallRecord_History(phoneCallRecord);
+            }
+            else {
+                databaseAmbientRecord.delete_PhoneCallRecord_History(phoneCallRecord);
+            }
+
         }
     }
 
-    public void clearFileAudio(ArrayList<PhoneCallRecord> selectionList) {
-        for (PhoneCallRecord phoneCallRecord : selectionList) {
+    public void clearFileAudio(ArrayList<AudioGroup> selectionList) {
+        for (AudioGroup phoneCallRecord : selectionList) {
 
             for (int i = 0; i < selectionList.size(); i++) {
 
-                String fileName = phoneCallRecord.getMedia_URL().substring(phoneCallRecord.getMedia_URL().lastIndexOf("/", phoneCallRecord.getMedia_URL().length()) + 1, phoneCallRecord.getMedia_URL().length()) + "." + phoneCallRecord.getExt();
+                String fileName = phoneCallRecord.getAudioName();
                 File file = new File(File_PATH_SAVE_PHONE_CALL_RECORD + "/" + fileName);
                 file.delete();
                 getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
@@ -499,7 +540,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
     public void reload() {
 
         mData.clear();
-        mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+        mData = getAllPhoneCall();
         mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
@@ -509,11 +550,27 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
     protected void onResume() {
 
         mData.clear();
-        mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+        mData = getAllPhoneCall();
         mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
         super.onResume();
+    }
+
+    private List<AudioGroup> getAllPhoneCall()
+    {
+        List<AudioGroup> mdatabase;
+        if(functionName.equals("GetPhoneRecording"))
+        {
+            mdatabase = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+        }
+        else
+        {
+            mdatabase = databaseAmbientRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+        }
+
+        return mdatabase;
+
     }
 
     public void swipeRefreshLayout() {

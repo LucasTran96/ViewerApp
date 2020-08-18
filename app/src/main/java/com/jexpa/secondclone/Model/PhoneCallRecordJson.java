@@ -4,10 +4,26 @@ import java.io.Serializable;
 
 public class PhoneCallRecordJson implements Serializable {
 
-    private int RowIndex, ID, Duration, Direction, Audio_Size;
-    private String Device_ID, Client_Recorded_Date, Audio_Name, Content_Type, Phone_Number, Contact_Name, Ext, Media_URL, Created_Date;
+    private int RowIndex, ID, Duration, Direction, Audio_Size,IsSaved;
+    private String Device_ID, Client_Recorded_Date, Audio_Name, Content_Type, Phone_Number, Contact_Name, Ext, Media_URL, Created_Date, CDN_URL;
 
     public PhoneCallRecordJson() {
+    }
+
+    public int getIsSaved() {
+        return IsSaved;
+    }
+
+    public void setIsSaved(int isSaved) {
+        IsSaved = isSaved;
+    }
+
+    public String getCDN_URL() {
+        return CDN_URL;
+    }
+
+    public void setCDN_URL(String CDN_URL) {
+        this.CDN_URL = CDN_URL;
     }
 
     public int getRowIndex() {

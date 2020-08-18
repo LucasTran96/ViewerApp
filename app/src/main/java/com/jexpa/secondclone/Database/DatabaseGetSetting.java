@@ -18,8 +18,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import com.jexpa.secondclone.Model.DeviceFeature;
 import com.jexpa.secondclone.Model.DeviceFeatures;
 
 import java.util.ArrayList;
@@ -27,6 +25,8 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.TABLE_AMBIENTRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.DeviceEntity.COLUMN_GETSETTING_ADMIN_NUMBER;
 import static com.jexpa.secondclone.Database.Entity.DeviceEntity.COLUMN_GETSETTING_ALERT;
 import static com.jexpa.secondclone.Database.Entity.DeviceEntity.COLUMN_GETSETTING_AMBIENT_RECORD;
@@ -97,15 +97,20 @@ import static com.jexpa.secondclone.Database.Entity.DeviceEntity.DATABASE_VERSIO
 import static com.jexpa.secondclone.Database.Entity.DeviceEntity.TABLE_GET_SETTING;
 
 
-public class DatabaseGetSetting extends SQLiteOpenHelper {
-    SQLiteDatabase database;
+public class DatabaseGetSetting
+{
+
+    private Context context;
+    private DatabaseHelper database;
 
     public DatabaseGetSetting(Context context) {
-        super(context, DATABASE_NAME_GET_SETTING, null, DATABASE_VERSION_GET_SETTING);
+        this.context = context;
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_GET_SETTING))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    private void createTable() {
         Log.i(TAG, "DatabaseFeature.onCreate ... " + TABLE_GET_SETTING);
         // PRIMARY KEY
         String scriptTable = "CREATE TABLE " + TABLE_GET_SETTING + "("
@@ -175,31 +180,24 @@ public class DatabaseGetSetting extends SQLiteOpenHelper {
                 + COLUMN_GETSETTING_ALERT + " INTEGER,"
                 + COLUMN_GETSETTING_CREATED_BY + " INTEGER)";
         // Run create table command.
-        db.execSQL(scriptTable);
+        database.getWritableDatabase().execSQL(scriptTable);
 
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Delete old table if it already exists.
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GET_SETTING);
-        // And recreate the table.
-        onCreate(db);
-    }
 
     public void addGetSetting(DeviceFeatures deviceFeature) {
         //        Log.i(TAG, "DatabaseFeature.addGetSetting ... "+ GETSETTING_Device_ID );
-        database = this.getWritableDatabase();
+
         ContentValues contentValues1 = API_Add_Database(deviceFeature,true);
         if(!checkItemExist(COLUMN_GETSETTING_ID,String.valueOf(deviceFeature.getID()),TABLE_GET_SETTING))
         {
             Log.d("checka", "checkItemExist = "+false);
-            database.insert(TABLE_GET_SETTING, null, contentValues1);
+            database.getWritableDatabase().insert(TABLE_GET_SETTING, null, contentValues1);
         }
         else
         {
             Log.d("checka", "checkItemExist = "+true);
-            database.update(TABLE_GET_SETTING,  contentValues1,COLUMN_GETSETTING_ID + " = ?",
+            database.getWritableDatabase().update(TABLE_GET_SETTING,  contentValues1,COLUMN_GETSETTING_ID + " = ?",
                     new String[]{String.valueOf(deviceFeature.getID())});
         }
 
@@ -209,9 +207,9 @@ public class DatabaseGetSetting extends SQLiteOpenHelper {
     }
 
     private boolean checkItemExist(String KEY_ID, String value, String tableName){
-        database = this.getWritableDatabase();
+
         String query = String.format("SELECT * FROM %s WHERE %s = '%s'", tableName, KEY_ID, value);
-        Cursor cursor = database.rawQuery(query, null);
+        Cursor cursor =  database.getWritableDatabase().rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
             cursor.close();
@@ -226,8 +224,8 @@ public class DatabaseGetSetting extends SQLiteOpenHelper {
     public int getSettingCount() {
         Log.i(TAG, "DatabaseFeature.getSettingCount ... " + TABLE_GET_SETTING);
         String countQuery = "SELECT  * FROM " + TABLE_GET_SETTING;
-        database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery(countQuery, null);
+
+        Cursor cursor = database.getWritableDatabase().rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
         // return count
@@ -237,8 +235,8 @@ public class DatabaseGetSetting extends SQLiteOpenHelper {
     // method delete a row of TABLE_GET_SETTING
     public void deleteSetting(DeviceFeatures deviceFeature) {
         Log.i(TAG, "DatabaseFeature.deleteSetting ... " + deviceFeature.getDevice_ID());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_GET_SETTING, COLUMN_GETSETTING_Device_ID + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_GET_SETTING, COLUMN_GETSETTING_Device_ID + " = ?",
                 new String[]{String.valueOf(deviceFeature.getDevice_ID())});
         database.close();
     }
@@ -250,8 +248,8 @@ public class DatabaseGetSetting extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_GET_SETTING;
 
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {

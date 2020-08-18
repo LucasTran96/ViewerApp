@@ -26,6 +26,8 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_END;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_START;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
+import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.TABLE_AMBIENTRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_CLIENT_CALL_TIME_CALL;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_CONTACT_NAME;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_CREATED_DATE;
@@ -40,48 +42,42 @@ import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.DATABASE_N
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.DATABASE_VERSION_CALL_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
 
-public class DatabaseCallHistory extends SQLiteOpenHelper {
-    SQLiteDatabase database;
+public class DatabaseCallHistory {
 
+    private Context context;
+    private DatabaseHelper database;
     public DatabaseCallHistory(Context context) {
-        super(context, DATABASE_NAME_CALL_HISTORY, null, DATABASE_VERSION_CALL_HISTORY);
+        this.context = context;
+        this.database = getInstance(context);
+        if(!database.checkTableExist(TABLE_CALL_HISTORY))
+            createTable();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    private void createTable() {
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_CALL_HISTORY);
         String scriptTable = " CREATE TABLE " + TABLE_CALL_HISTORY + "(" + COLUMN_ROWINDEX_CALL + " INTEGER ," + COLUMN_ID_CALL + " INTEGER,"
                 + COLUMN_DEVICE_ID_CALL + " TEXT," + COLUMN_CLIENT_CALL_TIME_CALL + " TEXT," + COLUMN_PHONE_NUMBER_SIM_CALL + " TEXT,"
                 + COLUMN_PHONE_NUMBER_CALL + " TEXT," + COLUMN_DIRECTION_CALL + " INTEGER," + COLUMN_DURATION_CALL + " INTEGER," +
                 COLUMN_CONTACT_NAME + " TEXT," + COLUMN_CREATED_DATE + " TEXT" + ")";
-        sqLiteDatabase.execSQL(scriptTable);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Delete old table if it already exists.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CALL_HISTORY);
-        // And recreate the table.
-        onCreate(sqLiteDatabase);
-
+        database.getWritableDatabase().execSQL(scriptTable);
     }
 
     public void addDevice_Call_Fast(List<CallHistory> call) {
-        database = this.getWritableDatabase();
-        database.beginTransaction();
+
+        database.getWritableDatabase().beginTransaction();
         Log.i("addURL", "dataURLCall add: " + call.get(0).getID());
         try {
             for (int i = 0; i < call.size(); i++) {
                 ContentValues contentValues1 = API_Add_Database(call.get(i), false);
                 // Insert a row of data into the table.
-                database.insert(TABLE_CALL_HISTORY, null, contentValues1);
+                database.getWritableDatabase().insert(TABLE_CALL_HISTORY, null, contentValues1);
             }
 
-            database.setTransactionSuccessful();
+            database.getWritableDatabase().setTransactionSuccessful();
 
         } finally {
-            database.endTransaction();
+            database.getWritableDatabase().endTransaction();
         }
 
 
@@ -94,8 +90,7 @@ public class DatabaseCallHistory extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CALL_HISTORY + " WHERE Device_ID = '"+ deviceID + "' ORDER BY " + COLUMN_CLIENT_CALL_TIME_CALL + " DESC LIMIT "+ NumberLoad +" OFFSET "+ offSet;
         //SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
@@ -131,8 +126,8 @@ public class DatabaseCallHistory extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CALL_HISTORY + " WHERE " + COLUMN_DEVICE_ID_CALL + " = '" + deviceID + "' AND " + COLUMN_CLIENT_CALL_TIME_CALL + " BETWEEN " + "'" + dateStart + DEFAULT_TIME_START + "' AND " + "'" + dateStart + DEFAULT_TIME_END + "'";
         // SQLiteDatabase database = this.getWritableDatabase();
-        database = this.getWritableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(selectQuery, null);
+
+        @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) // Add in List.
@@ -145,8 +140,8 @@ public class DatabaseCallHistory extends SQLiteOpenHelper {
 
     public int getCallCount(String deviceID) {
         Log.i(TAG, "DatabaseCall.getCallCount ... " + TABLE_CALL_HISTORY);
-        database = this.getWritableDatabase();
-        Cursor cursor = database.query(TABLE_CALL_HISTORY, new String[]{COLUMN_DEVICE_ID_CALL
+
+        Cursor cursor = database.getWritableDatabase().query(TABLE_CALL_HISTORY, new String[]{COLUMN_DEVICE_ID_CALL
                 }, COLUMN_DEVICE_ID_CALL + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
@@ -161,8 +156,8 @@ public class DatabaseCallHistory extends SQLiteOpenHelper {
 
     public void delete_Call_History(CallHistory call) {
         Log.i(TAG, "DatabaseCall.deleteLocation ... " + call.getDevice_ID());
-        database = this.getWritableDatabase();
-        database.delete(TABLE_CALL_HISTORY, COLUMN_ID_CALL + " = ?",
+
+        database.getWritableDatabase().delete(TABLE_CALL_HISTORY, COLUMN_ID_CALL + " = ?",
                 new String[]{String.valueOf(call.getID())});
         database.close();
     }
