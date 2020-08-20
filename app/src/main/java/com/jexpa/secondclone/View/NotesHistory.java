@@ -336,15 +336,15 @@ public class NotesHistory extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        mData.clear();
-        mData = database_notes.getAll_Notes_ID_History(table.getDevice_ID());
-        mAdapter = new AdapterNoteHistory(NotesHistory.this, (ArrayList<Notes>) mData);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-        super.onResume();
-    }
+//    @Override
+//    protected void onResume() {
+//        mData.clear();
+//        mData = database_notes.getAll_Notes_ID_History(table.getDevice_ID());
+//        mAdapter = new AdapterNoteHistory(NotesHistory.this, (ArrayList<Notes>) mData);
+//        mRecyclerView.setAdapter(mAdapter);
+//        mAdapter.notifyDataSetChanged();
+//        super.onResume();
+//    }
 
     @Override
     protected void onDestroy() {

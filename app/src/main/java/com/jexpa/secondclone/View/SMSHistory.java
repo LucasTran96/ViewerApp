@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
@@ -34,6 +35,8 @@ import com.jexpa.secondclone.Model.SMS;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.API.APIDatabase;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +45,8 @@ import java.util.Calendar;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.getDateNowInMaxDate;
@@ -75,6 +80,8 @@ public class SMSHistory extends AppCompatActivity {
     private String min_time = "";
     private String date_max = "";
     public static String name_Table_SMSHistory;
+    //aviSMS
+    private AVLoadingIndicatorView aviSMS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +104,10 @@ public class SMSHistory extends AppCompatActivity {
         //logger =  Log4jHelper.getLogger("SMSHistory.class");
         txt_No_Data_SMS = findViewById(R.id.txt_No_Data_SMS);
         swp_SMS = findViewById(R.id.swp_SMS);
+        aviSMS = findViewById(R.id.aviSMS);
         //txt_No_Data_SMS.setVisibility(View.GONE);
         // show dialog Loading...
-        getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
         // recyclerView
         rcl_SMS = findViewById(R.id.rcl_SMS_History);
         rcl_SMS.setHasFixedSize(true);
@@ -163,6 +171,8 @@ public class SMSHistory extends AppCompatActivity {
         //if there is a network call method
         //logger.info("internet = "+isConnected(this)+"\n==================End!");
         if (APIURL.isConnected(this)) {
+            aviSMS.setVisibility(View.VISIBLE);
+            startAnim(aviSMS);
             new getSMS_AsyncTask().execute();
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
@@ -171,7 +181,7 @@ public class SMSHistory extends AppCompatActivity {
                 APIDatabase.getThread(APIMethod.progressDialog);
                // txt_No_Data_SMS.setVisibility(View.VISIBLE);
                 txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+ "Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                APIDatabase.getThread(APIMethod.progressDialog);
+                //APIDatabase.getThread(APIMethod.progressDialog);
             } else {
                 list_SMS.clear();
                 list_SMS = databaseGetSMS.get_DISTINCT_SMS_Name(table.getDevice_ID(), nameTable);
@@ -179,7 +189,7 @@ public class SMSHistory extends AppCompatActivity {
                 rcl_SMS.setAdapter(adapter_SMS);
                 adapter_SMS.notifyDataSetChanged();
                 txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                APIDatabase.getThread(APIMethod.progressDialog);
+                //APIDatabase.getThread(APIMethod.progressDialog);
             }
         }
     }
@@ -253,7 +263,7 @@ public class SMSHistory extends AppCompatActivity {
                     rcl_SMS.setAdapter(adapter_SMS);
                     adapter_SMS.notifyDataSetChanged();
                     txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                    APIDatabase.getThread(APIMethod.progressDialog);
+                    //APIDatabase.getThread(APIMethod.progressDialog);
                 } else {
                     //txt_No_Data_SMS.setVisibility(View.VISIBLE);
                     txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+ "Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
@@ -261,7 +271,9 @@ public class SMSHistory extends AppCompatActivity {
                 }
                 // get Method getThread()
                 //progressDialog.dismiss();
-                APIDatabase.getThread(APIMethod.progressDialog);
+                stopAnim(aviSMS);
+                aviSMS.setVisibility(View.GONE);
+                //APIDatabase.getThread(APIMethod.progressDialog);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();

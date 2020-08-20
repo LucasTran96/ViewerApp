@@ -149,13 +149,13 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
                 else {
                     holder.cv_Call_History.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
                     holder.cv_Call_History.setBackground(null);
-                    holder.img_Name_Call_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.android_icon));
+                    holder.img_Name_Call_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.icon_person));
                 }
             }
             else {
                 holder.cv_Call_History.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
                 holder.cv_Call_History.setBackground(null);
-                holder.img_Name_Call_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.android_icon));
+                holder.img_Name_Call_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.icon_person));
             }
 
             if(position > 0)

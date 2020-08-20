@@ -32,7 +32,7 @@
             android:layout_width="45dp"
             android:layout_marginStart="10dp"
             android:id="@+id/img_Name_Call_History"
-            android:src="@drawable/android_icon"
+            android:src="@drawable/icon_person"
             android:layout_gravity="center_vertical"
             android:layout_height="45dp" />
         <LinearLayout

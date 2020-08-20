@@ -37,6 +37,8 @@ import com.jexpa.secondclone.Model.GPS;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.google.gson.Gson;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +48,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
@@ -75,6 +79,8 @@ public class HistoryLocation extends AppCompatActivity {
     List<GPS> gpsListAdd = new ArrayList<>();
     boolean endLoading = false;
     boolean isLoading = false;
+    //aviLocation
+    private AVLoadingIndicatorView aviLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +96,9 @@ public class HistoryLocation extends AppCompatActivity {
         //logger =  Log4jHelper.getLogger("History_Location.class");
         table = (Table) getIntent().getSerializableExtra("table");
         // show dialog Loading...
-        getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
         txt_No_Data_Location = findViewById(R.id.txt_No_Data_Location);
+        aviLocation = findViewById(R.id.aviLocation);
         swp_History_Location = findViewById(R.id.swp_History_Location);
         progressBar_Locations = findViewById(R.id.progressBar_Locations);
         progressBar_Locations.setVisibility(View.GONE);
@@ -107,16 +114,15 @@ public class HistoryLocation extends AppCompatActivity {
         mAdapter = new AdapterHistoryLocation(this, (ArrayList<GPS>) mData);
         mRecyclerView.setAdapter(mAdapter);
         swipeRefreshLayout();
-        if(mData.size()>= NumberLoad)
-        {
-            initScrollListener();
-        }
+
     }
 
     private void getLocationInfo() {
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
         if (APIURL.isConnected(this)) {
+            aviLocation.setVisibility(View.VISIBLE);
+            startAnim(aviLocation);
             new LocationAsyncTask().execute();
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
@@ -125,15 +131,19 @@ public class HistoryLocation extends AppCompatActivity {
             if (i == 0) {
                 //txt_No_Data_Location.setVisibility(View.VISIBLE);
                 txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData)+ "  "+"Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                APIDatabase.getThread(APIMethod.progressDialog);
+                //APIDatabase.getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
                 mData = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),0);
                 mAdapter = new AdapterHistoryLocation(this, (ArrayList<GPS>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                if(mData.size()>= NumberLoad)
+                {
+                    initScrollListener();
+                }
                 txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                APIDatabase.getThread(APIMethod.progressDialog);
+                //APIDatabase.getThread(APIMethod.progressDialog);
             }
         }
     }
@@ -196,6 +206,10 @@ public class HistoryLocation extends AppCompatActivity {
                 mAdapter = new AdapterHistoryLocation(HistoryLocation.this, (ArrayList<GPS>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                if(mData.size()>= NumberLoad)
+                {
+                    initScrollListener();
+                }
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_LOCATION, getTimeNow(), table.getDevice_ID());
                 String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID());
                 Log.d("min_time1", min_Time1 + "");
@@ -207,7 +221,8 @@ public class HistoryLocation extends AppCompatActivity {
                 }
                 // get Method getThread()
                 //progressDialog.dismiss();
-                APIDatabase.getThread(APIMethod.progressDialog);
+                stopAnim(aviLocation);
+                aviLocation.setVisibility(View.GONE);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();

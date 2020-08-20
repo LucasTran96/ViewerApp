@@ -37,6 +37,8 @@ import com.jexpa.secondclone.View.PhotoHistory;
 import com.jexpa.secondclone.View.SMSHistory;
 import com.jexpa.secondclone.View.URLHistory;
 import java.util.ArrayList;
+
+import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_BBM;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_FACEBOOK;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_HANGOUTS;
@@ -84,15 +86,19 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         holder.txtFeatureName.setText(feature.getFeatureName());
         holder.imgFeature.setImageResource(feature.getImage());
 
-        if(!feature.getFunctionName().isEmpty())
+        if(isConnected(context))
         {
-            if(feature.getFunctionName().equals("GetSMSByDateTime"))
+            if(!feature.getFunctionName().isEmpty())
             {
-                new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context,getSMSType(feature.getFeatureName())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+                if(feature.getFunctionName().equals("GetSMSByDateTime"))
+                {
+                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context,getSMSType(feature.getFeatureName())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+                }
+                else
+                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
             }
-            else
-                new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
         }
+
     }
 
     // Count the number of elements in deviceList
@@ -177,7 +183,7 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
                 }
                 else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.NOTES_HISTORY)))
                 {
-                    setIntentDefault(context,table,"table_Notes", NotesHistory.class);
+                    setIntentDefault(context,table,"tableNotes", NotesHistory.class);
                 }
                 else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.HANGOUTS_HISTORY)))
                 {

@@ -38,6 +38,8 @@ import com.jexpa.secondclone.Database.DatabaseCallHistory;
 import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +49,8 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
@@ -77,6 +81,7 @@ public class CallHistory extends AppCompatActivity {
     private ProgressBar progressBar_Call;
     boolean endLoading = false;
     private List<com.jexpa.secondclone.Model.CallHistory> listCall = new ArrayList<>();
+    private AVLoadingIndicatorView avLoadingIndicatorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,15 +96,11 @@ public class CallHistory extends AppCompatActivity {
         database_last_update = new DatabaseLastUpdate(this);
         table = (Table) getIntent().getSerializableExtra("call");
         // show dialog Loading...
-        getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
-        txt_No_Data_Call = findViewById(R.id.txt_No_Data_Call);
-        swp_CallHistory = findViewById(R.id.swp_CallHistory);
-        progressBar_Call = findViewById(R.id.progressBar_Call);
-        progressBar_Call.setVisibility(View.GONE);
+        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+
         //txt_No_Data_Call.setVisibility(View.GONE);
         // recyclerView
-        mRecyclerView = findViewById(R.id.rcl_Call_History);
-        mRecyclerView.setHasFixedSize(true);
+        setID();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         getCallHistoryInfo();
@@ -107,10 +108,18 @@ public class CallHistory extends AppCompatActivity {
         mAdapter = new AdapterCallHistory(this, (ArrayList<com.jexpa.secondclone.Model.CallHistory>) mData);
         mRecyclerView.setAdapter(mAdapter);
         swipeRefreshLayout();
-        if(mData.size()>= NumberLoad)
-        {
-            initScrollListener();
-        }
+
+    }
+
+    private void setID()
+    {
+        txt_No_Data_Call = findViewById(R.id.txt_No_Data_Call);
+        avLoadingIndicatorView = findViewById(R.id.aviCall);
+        swp_CallHistory = findViewById(R.id.swp_CallHistory);
+        progressBar_Call = findViewById(R.id.progressBar_Call);
+        progressBar_Call.setVisibility(View.GONE);
+        mRecyclerView = findViewById(R.id.rcl_Call_History);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -118,6 +127,8 @@ public class CallHistory extends AppCompatActivity {
         //if there is a network call method
         if (isConnected(this)) {
             //new getCallAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"getCallAsyncTask");
+            avLoadingIndicatorView.setVisibility(View.VISIBLE);
+            startAnim(avLoadingIndicatorView);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                 new getCallAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             else
@@ -129,15 +140,18 @@ public class CallHistory extends AppCompatActivity {
             if (i == 0) {
                 //txt_No_Data_Call.setVisibility(View.VISIBLE);
                 txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                getThread(APIMethod.progressDialog);
+
             } else {
                 mData.clear();
                 mData = database_call.getAll_Call_ID_History(table.getDevice_ID(),0);
                 mAdapter = new AdapterCallHistory(this, (ArrayList<com.jexpa.secondclone.Model.CallHistory>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                if(mData.size()>= NumberLoad)
+                {
+                    initScrollListener();
+                }
                 txt_No_Data_Call.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                getThread(APIMethod.progressDialog);
             }
         }
     }
@@ -162,7 +176,6 @@ public class CallHistory extends AppCompatActivity {
                         isLoading = true;
                         progressBar_Call.setVisibility(View.VISIBLE);
                         loadMore();
-
                     }
 
                 }
@@ -267,6 +280,10 @@ public class CallHistory extends AppCompatActivity {
                     mAdapter = new AdapterCallHistory(CallHistory.this, (ArrayList<com.jexpa.secondclone.Model.CallHistory>) mData);
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
+                    if(mData.size()>= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
                     database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_CALL, date_Max, table.getDevice_ID());
                     String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID());
                     Log.d("min_time1", min_Time1 + "");
@@ -276,7 +293,8 @@ public class CallHistory extends AppCompatActivity {
                         txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                     }
                     // get Method getThread()
-                    getThread(APIMethod.progressDialog);
+                    //getThread(APIMethod.progressDialog);
+                    stopAnim(avLoadingIndicatorView);
                 }
 
             } catch (JSONException e) {

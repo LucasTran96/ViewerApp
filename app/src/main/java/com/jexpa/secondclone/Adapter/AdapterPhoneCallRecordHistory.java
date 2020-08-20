@@ -41,6 +41,8 @@ import com.jexpa.secondclone.Model.PhoneCallRecordJson;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.MyApplication;
 import com.jexpa.secondclone.View.PhoneCallRecordHistory;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -49,6 +51,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.jexpa.secondclone.API.APIMethod.formateMilliSeccond;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.Global.DEFAULT_PRODUCT_NAME;
 
@@ -57,6 +61,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
     private Activity mActivity;
     private static List<AudioGroup> mData;
     private ImageView imageViewSaving, imageViewPlay;
+    private AVLoadingIndicatorView avIndicatorView;
     private SeekBar seekBarPlay;
     private TextView txt_saving, txt_Star, txt_end;
     private String fileName, urlAudio;
@@ -111,8 +116,11 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     @SuppressLint("InflateParams") View mView = LayoutInflater.from(mActivity).inflate(R.layout.item_dialog_phonecallrecord, null);
                     final ImageView img_Loading_PhoneCallRecord, img_Play_PhoneCallRecord;
                     final SeekBar sb_Play_PhoneCallRecord;
+                    final AVLoadingIndicatorView avLoadingIndicatorView;
                     final TextView txt_Time_Start_PhoneCallRecord, txt_Time_End_PhoneCallRecord, txt_ContactName_PhoneCallRecord;
                     img_Loading_PhoneCallRecord = mView.findViewById(R.id.img_Loading_PhoneCallRecord);
+                    avLoadingIndicatorView = mView.findViewById(R.id.aviDownloadAudio);
+                    // aviDownloadAudio
                     img_Play_PhoneCallRecord = mView.findViewById(R.id.img_Play_PhoneCallRecord);
                     sb_Play_PhoneCallRecord = mView.findViewById(R.id.sb_Play_PhoneCallRecord);
                     txt_Time_Start_PhoneCallRecord = mView.findViewById(R.id.txt_Time_Start_PhoneCallRecord);
@@ -131,12 +139,35 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     txt_end = txt_Time_End_PhoneCallRecord;
                     seekBarPlay = sb_Play_PhoneCallRecord;
                     imageViewSaving = img_Loading_PhoneCallRecord;
+                    avIndicatorView = avLoadingIndicatorView;
+
                     phoneCallRecorded = phoneCallRecord;
                     Log.d("textIS", phoneCallRecord.getIsSave()+"");
                     if (phoneCallRecord.getIsSave() == 1) {
                         img_Play_PhoneCallRecord.setEnabled(true);
                         sb_Play_PhoneCallRecord.setEnabled(true);
-                        playAudio();
+                        String filePath = Environment.getExternalStorageDirectory() +"/" + DEFAULT_PRODUCT_NAME + "/" + phoneCallRecorded.getAudioName();
+                        File file = new File(filePath);
+                        if(file.exists())
+                        {
+                            Log.d("cehck","file tồn tại");
+                            playAudio();
+
+                        }
+                        else
+                        {
+                            Log.d("cehck","file không tồn tại"+ " === "+filePath );
+                            img_Play_PhoneCallRecord.setEnabled(false);
+                            sb_Play_PhoneCallRecord.setEnabled(false);
+                            fileName = phoneCallRecord.getAudioName();
+                            // txt_ContactName_PhoneCallRecord.setText("Loading...");
+                            Log.d("fileName", fileName);
+                            urlAudio = phoneCallRecord.getURL_Audio();
+                            txt_ContactName_PhoneCallRecord.setText(phoneCallRecord.getContactName());
+                            img_Loading_PhoneCallRecord.setImageResource(R.drawable.download);
+                            new DownloadPhoneCallRecordTask().execute();
+                        }
+
 
                     } else {
                         if (isConnected(mActivity)) {
@@ -157,7 +188,13 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
                             if (mediaPlayerStart) {
-                                        mp.stop();
+                                try {
+                                    mp.stop();
+                                }catch (Exception e)
+                                {
+                                    e.getMessage();
+                                }
+
                             }
                             ((com.jexpa.secondclone.View.PhoneCallRecordHistory) mActivity).reload();
                         }
@@ -172,7 +209,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
     private void playAudio() {
         MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
         mediaPlayerStart = true;
-        String fileName = "/" + DEFAULT_PRODUCT_NAME + "/" + phoneCallRecorded.getAudioName();
+        String fileName =  "/" + DEFAULT_PRODUCT_NAME + "/" + phoneCallRecorded.getAudioName();
         mp = MediaPlayer.create(mActivity, Uri.parse(Environment.getExternalStorageDirectory() + fileName));
         mp.setLooping(true);
         mp.seekTo(0);
@@ -284,7 +321,13 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         {
             holder.mView.setBackgroundResource(R.color.white);
             holder.txt_Name_PhoneCallRecord_History.setText(phoneCallRecord.getContactName());
-            holder.txt_time_PhoneCallRecord_History.setText(phoneCallRecord.getDuration() + "s");
+            //holder.txt_time_PhoneCallRecord_History.setText(phoneCallRecord.getDuration() + "s");
+            Log.d("tttt",phoneCallRecord.getDuration() );
+            if(phoneCallRecord.getIsAmbient() == 1)
+                holder.txt_time_PhoneCallRecord_History.setText(phoneCallRecord.getDuration()+"s");
+            else
+                holder.txt_time_PhoneCallRecord_History.setText(formateMilliSeccond(Long.parseLong(phoneCallRecord.getDuration())*1000)+"s");
+
             holder.txt_Date_PhoneCallRecord_History.setText(phoneCallRecord.getDate());
             if (phoneCallRecord.getIsSave() == 0) {
                 holder.img_Detail_PhoneCallRecord.setImageResource(R.drawable.download);
@@ -323,7 +366,9 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            imageViewSaving.setImageResource(R.drawable.downloading);
+            //imageViewSaving.setImageResource(R.drawable.downloading);
+            imageViewSaving.setVisibility(View.GONE);
+            avIndicatorView.setVisibility(View.VISIBLE);
         }
 
         @SuppressLint("SetTextI18n")
@@ -343,14 +388,20 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     imageViewPlay.setEnabled(true);
                     seekBarPlay.setEnabled(true);
                     imageViewSaving.setImageResource(R.drawable.call_phonerecord);//If Download completed then change button text
+                    imageViewSaving.setVisibility(View.VISIBLE);
+                    avIndicatorView.setVisibility(View.GONE);
                     playAudio();
                 } else {
                     txt_saving.setText("download failed!");
                     imageViewSaving.setImageResource(R.drawable.downloading);//If download failed change button text
+                    imageViewSaving.setVisibility(View.VISIBLE);
+                    avIndicatorView.setVisibility(View.GONE);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             imageViewSaving.setImageResource(R.drawable.downloading);//Change button text again after 3sec
+                            imageViewSaving.setVisibility(View.VISIBLE);
+                            avIndicatorView.setVisibility(View.GONE);
                         }
                     }, 3000);
 
@@ -366,6 +417,8 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     @Override
                     public void run() {
                         imageViewSaving.setImageResource(R.drawable.downloading);
+                        imageViewSaving.setVisibility(View.VISIBLE);
+                        avIndicatorView.setVisibility(View.GONE);
                     }
                 }, 3000);
             }

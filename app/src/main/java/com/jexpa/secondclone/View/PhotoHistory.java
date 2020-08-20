@@ -49,6 +49,8 @@ import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,6 +62,8 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
@@ -96,7 +100,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     boolean isLoading = false;
     private ProgressBar progressBar_Photo;
     boolean endLoading = false;
-
+    //aviPhoto
+    private AVLoadingIndicatorView aviPhoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +119,10 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             checkPermissions = true;
         }
         table = (Table) getIntent().getSerializableExtra("tablePhoto");
-        getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
         txt_No_Data_Photo = findViewById(R.id.txt_No_Data_Photo);
         swp_PhotoHistory = findViewById(R.id.swp_PhotoHistory);
+        aviPhoto = findViewById(R.id.aviPhoto);
         progressBar_Photo = findViewById(R.id.progressBar_Photo);
         progressBar_Photo.setVisibility(View.GONE);
         //txt_No_Data_Photo.setVisibility(View.GONE);
@@ -247,6 +253,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     private void getPhotoHistoryInfo() {
 
         if (isConnected(this)) {
+            aviPhoto.setVisibility(View.VISIBLE);
+            startAnim(aviPhoto);
             new getPhotoAsyncTask().execute(); // If there is network, then take the image from the server.
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
@@ -255,7 +263,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             if (i == 0) {
                 //txt_No_Data_Photo.setVisibility(View.VISIBLE);
                 txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                getThread(APIMethod.progressDialog);
+                //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
                 mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
@@ -263,7 +271,10 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 txt_No_Data_Photo.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                getThread(APIMethod.progressDialog);
+                if(mData.size()>= NumberLoad)
+                {
+                    initScrollListener();
+                }
             }
         }
     }
@@ -399,8 +410,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
 
 
                 }
-
-                getThread(APIMethod.progressDialog);
+                aviPhoto.setVisibility(View.GONE);
+                stopAnim(aviPhoto);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();

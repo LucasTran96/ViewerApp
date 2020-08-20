@@ -11,10 +11,9 @@
 package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -42,7 +41,8 @@ import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Contact;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
-//import org.apache.log4j.Logger;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
@@ -66,7 +65,6 @@ import static com.jexpa.secondclone.API.Global.CONTACT_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
-import static com.jexpa.secondclone.API.Global.SETTINGS;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CONTACT;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -92,6 +90,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     boolean isLoading = false;
     boolean endLoading = false;
     private int currentSize = 0;
+    private AVLoadingIndicatorView avLoadingIndicatorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +106,10 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         //logger =  Log4jHelper.getLogger("ContactHistory.class");
         table = (Table) getIntent().getSerializableExtra("tableContact");
         // show dialog Loading...
-        getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+
+        avLoadingIndicatorView = findViewById(R.id.avi);
+        startAnim();
         txt_No_Data_Contact = findViewById(R.id.txt_No_Data_Contact);
         progressBar_Contacts = findViewById(R.id.progressBar_Contacts);
         progressBar_Contacts.setVisibility(View.GONE);
@@ -180,6 +182,16 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 }
             }
         });
+    }
+
+    void startAnim(){
+        avLoadingIndicatorView.show();
+        // or avi.smoothToShow();
+    }
+
+    void stopAnim(){
+        avLoadingIndicatorView.hide();
+        // or avi.smoothToHide();
     }
 
     private void loadMore() {
@@ -341,7 +353,8 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     //txt_No_Data_Contact.setVisibility(View.VISIBLE);
                     txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+" Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
-                getThread(APIMethod.progressDialog);
+                //getThread(APIMethod.progressDialog);
+                stopAnim();
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
@@ -542,6 +555,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         contactListAdd.clear();
                         clearActionMode();
+                        mData.clear();
                         new contactAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -551,14 +565,12 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                                 //Toast.makeText(HistoryLocation.this, "The data has been updated.", Toast.LENGTH_SHORT).show();
                                 Calendar calendar1 = Calendar.getInstance();
                                 time_Refresh_Device = calendar1.getTimeInMillis();
-
                             }
                         }, 1000);
 
                     } else {
                         swp_Contact.setRefreshing(false);
                         //Toast.makeText(HistoryLocation.this, "The data has been updated.", Toast.LENGTH_SHORT).show();
-                        // Toast.makeText(ManagementDevice.this, calendar.getTimeInMillis()- timeRefresh_Device +"", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     swp_Contact.setRefreshing(false);

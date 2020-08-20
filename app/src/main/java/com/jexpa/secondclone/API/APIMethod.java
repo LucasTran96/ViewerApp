@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.HistoryLocation;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -214,5 +215,64 @@ public class APIMethod {
             cursor.close();
             return false;
         }
+    }
+
+    /*
+        startAnim this is the method for showing progress bar custom.
+     */
+    public static void startAnim(AVLoadingIndicatorView avLoadingIndicatorView){
+        avLoadingIndicatorView.show();
+        // or avi.smoothToShow();
+    }
+
+    /*
+        stopAnim this is the method for hide progress bar custom.
+     */
+    public static void stopAnim(AVLoadingIndicatorView avLoadingIndicatorView){
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        avLoadingIndicatorView.hide();
+
+
+    }
+
+    /**
+     * Function to convert milliseconds time to
+     * Timer Format
+     * Hours:Minutes:Seconds
+     */
+    public static String formateMilliSeccond(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        //      return  String.format("%02d Min, %02d Sec",
+        //                TimeUnit.MILLISECONDS.toMinutes(milliseconds),
+        //                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+        //                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
+
+        // return timer string
+        return finalTimerString;
     }
 }

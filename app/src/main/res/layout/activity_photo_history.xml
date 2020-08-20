@@ -67,6 +67,15 @@
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"
                     android:layout_height="wrap_content" />
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/aviPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/grey_250"
+                    app:indicatorName="BallSpinFadeLoaderIndicator" />
             </RelativeLayout>
         </FrameLayout>
 

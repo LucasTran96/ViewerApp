@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="Register">Register</string>
-    <string name="SignIn">Login</string>
+    <string name="Register"><u>Sign Up</u></string>
+    <string name="SignIn">Log In</string>
     <string name="Password">Password</string>
     <string name="Email">Email address</string>
     <string name="PasswordHint">Password</string>

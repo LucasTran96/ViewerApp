@@ -68,6 +68,8 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_LINK_RENEW;
 import static com.jexpa.secondclone.API.Global.DEFAULT_LOGO_IMAGE_PATH;
 import static com.jexpa.secondclone.API.Global.DEFAULT_PRODUCT_NAME;
 import static com.jexpa.secondclone.API.Global.DEFAULT_VERSION_NAME;
+
+import static com.jexpa.secondclone.Database.DatabaseHelper.DATABASE_NAME;
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.DATABASE_NAME_APPLICATION_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.DATABASE_NAME_CALL_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ContactEntity.DATABASE_NAME_CONTACT_HISTORY;
@@ -280,23 +282,11 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         // Use intent to open the link to the company's About Us website.
 
         if (i == R.id.btnLogOut) {
-            this.deleteDatabase(DATABASE_NAME_CALL_HISTORY);//
-            this.deleteDatabase(DATABASE_NAME_PHONECALLRECORD_HISTORY);
-            this.deleteDatabase(DATABASE_NAME_CONTACT_HISTORY);//
-            this.deleteDatabase(DATABASE_NAME_NOTE_HISTORY);
-            this.deleteDatabase(DATABASE_NAME_URL_HISTORY);
-            this.deleteDatabase(DATABASE_NAME_APPLICATION_HISTORY);//
-            this.deleteDatabase(DATABASE_NAME_GETLOCATION);
-            this.deleteDatabase(DATABASE_NAME_SMS);
-            this.deleteDatabase(DATABASE_NAME_USER_INFO);
-            this.deleteDatabase(DATABASE_NAME_DEVICE);//
-            this.deleteDatabase(DATABASE_NAME_GET_SETTING);
-            this.deleteDatabase(DATABASE_NAME_LAST_UPDATE);
-            this.deleteDatabase(DATABASE_NAME_PHOTO_HISTORY);
+//            this.deleteDatabase(DATABASE_NAME);//
             databaseUser.updateUser(new User(1, "123", "123"));
-            File fileNamePathDelete = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DEFAULT_PRODUCT_NAME);
-            deleteRecursive(fileNamePathDelete);
-            fileNamePathDelete.delete();
+//            File fileNamePathDelete = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DEFAULT_PRODUCT_NAME);
+//            deleteRecursive(fileNamePathDelete);
+//            fileNamePathDelete.delete();
             Intent intent = new Intent(getApplicationContext(), Authentication.class);
             startActivity(intent);
             finish();

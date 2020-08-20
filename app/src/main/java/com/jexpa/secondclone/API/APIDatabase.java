@@ -140,7 +140,11 @@ public class APIDatabase {
                     Thread.sleep(100);
                 } catch (Exception e) {
                 } finally {
-                    progressDialog.dismiss();
+                    if(progressDialog!=null)
+                    {
+                        progressDialog.dismiss();
+                    }
+
                 }
             }
         });

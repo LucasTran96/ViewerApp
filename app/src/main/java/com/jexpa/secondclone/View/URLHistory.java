@@ -39,6 +39,8 @@ import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.Model.URL;
 import com.jexpa.secondclone.R;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +50,8 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
@@ -80,6 +84,8 @@ public class URLHistory extends AppCompatActivity {
     boolean isLoading = false;
     private ProgressBar progressBar_URL;
     boolean endLoading = false;
+    //aviURL
+    private AVLoadingIndicatorView aviURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +111,9 @@ public class URLHistory extends AppCompatActivity {
         //logger =  Log4jHelper.getLogger("URLHistory.class");
         table = (Table) getIntent().getSerializableExtra("tableURL");
         // show dialog Loading...
-        getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
         txt_No_Data_URL = findViewById(R.id.txt_No_Data_URL);
+        aviURL = findViewById(R.id.aviURL);
         progressBar_URL = findViewById(R.id.progressBar_URL);
         progressBar_URL.setVisibility(View.GONE);
         swp_URL = findViewById(R.id.swp_URL);
@@ -128,9 +135,11 @@ public class URLHistory extends AppCompatActivity {
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
         if (isConnected(this)) {
+            //new getURLAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            aviURL.setVisibility(View.VISIBLE);
+            startAnim(aviURL);
             //new getURLAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"getURLAsyncTask");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                //new getURLAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 new getURLAsyncTask().execute();
             else
                 new getURLAsyncTask().execute();
@@ -141,7 +150,7 @@ public class URLHistory extends AppCompatActivity {
             if (i == 0) {
                 //txt_No_Data_URL.setVisibility(View.VISIBLE);
                 txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                getThread(APIMethod.progressDialog);
+                //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
                 mData = database_url.getAll_URL_ID_History(table.getDevice_ID(),0);
@@ -149,7 +158,7 @@ public class URLHistory extends AppCompatActivity {
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                getThread(APIMethod.progressDialog);
+                //getThread(APIMethod.progressDialog);
             }
         }
     }
@@ -228,7 +237,8 @@ public class URLHistory extends AppCompatActivity {
                     //txt_No_Data_URL.setVisibility(View.VISIBLE);
                     txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
-                getThread(APIMethod.progressDialog);
+                stopAnim(aviURL);
+                aviURL.setVisibility(View.GONE);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();

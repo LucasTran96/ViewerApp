@@ -20,10 +20,12 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +39,12 @@ import com.jexpa.secondclone.Model.User;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.API.APIDatabase;
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import java.util.Locale;
+
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.Global.DEFAULT_LINK_FORGETPASSWORD;
@@ -51,12 +58,13 @@ import static com.jexpa.secondclone.Adapter.AdapterURLHistory.startOpenWebPage;
 public class Authentication extends AppCompatActivity {
 
     EditText edt_Email, edt_Password;
-    TextView txt_AppName_Authentication, txt_AppVersion_Authentication, txt_ForgetPassword;
-    ImageView img_Logo_Authentication;
-    Button btn_SignIn, btn_Register;
+    TextView txt_AppName_Authentication, txt_AppVersion_Authentication, txt_ForgetPassword,btn_Register;
+    ImageView img_Logo_Authentication,img_HidePassword;
+    Button btn_SignIn;
     public String pw, email;
     DatabaseUser databaseUser;
-
+    private boolean checkHidePassword = true;
+    private AVLoadingIndicatorView avLoadingIndicatorView;
     // public static Body bodyLogin =new Body();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +86,13 @@ public class Authentication extends AppCompatActivity {
         btn_Register = findViewById(R.id.btn_Register);
         btn_SignIn = findViewById(R.id.btn_SignIn);
         edt_Email = findViewById(R.id.edt_Email);
+        avLoadingIndicatorView = findViewById(R.id.aviLogin);
         edt_Password = findViewById(R.id.edt_Password);
         txt_AppName_Authentication = findViewById(R.id.txt_AppName_Authentication);
         txt_AppVersion_Authentication = findViewById(R.id.txt_AppVersion_Authentication);
         txt_ForgetPassword = findViewById(R.id.txt_ForgetPassword);
         img_Logo_Authentication = findViewById(R.id.img_Logo_Authentication);
+        img_HidePassword = findViewById(R.id.img_HidePassword);
         txt_AppName_Authentication.setText(DEFAULT_PRODUCT_NAME);
         txt_AppVersion_Authentication.setText(DEFAULT_VERSION_NAME);
         Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Authentication);
@@ -118,6 +128,8 @@ public class Authentication extends AppCompatActivity {
                     if (edt_Email.getText().toString().length() < 1 || edt_Password.getText().toString().length() < 1) {
                         Toast.makeText(Authentication.this, "Username or password is empty", Toast.LENGTH_SHORT).show();
                     } else {
+                        avLoadingIndicatorView.setVisibility(View.VISIBLE);
+                        startAnim(avLoadingIndicatorView);
                         new loginAsyncTask().execute();
                     }
                 } else {
@@ -131,6 +143,25 @@ public class Authentication extends AppCompatActivity {
                     } else {
                         APIURL.noInternet(Authentication.this);
                     }
+                }
+            }
+        });
+
+        img_HidePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkHidePassword)
+                {
+                    edt_Password.setTransformationMethod(null);
+                    edt_Password.setSelection(edt_Password.length());
+                    img_HidePassword.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_visibility_black_24dp));
+                    checkHidePassword = false;
+                }
+                else {
+                    edt_Password.setTransformationMethod(new PasswordTransformationMethod());
+                    edt_Password.setSelection(edt_Password.length());
+                    img_HidePassword.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_visibility_off_black_24dp));
+                    checkHidePassword = true;
                 }
             }
         });
@@ -186,6 +217,7 @@ public class Authentication extends AppCompatActivity {
                     edt_Password.setText("");
                     APIDatabase.getToast(Authentication.this, bodyLogin.getDescription());
                 }
+                stopAnim(avLoadingIndicatorView);
             } catch (Exception e) {
                 edt_Password.setText("");
                 MyApplication.getInstance().trackException(e);
