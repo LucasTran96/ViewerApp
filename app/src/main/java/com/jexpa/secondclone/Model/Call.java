@@ -12,7 +12,7 @@ package com.jexpa.secondclone.Model;
 
 import java.io.Serializable;
 
-public class CallHistory implements Serializable {
+public class Call implements Serializable {
 
     private String Device_ID,
             Client_Call_Time,
@@ -23,7 +23,7 @@ public class CallHistory implements Serializable {
     private int ID, RowIndex,
             Direction, Duration;
 
-    public CallHistory() {
+    public Call() {
 
     }
 

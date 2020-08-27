@@ -47,6 +47,7 @@ import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.getDateNowInMaxDate;
@@ -80,6 +81,7 @@ public class SMSHistory extends AppCompatActivity {
     private String min_time = "";
     private String date_max = "";
     public static String name_Table_SMSHistory;
+    boolean selectAll = false;
     //aviSMS
     private AVLoadingIndicatorView aviSMS;
 
@@ -94,32 +96,24 @@ public class SMSHistory extends AppCompatActivity {
         Log.d("style", style + "=" + nameTable);
         table = (Table) getIntent().getSerializableExtra("table_SMS");
         toolbar = findViewById(R.id.toolbar_SMS);
-        // toolbar.setTitle( "  "+SMS_HISTORY);
         setTitle(toolbar, nameTable);
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
-        //toolbar.setVisibility(View.GONE);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         databaseGetSMS = new DatabaseGetSMS(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("SMSHistory.class");
         txt_No_Data_SMS = findViewById(R.id.txt_No_Data_SMS);
         swp_SMS = findViewById(R.id.swp_SMS);
         aviSMS = findViewById(R.id.aviSMS);
-        //txt_No_Data_SMS.setVisibility(View.GONE);
-        // show dialog Loading...
-        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
-        // recyclerView
         rcl_SMS = findViewById(R.id.rcl_SMS_History);
         rcl_SMS.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-
         rcl_SMS.setLayoutManager(mLayoutManager);
         get_SMS_Info();
-        //databaseGetSMS.delete_AllDevice_SMS(table.getDevice_ID(),TABLE_GET_SMS);
-        // adapter
-        adapter_SMS = new AdapterSMSHistory(this,  list_SMS);
-        rcl_SMS.setAdapter(adapter_SMS);
-        adapter_SMS.notifyDataSetChanged();
         swipeRefreshLayout();
     }
 
@@ -127,49 +121,39 @@ public class SMSHistory extends AppCompatActivity {
 
         switch (nameTable) {
             case "SMS_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.SMS_HISTORY));
-                toolbar.setLogo(R.drawable.sms_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.SMS_HISTORY));
                 break;
             case "WhatsApp_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.WHATSAPP_HISTORY));
-                toolbar.setLogo(R.drawable.whatsapp_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.WHATSAPP_HISTORY));
                 break;
             case "Viber_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.VIBER_HISTORY));
-                toolbar.setLogo(R.drawable.viber_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.VIBER_HISTORY));
                 break;
             case "Facebook_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.FACEBOOK_HISTORY));
-                toolbar.setLogo(R.drawable.facebook_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.FACEBOOK_HISTORY));
                 break;
             case "Skype_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.SKYPE_HISTORY));
-                toolbar.setLogo(R.drawable.skype_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.SKYPE_HISTORY));
                 break;
             case "Hangouts_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.HANGOUTS_HISTORY));
-                toolbar.setLogo(R.drawable.hangout_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.HANGOUTS_HISTORY));
                 break;
             case "BBM_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.BBM_HISTORY));
-                toolbar.setLogo(R.drawable.bbm_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.BBM_HISTORY));
                 break;
             case "LINE_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.LINE_HISTORY));
-                toolbar.setLogo(R.drawable.line_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LINE_HISTORY));
                 break;
             case "KIK_Table":
-                toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.KIK_HISTORY));
-                toolbar.setLogo(R.drawable.kik_store);
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.KIK_HISTORY));
                 break;
         }
-
     }
 
     @SuppressLint("SetTextI18n")
-    private void get_SMS_Info() {
+    private void get_SMS_Info()
+    {
         //if there is a network call method
-        //logger.info("internet = "+isConnected(this)+"\n==================End!");
         if (APIURL.isConnected(this)) {
             aviSMS.setVisibility(View.VISIBLE);
             startAnim(aviSMS);
@@ -250,7 +234,6 @@ public class SMSHistory extends AppCompatActivity {
                     if (smsList.size() != 0) {
                         databaseGetSMS.addDevice_SMS(smsList, nameTable);
                     }
-
                 }
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, nameFeature, date_max, table.getDevice_ID());
                 String max_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID());
@@ -263,17 +246,11 @@ public class SMSHistory extends AppCompatActivity {
                     rcl_SMS.setAdapter(adapter_SMS);
                     adapter_SMS.notifyDataSetChanged();
                     txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                    //APIDatabase.getThread(APIMethod.progressDialog);
                 } else {
-                    //txt_No_Data_SMS.setVisibility(View.VISIBLE);
                     txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+ "Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                    //Toast.makeText(SMSHistory.this, "SMS Empty", Toast.LENGTH_SHORT).show();
                 }
-                // get Method getThread()
-                //progressDialog.dismiss();
                 stopAnim(aviSMS);
                 aviSMS.setVisibility(View.GONE);
-                //APIDatabase.getThread(APIMethod.progressDialog);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
@@ -284,24 +261,21 @@ public class SMSHistory extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
     public void prepareToolbar(int position) {
-
-        // prepare action mode
-        //toolbar.setVisibility(View.VISIBLE);
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode_SMS = true;
         adapter_SMS.notifyDataSetChanged();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
-
         prepareSelection(position);
     }
-
 
     public void prepareSelection(int position) {
 
@@ -316,13 +290,7 @@ public class SMSHistory extends AppCompatActivity {
 
     private void updateViewCounter() {
         int counter = selectionList.size();
-        if (counter == 0) {
-            clearActionMode();
-            //toolbar.getMenu().getItem(0).setVisible(true);
-        } else {
-            //toolbar.getMenu().getItem(0).setVisible(false);
-            toolbar.setTitle("  " + counter + " item selected");
-        }
+        updateViewCounterAll(toolbar, counter);
     }
 
 
@@ -332,9 +300,6 @@ public class SMSHistory extends AppCompatActivity {
         if (item.getItemId() == R.id.item_delete) {
             isInActionMode_SMS = false;
             if (APIURL.isConnected(SMSHistory.this)) {
-
-                //getProgressDialogDelete();
-                //getProgressDialog("Deleting....");
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_SMS().execute();
 
@@ -343,13 +308,36 @@ public class SMSHistory extends AppCompatActivity {
                 clearActionMode();
                 adapter_SMS.notifyDataSetChanged();
             }
-
-
-        } else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            adapter_SMS.notifyDataSetChanged();
         }
+        else if(item.getItemId() ==  R.id.item_select_all)
+        {
+            if(!selectAll)
+            {
+                selectAll = true;
+                selectionList.clear();
+                selectionList.addAll(list_SMS);
+                updateViewCounter();
+                adapter_SMS.notifyDataSetChanged();
 
+            }
+            else {
+                selectAll = false;
+                selectionList.clear();
+                updateViewCounter();
+                adapter_SMS.notifyDataSetChanged();
+            }
+
+        }
+        else if (item.getItemId() == android.R.id.home) {
+            if(isInActionMode_SMS)
+            {
+                clearActionMode();
+                adapter_SMS.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
+        }
         return true;
     }
 
@@ -420,19 +408,20 @@ public class SMSHistory extends AppCompatActivity {
     }
 
     // back toolbar home, clear List selectionList
-    public void clearActionMode() {
-
-        isInActionMode_SMS = false;
-        //toolbar.setVisibility(View.GONE);
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_main);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    public void clearActionMode()
+    {
+        if(isInActionMode_SMS)
+        {
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_main);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            setTitle(toolbar, nameTable);
+            selectionList.clear();
+            isInActionMode_SMS = false;
         }
-        //toolbar.setTitle(SMS_HISTORY);
-        setTitle(toolbar, nameTable);
-
-        selectionList.clear();
     }
 
     // Check out the escape without the option will always exit,
@@ -442,6 +431,7 @@ public class SMSHistory extends AppCompatActivity {
 
         if (isInActionMode_SMS) {
             clearActionMode();
+            isInActionMode_SMS = false;
             adapter_SMS.notifyDataSetChanged();
         } else {
             super.onBackPressed();

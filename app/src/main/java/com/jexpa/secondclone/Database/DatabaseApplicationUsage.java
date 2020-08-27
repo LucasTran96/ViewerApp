@@ -14,10 +14,14 @@ package com.jexpa.secondclone.Database;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.ImageView;
+
 import com.jexpa.secondclone.API.APIDatabase;
 import com.jexpa.secondclone.Model.ApplicationUsage;
 import com.jexpa.secondclone.API.Global;
@@ -25,7 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_END;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_START;
+import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.TAG;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
 import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
 import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.TABLE_AMBIENTRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.ApplicationUsageEntity.COLUMN_APP_ID_APPLICATION;
@@ -71,12 +77,14 @@ public class DatabaseApplicationUsage
 
         try {
             for (int i = 0; i < application_usage.size(); i++) {
-                //  contentValues1 receives the value from the method API_Add_Database()
-                ContentValues contentValues1 = APIDatabase.API_Add_Database(application_usage.get(i),false);
-                // Insert a row of data into the table.
-                database.getWritableDatabase().insert(TABLE_APPLICATION_HISTORY, null, contentValues1);
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_APPLICATION_HISTORY, COLUMN_DEVICE_ID_APPLICATION, application_usage.get(i).getDevice_ID(), COLUMN_ID_APPLICATION, application_usage.get(i).getID()))
+                {
+                    //  contentValues1 receives the value from the method API_Add_Database()
+                    ContentValues contentValues1 = APIDatabase.API_Add_Database(application_usage.get(i),false);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_APPLICATION_HISTORY, null, contentValues1);
+                }
             }
-
             database.getWritableDatabase().setTransactionSuccessful();
 
         } finally {
@@ -84,24 +92,20 @@ public class DatabaseApplicationUsage
         }
         //  Close the database connection.
         database.close();
-
     }
 
 
-    public List<ApplicationUsage> getAll_Application_ID_History(String deviceID) {
+    public List<ApplicationUsage> getAll_Application_ID_History(String deviceID, int offSet) {
         Log.i(Global.TAG, "DatabaseApplicationUsage.getAll_URL_ID_History ... " + TABLE_APPLICATION_HISTORY);
         List<ApplicationUsage> notes_List = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_APPLICATION_HISTORY + " ORDER BY " + COLUMN_CLIENT_APPLICATION_TIME + " DESC ";
-        //SQLiteDatabase database = this.getWritableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_APPLICATION_HISTORY + " WHERE Device_ID = '"+ deviceID + "' ORDER BY " + COLUMN_CLIENT_APPLICATION_TIME + " DESC LIMIT "+ NumberLoad +" OFFSET "+ offSet;
 
         @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
-                if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_APPLICATION)).equals(deviceID)) {
-
                     ApplicationUsage application_usage = new ApplicationUsage();
                     application_usage.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_APPLICATION)));
                     application_usage.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_APPLICATION)));
@@ -111,15 +115,17 @@ public class DatabaseApplicationUsage
                     application_usage.setClient_App_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_APPLICATION_TIME)));
                     application_usage.setApp_ID(cursor.getString(cursor.getColumnIndex(COLUMN_APP_ID_APPLICATION)));
                     application_usage.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_APPLICATION)));
+
                     // Add in List.
                     notes_List.add(application_usage);
-                }
 
             } while (cursor.moveToNext());
         }
         // return note list
         return notes_List;
     }
+
+
 
     // Method retrieving data by date to compare.
     public List<Integer> getAll_App_ID_History_Date(String deviceID, String dateStart) {

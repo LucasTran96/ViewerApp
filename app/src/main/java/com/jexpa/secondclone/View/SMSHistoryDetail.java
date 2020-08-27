@@ -39,6 +39,7 @@ import com.jexpa.secondclone.R;
 import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.View.SMSHistory.style;
 
@@ -60,6 +61,8 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
     //private Logger logger;
     // Declare the Count variable to count the number of items checked
     int counter = 0;
+    // This is the value to store the temporary variable when you choose to select all item or remove all selected items.
+    boolean selectAll = false;
     // progressDialog to check the load process
     boolean isLoading = false;
     boolean endLoading = false;
@@ -76,18 +79,18 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         Log.d("sms_History", SMS_Contact_Name);
         toolbar = findViewById(R.id.toolbar_SMS_Detail);
         // Set a title to the toolbar.
-        toolbar.setTitle("   " + SMS_Contact_Name);
+        toolbar.setTitle(SMS_Contact_Name);
         // Set a logo to the toolbar.
-        toolbar.setLogo(R.drawable.user_small);
+        //toolbar.setLogo(R.drawable.user_small);
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         overridePendingTransition(R.anim.slide_out_bottom, R.anim.slide_in_bottom);
         progressBar_SMS = findViewById(R.id.progressBar_SMS);
         progressBar_SMS.setVisibility(View.GONE);
         databaseGetSMS = new DatabaseGetSMS(this);
-        //logger =  Log4jHelper.getLogger("SMSHistoryDetail.class");
-        // show dialog Loading...
-        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading),this);
         //  RecyclerView
         rcl_SMS_Detail = findViewById(R.id.rcl__SMS_Detail);
         rcl_SMS_Detail.setHasFixedSize(true);
@@ -104,10 +107,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         }
         rcl_SMS_Detail.setAdapter(adapter_SMS_Detail);
         adapter_SMS_Detail.notifyDataSetChanged();
-        if(list_SMS_Detail.size()>= NumberLoad)
-        {
-            initScrollListener();
-        }
+
     }
 
     // This is the method to load data from the server or from SQLite to RecyclerView
@@ -134,9 +134,12 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                     }
                     rcl_SMS_Detail.setAdapter(adapter_SMS_Detail);
                     adapter_SMS_Detail.notifyDataSetChanged();
-                    APIDatabase.getThread(APIMethod.progressDialog);
+                    if(list_SMS_Detail.size()>= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
+
                 } else {
-                    APIDatabase.getThread(APIMethod.progressDialog);
                     APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
                 }
             }
@@ -153,18 +156,14 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                 if (list_SMS_Detail.size() != 0) {
                     // When assigning this List to another, the RecyclerView must be initialized
                     adapter_SMS_Detail = new AdapterSMSDetail(this, list_SMS_Detail);
-//                    if(list_SMS_Detail.size()>=5)
-//                    {
-//                        ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(true);
-//                    }else {
-//                        ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(false);
-//                    }
                     ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(true);
                     rcl_SMS_Detail.setAdapter(adapter_SMS_Detail);
                     adapter_SMS_Detail.notifyDataSetChanged();
-                    APIDatabase.getThread(APIMethod.progressDialog);
+                    if(list_SMS_Detail.size()>= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
                 } else {
-                    APIDatabase.getThread(APIMethod.progressDialog);
                     APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
                 }
             }
@@ -182,13 +181,11 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         if (!selectionList_Detail.contains(list_SMS_Detail.get(position))) {
             selectionList_Detail.add(list_SMS_Detail.get(position));
             counter = counter + 1;
-            updateCounter(counter);
-
         } else {
             selectionList_Detail.remove(list_SMS_Detail.get(position));
             counter = counter - 1;
-            updateCounter(counter);
         }
+        updateCounter();
         //updateViewCounter();
     }
 
@@ -227,17 +224,11 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
 
     private void loadMore() {
         try {
-            //list_SMS_Detail.add(null);
-            //adapter_SMS_Detail.notifyItemInserted(list_SMS_Detail.size() - 1);
-            //progressBar_Locations.setVisibility(View.VISIBLE);
-
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    //list_SMS_Detail.remove(list_SMS_Detail.size() - 1);
-                    int scrollPosition = list_SMS_Detail.size();
-                    //adapter_SMS_Detail.notifyItemRemoved(scrollPosition);
+
                     int currentSize = list_SMS_Detail.size();
                     List<SMS> mDataStamp = databaseGetSMS.getAll_SMS_Name_Offset(SMS_Contact_Name, nameTable,currentSize);
 
@@ -250,9 +241,6 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                     adapter_SMS_Detail.notifyItemRangeInserted(0, mDataStamp.size());
                     Log.d("currentSize", "currentSize = "+mDataStamp.size()/2);
                     Log.d("currentSize", "currentSize = "+ list_SMS_Detail.get(mDataStamp.size()).getText_Message());
-//                    rcl_SMS_Detail.smoothScrollToPosition(mDataStamp.size()-1);
-//                    ((LinearLayoutManager)rcl_SMS_Detail.getLayoutManager()).scrollToPositionWithOffset(currentSize,0);
-                    //progressBar_Locations.setVisibility(View.GONE);
                     isLoading = false;
                     progressBar_SMS.setVisibility(View.GONE);
                 }
@@ -264,13 +252,9 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         }
     }
 
-
-    public void updateCounter(int counter) {
-        if (counter == 0) {
-            toolbar.setTitle(" \t" + "0" + " item selected");
-        } else {
-            toolbar.setTitle(" \t" + counter + " item selected");
-        }
+    public void updateCounter() {
+        int counter = selectionList_Detail.size();
+        updateViewCounterAll(toolbar, counter);
     }
 
     @Override
@@ -290,12 +274,8 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
             if (APIURL.isConnected(SMSHistoryDetail.this)) {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_SMS().execute();
-                // Call the removeData method from the AdapterSMSDetail class to delete the object.
-                //((AdapterSMSDetail) adapter_SMS_Detail).removeData(selectionList_Detail);
-                //getProgressDialogDelete();
-                //getProgressDialog("Deleting....");
-                //new SMSHistory().clear_Location().execute();
-            } else {
+            }
+            else {
                 // If there is no internet we do not let users delete SMS :)
                 Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
                 clearActionMode();
@@ -304,19 +284,41 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         }
         else if(item.getItemId() ==  R.id.item_select_all)
         {
-            selectionList_Detail.clear();
-            selectionList_Detail.addAll(list_SMS_Detail);
-            for (int i = 0; i< list_SMS_Detail.size();i++)
+
+            Log.d("TestselectAll", "TestselectAll = "+selectAll+"");
+            if(!selectAll)
             {
-                AdapterSMSDetail.itemStateArray.put(i, true);
+                selectionList_Detail.clear();
+                selectionList_Detail.addAll(list_SMS_Detail);
+                for (int i = 0; i< list_SMS_Detail.size();i++)
+                {
+                    AdapterSMSDetail.itemStateArray.put(i, true);
+                }
+                updateCounter();
+                adapter_SMS_Detail.notifyDataSetChanged();
+                selectAll = true;
             }
-            counter = list_SMS_Detail.size();
-            updateCounter(counter);
-            adapter_SMS_Detail.notifyDataSetChanged();
+            else {
+                selectionList_Detail.clear();
+                selectionList_Detail.addAll(list_SMS_Detail);
+                for (int i = 0; i< list_SMS_Detail.size();i++)
+                {
+                    AdapterSMSDetail.itemStateArray.put(i, false);
+                }
+                updateCounter();
+                adapter_SMS_Detail.notifyDataSetChanged();
+                selectAll = false;
+            }
         }
         else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            adapter_SMS_Detail.notifyDataSetChanged();
+            if(isInActionMode_SMS_Detail)
+            {
+                clearActionMode();
+                adapter_SMS_Detail.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
         return true;
     }
@@ -354,7 +356,6 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                 Toast.makeText(SMSHistoryDetail.this, APIURL.bodyLogin.getDescription(), Toast.LENGTH_SHORT).show();
                 clearActionMode();
             }
-            // get Method getThread()
             APIMethod.progressDialog.dismiss();
         }
     }
@@ -368,18 +369,24 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
 
     // back toolbar home, clear List selectionList
     public void clearActionMode() {
-        isInActionMode_SMS_Detail = false;
-        isInActionLong = false;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_main);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        if(isInActionMode_SMS_Detail)
+        {
+            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.URL_HISTORY));
+            selectionList_Detail.clear();
+            isInActionLong = false;
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_main);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            toolbar.setTitle(SMS_Contact_Name);
+            //toolbar.setLogo(R.drawable.user_small);
+            AdapterSMSDetail.itemStateArray.clear();
+            AdapterSMSDetail.itemStateArray = new SparseBooleanArray();
+            isInActionMode_SMS_Detail = false;
         }
-        toolbar.setTitle("  " + SMS_Contact_Name);
-        toolbar.setLogo(R.drawable.user_small);
-        selectionList_Detail.clear();
-        counter = 0;
-        AdapterSMSDetail.itemStateArray = new SparseBooleanArray();
     }
 
     // Check out the escape without the option will always exit,
@@ -387,6 +394,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
     @Override
     public void onBackPressed() {
         if (isInActionMode_SMS_Detail) {
+            isInActionMode_SMS_Detail = false;
             clearActionMode();
             adapter_SMS_Detail.notifyDataSetChanged();
         } else {
@@ -405,6 +413,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         adapter_SMS_Detail.notifyDataSetChanged();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
         return true;
     }

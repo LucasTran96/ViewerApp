@@ -78,10 +78,12 @@
     <string name="ForgetPassword"><u>Forget Password ?</u></string>
     <string name="Language"><u>Language ?</u></string>
     <string name="SaveAndSync">Save &amp; Sync</string>
-    <string name="SyncSetting" translatable="false">Sync Settings</string>
+    <string name="SyncSetting" translatable="false">Settings</string>
     <string name="Loading">Loading</string>
     <string name="NoData">No data to display.</string>
     <string name="JustAMoment">Just a moment</string>
+    <string name="Open" translatable="false">Open</string>
+    <string name="Close" translatable="false">Close</string>
     <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
     <string name="TurnOn">Internet no connect!</string>
     <string name="Renew"><u>Renew</u></string>

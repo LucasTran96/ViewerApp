@@ -15,9 +15,10 @@
         android:layout_height="match_parent">
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
-            android:background="@color/bgToolbar"
+            android:background="@color/colorAccent"
             android:id="@+id/toolbar_SMS_Detail"
             android:layout_height="wrap_content"
+            app:contentInsetStartWithNavigation="0dp"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>

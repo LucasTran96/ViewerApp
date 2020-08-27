@@ -15,10 +15,8 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import com.jexpa.secondclone.Model.CallHistory;
+import com.jexpa.secondclone.Model.Call;
 import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
@@ -26,8 +24,8 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_END;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_START;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
 import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.TABLE_AMBIENTRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_CLIENT_CALL_TIME_CALL;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_CONTACT_NAME;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_CREATED_DATE;
@@ -38,9 +36,10 @@ import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_ID_
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_PHONE_NUMBER_CALL;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_PHONE_NUMBER_SIM_CALL;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.COLUMN_ROWINDEX_CALL;
-import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.DATABASE_NAME_CALL_HISTORY;
-import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.DATABASE_VERSION_CALL_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
+import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_DEVICE_ID_CONTACT;
+import static com.jexpa.secondclone.Database.Entity.ContactEntity.COLUMN_ID_CONTACT;
+import static com.jexpa.secondclone.Database.Entity.ContactEntity.TABLE_CONTACT_HISTORY;
 
 public class DatabaseCallHistory {
 
@@ -63,30 +62,31 @@ public class DatabaseCallHistory {
         database.getWritableDatabase().execSQL(scriptTable);
     }
 
-    public void addDevice_Call_Fast(List<CallHistory> call) {
+    public void addDevice_Call_Fast(List<Call> call) {
 
         database.getWritableDatabase().beginTransaction();
         Log.i("addURL", "dataURLCall add: " + call.get(0).getID());
         try {
             for (int i = 0; i < call.size(); i++) {
-                ContentValues contentValues1 = API_Add_Database(call.get(i), false);
-                // Insert a row of data into the table.
-                database.getWritableDatabase().insert(TABLE_CALL_HISTORY, null, contentValues1);
+
+                if(!checkItemExist(database.getWritableDatabase(),TABLE_CALL_HISTORY,COLUMN_DEVICE_ID_CALL,call.get(i).getDevice_ID(),COLUMN_ID_CALL,call.get(i).getID()))
+                {
+                    ContentValues contentValues1 = API_Add_Database(call.get(i), false);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_CALL_HISTORY, null, contentValues1);
+                }
             }
 
             database.getWritableDatabase().setTransactionSuccessful();
-
         } finally {
             database.getWritableDatabase().endTransaction();
         }
-
-
     }
 
 
-    public List<CallHistory> getAll_Call_ID_History(String deviceID, int offSet) {
+    public List<Call> getAll_Call_ID_History(String deviceID, int offSet) {
         Log.i(TAG, "DatabaseCall.getAll_Location ... " + TABLE_CALL_HISTORY);
-        List<CallHistory> calls_List = new ArrayList<>();
+        List<Call> calls_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CALL_HISTORY + " WHERE Device_ID = '"+ deviceID + "' ORDER BY " + COLUMN_CLIENT_CALL_TIME_CALL + " DESC LIMIT "+ NumberLoad +" OFFSET "+ offSet;
         //SQLiteDatabase database = this.getWritableDatabase();
@@ -95,7 +95,7 @@ public class DatabaseCallHistory {
         if (cursor.moveToFirst()) {
             do {
                 //if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CALL)).equals(deviceID)) {
-                    CallHistory call = new CallHistory();
+                    Call call = new Call();
                     call.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_CALL)));
                     call.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_CALL)));
                     call.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CALL)));
@@ -154,7 +154,7 @@ public class DatabaseCallHistory {
 
 
 
-    public void delete_Call_History(CallHistory call) {
+    public void delete_Call_History(Call call) {
         Log.i(TAG, "DatabaseCall.deleteLocation ... " + call.getDevice_ID());
 
         database.getWritableDatabase().delete(TABLE_CALL_HISTORY, COLUMN_ID_CALL + " = ?",

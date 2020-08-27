@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:background="#f4f4f6"
+        android:background="#F6F8F8"
         android:layout_height="match_parent">
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
@@ -19,6 +19,7 @@
             android:id="@+id/toolbar_Location"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
+            app:contentInsetStartWithNavigation="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
         <TextView
@@ -52,7 +53,7 @@
                     />
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:background="#fcfcfc"
+                    android:background="#F6F8F8"
                     android:layout_above="@+id/txt_No_Data_Location"
                     android:id="@+id/rcl_GPS_Locations"
                     android:layout_height="match_parent">
@@ -78,15 +79,6 @@
         </FrameLayout>
 
 
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:text="fdffdfd"
-            android:id="@+id/txt_lastUpdate_Location"
-            android:textStyle="bold|italic"
-            android:textSize="15sp"
-            android:paddingLeft="5dp"
-            android:layout_height="wrap_content"
-            />-->
     </LinearLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

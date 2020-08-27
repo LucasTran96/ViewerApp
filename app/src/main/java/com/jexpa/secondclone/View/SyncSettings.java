@@ -800,7 +800,10 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
 
             int y = 120;
             String value ="";
-            if (table.getDevice_ID().equals(ManagementDevice.android_id)) {
+            Log.d("asss", table.getDevice_ID());
+            Log.d("asss", ManagementDevice.android_id);
+//            if (table.getDevice_ID().equals(ManagementDevice.android_id)) {
+
                 value = "<RequestParams " +
                         "App=\"" + Application +
                         "\" Call=\"" + Call
@@ -839,9 +842,9 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                         + "\" Device_Name=\"" + DEVICE_NAME
                         + "\"  OS_Device=\"" + Global.MODEL + "\" />";
 
-            }
+//            }
 
-            Log.d("asas", value);
+            Log.d("asss", value+ " Value");
 //            else {
 //                value = "<RequestParams App=\"" + Application + "\" Call=\"" + Call + "\" Voice_Memos=\"" + Voice + "\" GPS_Interval=\"" + GPS_Interval + "\" Bbm=\"" + BBM + "\"" +
 //                        " Device_Token=\"null\" Secret_Key=\"" + txt_Access_Code.getText() + "\" Hangouts=\"" + Hangouts + "\" Client_Date=\"" + APIURL.getTimeNow() + "\" " +
@@ -866,7 +869,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     APIURL.alertDialogAll(SyncSettings.this,"Saved successfully.");
                 } else {
                     progressDialog.dismiss();
-                    APIURL.alertDialogAll(SyncSettings.this,"can't Update!");
+                    APIURL.alertDialogAll(SyncSettings.this,"can't Update! "+ body.getResultId());
 
                 }
             } catch (JSONException e) {

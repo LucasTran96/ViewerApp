@@ -24,8 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jexpa.secondclone.API.APIDatabase;
-import com.jexpa.secondclone.Model.CallHistory;
+import com.jexpa.secondclone.Model.Call;
 import com.jexpa.secondclone.R;
 
 import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
@@ -39,14 +38,14 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
     ImageView img_Make_Call;
     boolean testCall = false;
     private static final int EXTERNAL_STORAGE_PERMISSION_CALL_PHONE = 10;
-    private CallHistory call;
+    private Call call;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_history_detail);
         setID();
-        call = (CallHistory) getIntent().getSerializableExtra("Call_Detail");
+        call = (Call) getIntent().getSerializableExtra("Call_Detail");
         if (ActivityCompat.checkSelfPermission(CallHistoryDetail.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(CallHistoryDetail.this, new String[]{Manifest.permission.CALL_PHONE}, EXTERNAL_STORAGE_PERMISSION_CALL_PHONE);
         } else {
@@ -119,7 +118,7 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private String testPhoneCall(CallHistory callHistory) {
+    private String testPhoneCall(Call callHistory) {
         String phoneNumber = "";
         if (callHistory.getDirection() == 1) {
             phoneNumber = callHistory.getPhone_Number();

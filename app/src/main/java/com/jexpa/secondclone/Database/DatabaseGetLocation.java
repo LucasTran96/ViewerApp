@@ -27,6 +27,7 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
 import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
 import static com.jexpa.secondclone.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.GPSEntity.COLUMN_GETLOCATION_ACCURACY;
@@ -66,10 +67,13 @@ public class DatabaseGetLocation
         database.getWritableDatabase().beginTransaction();
         try {
             for (int i = 0; i < gps.size(); i++) {
-                //  contentValues1 receives the value from the method API_Add_Database()
-                ContentValues contentValues1 = API_Add_Database(gps.get(i),false);
-                // Insert a row of data into the table.
-                database.getWritableDatabase().insert(TABLE_GETLOCATION, null, contentValues1);
+                if(!checkItemExist(database.getWritableDatabase(),TABLE_GETLOCATION,COLUMN_GETLOCATION_DEVICE_ID,gps.get(i).getDevice_ID(),COLUMN_GETLOCATION_ID,gps.get(i).getID()))
+                {
+                    //  contentValues1 receives the value from the method API_Add_Database()
+                    ContentValues contentValues1 = API_Add_Database(gps.get(i),false);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_GETLOCATION, null, contentValues1);
+                }
             }
             database.getWritableDatabase().setTransactionSuccessful();
 

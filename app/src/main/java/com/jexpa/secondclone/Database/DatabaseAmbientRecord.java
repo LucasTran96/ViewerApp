@@ -72,6 +72,10 @@ public class DatabaseAmbientRecord {
             {
                 if(!checkItemExistString(database.getWritableDatabase(),TABLE_AMBIENTRECORD_HISTORY, COLUMN_DEVICE_ID_AMBIENTRECORD,ambientRecordsList.get(i).getDeviceID(), COLUMN_AUDIO_NAME_AMBIENTRECORD, ambientRecordsList.get(i).getFileName()))
                 {
+                    Log.d("AmbientMediaLink","checkItemExistString = false "+ ambientRecordsList.get(i).getFileName());
+                    Log.d("AmbientMediaLink","checkItemExistString = false "+ ambientRecordsList.get(i).getDuration());
+                    Log.d("AmbientMediaLink","checkItemExistString = false "+ ambientRecordsList.get(i).getAmbientMediaLink());
+                    Log.d("AmbientMediaLink","checkItemExistString = false "+ ambientRecordsList.get(i).getDate());
                     //  contentValues1 receives the value from the method API_Add_Database()
                     ContentValues contentValues1 = API_Add_Database(ambientRecordsList.get(i),false);
                     // Insert a row of data into the table.
@@ -128,6 +132,7 @@ public class DatabaseAmbientRecord {
                 audioGroup.setIsSave(cursor.getInt(cursor.getColumnIndex(COLUMN_ISSAVED_AMBIENTRECORD)));
                 audioGroup.setID(0);
                 audioGroup.setIsAmbient(1);
+                Log.d("AmbientMediaLink",audioGroup.getAudioName() +" === "+ audioGroup.getDate());
                 // Add in List.
                 ambientRecordArrayList.add(audioGroup);
                 //}

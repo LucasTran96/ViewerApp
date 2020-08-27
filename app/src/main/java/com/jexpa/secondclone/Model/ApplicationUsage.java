@@ -10,6 +10,8 @@
 
 package com.jexpa.secondclone.Model;
 
+import android.graphics.drawable.Drawable;
+
 import java.io.Serializable;
 
 public class ApplicationUsage implements Serializable {
@@ -19,8 +21,10 @@ public class ApplicationUsage implements Serializable {
     private int RowIndex, ID, App_Type;
 
 
+
     public ApplicationUsage() {
     }
+
 
     public String getDevice_ID() {
         return Device_ID;

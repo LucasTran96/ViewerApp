@@ -210,6 +210,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
         mediaPlayerStart = true;
         String fileName =  "/" + DEFAULT_PRODUCT_NAME + "/" + phoneCallRecorded.getAudioName();
+        Log.d("AmbientMediaLink",fileName);
         mp = MediaPlayer.create(mActivity, Uri.parse(Environment.getExternalStorageDirectory() + fileName));
         mp.setLooping(true);
         mp.seekTo(0);
@@ -319,7 +320,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
         AudioGroup phoneCallRecord = mData.get(position);
         if(phoneCallRecord != null)
         {
-            holder.mView.setBackgroundResource(R.color.white);
+
             holder.txt_Name_PhoneCallRecord_History.setText(phoneCallRecord.getContactName());
             //holder.txt_time_PhoneCallRecord_History.setText(phoneCallRecord.getDuration() + "s");
             Log.d("tttt",phoneCallRecord.getDuration() );
@@ -335,12 +336,16 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
             else {
                 holder.img_Detail_PhoneCallRecord.setImageResource(R.drawable.micro_sd_card);
             }
+
             if (com.jexpa.secondclone.View.PhoneCallRecordHistory.isInActionMode) {
                 if (com.jexpa.secondclone.View.PhoneCallRecordHistory.selectionList.contains(mData.get(position))) {
-
-                    holder.mView.setBackgroundResource(R.color.grey_600);
-                    //holder.txt_name_location.setTextColor(Color.parseColor("#000000"));
+                    holder.cv_PhoneCallRecord_History.setCardBackgroundColor(mActivity.getResources().getColor(R.color.grey_200));
                 }
+                else {
+                    holder.cv_PhoneCallRecord_History.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                }
+            }else {
+                holder.cv_PhoneCallRecord_History.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
             }
         }
     }

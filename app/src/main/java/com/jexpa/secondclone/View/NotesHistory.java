@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
@@ -63,6 +64,7 @@ public class NotesHistory extends AppCompatActivity {
     //private Logger logger;
     private String max_Date = "";
     private String min_Time = "";
+    boolean selectAll = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +72,11 @@ public class NotesHistory extends AppCompatActivity {
         setContentView(R.layout.activity_notes_history);
         toolbar = findViewById(R.id.toolbar_Notes_History);
         toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.NOTES_HISTORY));
-        toolbar.setLogo(R.drawable.notes_store_white);
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         database_notes = new DatabaseNotes(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("NotesHistory.class");
@@ -201,13 +205,13 @@ public class NotesHistory extends AppCompatActivity {
 
         // prepare action mode
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode = true;
         mAdapter.notifyDataSetChanged();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
-
         prepareSelection(position);
     }
 
@@ -224,15 +228,7 @@ public class NotesHistory extends AppCompatActivity {
 
     private void updateViewCounter() {
         int counter = selectionList.size();
-        if (counter == 0) {
-            clearActionMode();
-            //toolbar.getMenu().getItem(0).setVisible(true);
-        } else {
-            //toolbar.getMenu().getItem(0).setVisible(false);
-            toolbar.setTitle("  " + counter + " item selected");
-        }
-
-
+        updateViewCounterAll(toolbar, counter);
     }
 
 
@@ -252,9 +248,35 @@ public class NotesHistory extends AppCompatActivity {
             }
 
 
-        } else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            mAdapter.notifyDataSetChanged();
+        }
+        else if(item.getItemId() ==  R.id.item_select_all)
+        {
+            if(!selectAll)
+            {
+                selectAll = true;
+                selectionList.clear();
+                selectionList.addAll(mData);
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+
+            }
+            else {
+                selectAll = false;
+                selectionList.clear();
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+            }
+
+        }
+        else if (item.getItemId() == android.R.id.home) {
+            if(isInActionMode)
+            {
+                clearActionMode();
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
 
         return true;
@@ -314,14 +336,18 @@ public class NotesHistory extends AppCompatActivity {
 
     // back toolbar home, clear List selectionList
     public void clearActionMode() {
-        isInActionMode = false;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_main);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        if(isInActionMode)
+        {
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_main);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.NOTES_HISTORY));
+            selectionList.clear();
+            isInActionMode = false;
         }
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.NOTES_HISTORY));
-        selectionList.clear();
     }
 
     // Check out the escape without the option will always exit,
@@ -330,6 +356,7 @@ public class NotesHistory extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionMode) {
             clearActionMode();
+            isInActionMode = false;
             mAdapter.notifyDataSetChanged();
         } else {
             super.onBackPressed();

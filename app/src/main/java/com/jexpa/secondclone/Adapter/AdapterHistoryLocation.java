@@ -22,19 +22,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.jexpa.secondclone.API.APIDatabase;
 import com.jexpa.secondclone.Model.GPS;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.HistoryLocation;
 import com.jexpa.secondclone.View.MapLocation;
 import com.jexpa.secondclone.View.MyApplication;
-
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
+import static com.jexpa.secondclone.API.APIDatabase.formatDate;
+import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIMethod.setDateForArrayList;
+import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT_MMM;
+import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_FORMAT_AM;
 
 public class AdapterHistoryLocation extends RecyclerView.Adapter<AdapterHistoryLocation.ViewHolder> {
 
@@ -43,19 +48,20 @@ public class AdapterHistoryLocation extends RecyclerView.Adapter<AdapterHistoryL
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-        TextView txt_time_history_location, txt_name_location;
-        View mView;
+        TextView txt_time_history_location, txt_name_location,txt_date_location;
+        ImageView img_Selected_Location;
         CardView card_view;
 
         ViewHolder(View v) {
             super(v);
             txt_time_history_location = v.findViewById(R.id.txt_time_history_location);
+            txt_date_location = v.findViewById(R.id.txt_date_location);
             txt_name_location = v.findViewById(R.id.txt_name_location);
             card_view = v.findViewById(R.id.card_view);
-            mView = v;
-            v.setOnLongClickListener(this);
+            img_Selected_Location = v.findViewById(R.id.img_Selected_Location);
             card_view.setOnClickListener(this);
-            v.setOnClickListener(this);
+            card_view.setOnLongClickListener(this);
+
         }
 
         @Override
@@ -83,7 +89,6 @@ public class AdapterHistoryLocation extends RecyclerView.Adapter<AdapterHistoryL
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mActivity.startActivity(intent);
                 }
-
             }
         }
     }
@@ -129,8 +134,15 @@ public class AdapterHistoryLocation extends RecyclerView.Adapter<AdapterHistoryL
         GPS gps = gpsArrayList.get(position);
         if(gps != null)
         {
-            String time_Location = APIDatabase.checkValueStringT(gps.getClient_GPS_Time());
-            holder.txt_time_history_location.setText(APIDatabase.getTimeItem(time_Location,null));
+            //String time_Location = APIDatabase.checkValueStringT(gps.getClient_GPS_Time());
+            String time_URL = getTimeItem(checkValueStringT( gps.getClient_GPS_Time()), DEFAULT_DATE_FORMAT_MMM);
+            // APIDatabase.getTimeItem(time_Location,null)
+            try {
+                holder.txt_time_history_location.setText(formatDate(checkValueStringT( gps.getClient_GPS_Time()), DEFAULT_TIME_FORMAT_AM));
+            } catch (ParseException e) {
+                holder.txt_time_history_location.setText(time_URL);
+                e.printStackTrace();
+            }
             if (gps.getLongitude() == 0 || gps.getLatitude() == 0) {
                 holder.txt_name_location.setText("Unknown location.");
             } else {
@@ -138,15 +150,27 @@ public class AdapterHistoryLocation extends RecyclerView.Adapter<AdapterHistoryL
             }
             if (HistoryLocation.isInActionMode) {
                 if (HistoryLocation.selectionList.contains(gpsArrayList.get(position))) {
-                    holder.card_view.setCardBackgroundColor(mActivity.getResources().getColor(R.color.grey_300));
-                    //holder.txt_name_location.setTextColor(Color.parseColor("#000000"));
+                    holder.card_view.setCardBackgroundColor(mActivity.getResources().getColor(R.color.grey_200));
+                    holder.img_Selected_Location.setVisibility(View.VISIBLE);
                 }
                 else {
                     holder.card_view.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                    holder.img_Selected_Location.setVisibility(View.GONE);
+                    //holder.card_view.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
                 }
             }
             else {
                 holder.card_view.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                holder.img_Selected_Location.setVisibility(View.GONE);
+                //holder.card_view.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+            }
+
+            if(position > 0)
+            {
+                setDateForArrayList(position, holder.txt_date_location, gpsArrayList.get(position-1).getClient_GPS_Time(), gpsArrayList.get(position).getClient_GPS_Time());
+            }else {
+                holder.txt_date_location.setText(time_URL);
+                holder.txt_date_location.setVisibility(View.VISIBLE);
             }
         }
 

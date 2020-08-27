@@ -61,17 +61,23 @@ import java.util.Calendar;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
+import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
+import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_IMAGE;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.API.Global.PHOTO_TOTAL;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHOTO;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -98,6 +104,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     private String fileName, CDN_URL, Media_URL, Device_ID;
     private int ID;
     boolean isLoading = false;
+    private boolean checkLoadMore = false;
+    private int currentSize = 0;
     private ProgressBar progressBar_Photo;
     boolean endLoading = false;
     //aviPhoto
@@ -109,10 +117,12 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         databasePhotos = new DatabasePhotos(this);
         database_last_update = new DatabaseLastUpdate(this);
         toolbar = findViewById(R.id.toolbar_Photo);
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.PHOTO_HISTORY));
-        toolbar.setLogo(R.drawable.photos_store);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.PHOTO_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         if (ActivityCompat.checkSelfPermission(PhotoHistory.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(PhotoHistory.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
         } else {
@@ -131,10 +141,6 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         getPhotoHistoryInfo();
-       /* mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
-        mAdapter = new AdapterPhotoHistory(PhotoHistory.this, mData);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();*/
         swipeRefreshLayout();
 
     }
@@ -203,9 +209,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                         isLoading = true;
                         progressBar_Photo.setVisibility(View.VISIBLE);
                         loadMore();
-
                     }
-
                 }
             }
         });
@@ -213,21 +217,13 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
 
     private void loadMore() {
         try {
-
-            mData.add(null);
-            mAdapter.notifyItemInserted(mData.size() - 1);
-            //progressBar_Locations.setVisibility(View.VISIBLE);
-
+            checkLoadMore = true;
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mData.remove(mData.size() - 1);
-                    int scrollPosition = mData.size();
-                    mAdapter.notifyItemRemoved(scrollPosition);
-                    int currentSize = scrollPosition;
+                    /*currentSize =  mData.size();
                     List<Photo> mDataStamp = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize);
-
                     mData.addAll(mDataStamp);
                     if(mDataStamp.size()< NumberLoad)
                     {
@@ -237,9 +233,39 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                     mAdapter.notifyDataSetChanged();
                     //progressBar_Locations.setVisibility(View.GONE);
                     isLoading = false;
-                    progressBar_Photo.setVisibility(View.GONE);
+                    progressBar_Photo.setVisibility(View.GONE);*/
+
+                    currentSize =  mData.size();
+                    if(isConnected(getApplicationContext()))
+                    {
+                        // Here is the total item value contact of device current has on CPanel
+                        long totalContact = getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL);
+                        new getPhotoAsyncTask(currentSize+1).execute();
+                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+                        if((mData.size()+1) >= totalContact)
+                        {
+                            endLoading = true;
+                        }
+
+                        isLoading = false;
+                        progressBar_Photo.setVisibility(View.GONE);
+                    }
+                    else {
+                        List<Photo> mDataCall = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize);
+                        // Here is the total item value contact of device current has on Cpanel
+                        int insertIndex = mData.size();
+                        mData.addAll(insertIndex,mDataCall);
+                        mAdapter.notifyItemRangeInserted(insertIndex,mDataCall.size() );
+                        if(mDataCall.size()< NumberLoad)
+                        {
+                            endLoading = true;
+                        }
+
+                        isLoading = false;
+                        progressBar_Photo.setVisibility(View.GONE);
+                    }
                 }
-            }, 1500);
+            }, 500);
 
         }catch (Exception e)
         {
@@ -250,19 +276,20 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     /**
      * getPhotoHistoryInfo() - get image taking method when there is Connected internet or no Connected internet.
      */
+    @SuppressLint("SetTextI18n")
     private void getPhotoHistoryInfo() {
 
         if (isConnected(this)) {
             aviPhoto.setVisibility(View.VISIBLE);
             startAnim(aviPhoto);
-            new getPhotoAsyncTask().execute(); // If there is network, then take the image from the server.
+            new getPhotoAsyncTask(0).execute(); // If there is network, then take the image from the server.
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             // If there is no network, then take the image from SQLite.
             int i = databasePhotos.getPhotoCount(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Photo.setVisibility(View.VISIBLE);
-                txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
@@ -307,15 +334,22 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     @SuppressLint("StaticFieldLeak")
     private class getPhotoAsyncTask extends AsyncTask<String, Void, String> {
 
+        long startIndex;
+
+        public getPhotoAsyncTask(long startIndex) {
+            this.startIndex = startIndex;
+        }
+
         @Override
         protected String doInBackground(String... strings) {
 
-            min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
+            /*min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
             max_Date = getTimeNow().substring(0, 10) + " 23:59:59";
             Date_max = getTimeNow();
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Min_Date=\"" + min_Time + "\" Max_Date= \"" + max_Date + " \" Start=\"0\" Length=\"1000\" />";
-            String function = "GetPhotos";
-            return APIURL.POST(value, function);
+            String function = "GetPhotos";*/
+
+            return GetJsonFeature(table, this.startIndex,"GetPhotos");
         }
 
         @Override
@@ -323,6 +357,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             super.onCancelled(s);
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String s) {
             try {
@@ -332,13 +367,17 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 JSONObject jsonObjListImg = jsonObj.getJSONObject("ListImg");
                 String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
                 JSONArray GPSJson = jsonObjListImg.getJSONArray("DataList");
-                if (GPSJson.length() != 0) {
+                setToTalLog(jsonObjListImg, PHOTO_TOTAL, getApplicationContext());
+
+               /* if (GPSJson.length() != 0)
+                {
 
                     List<Integer> listDateCheck = databasePhotos.getAll_Photo_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
                     int save;
                     Log.d("DateCheck", "PhotoHistory = " + listDateCheck.size());
                     Log.d("DateCheck", "GPSJson = " + GPSJson.toString());
-                    for (int i = 0; i < GPSJson.length(); i++) {
+                    for (int i = 0; i < GPSJson.length(); i++)
+                    {
                         Gson gson = new Gson();
                         PhotoJson photoJsonHistory = gson.fromJson(String.valueOf(GPSJson.get(i)), PhotoJson.class);
                         Photo photo = new Photo();
@@ -373,22 +412,69 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                         databasePhotos.addDevice_Photos_Fast(listPhoto);
                     }
                 }
-
                 mData.clear();
                 Log.d("phota", mData.size()+" SIZE");
                 mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
                 mAdapter = new AdapterPhotoHistory(PhotoHistory.this, mData);
                 mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                if(mData.size()>= NumberLoad)
+                mAdapter.notifyDataSetChanged();*/
+
+                if (GPSJson.length() != 0)
                 {
-                    initScrollListener();
+
+                    for (int i = 0; i < GPSJson.length(); i++)
+                    {
+                        Gson gson = new Gson();
+                        PhotoJson photoJsonHistory = gson.fromJson(String.valueOf(GPSJson.get(i)), PhotoJson.class);
+                        Photo photo = new Photo();
+                        photo.setRowIndex(photoJsonHistory.getID());
+                        photo.setID(photoJsonHistory.getID());
+                        photo.setIsLoaded(0);
+                        photo.setDevice_ID(photoJsonHistory.getDeviceId());
+                        photo.setClient_Captured_Date(photoJsonHistory.getClientCapturedDate());
+                        photo.setCaption(photoJsonHistory.getCaption());
+                        photo.setFile_Name(photoJsonHistory.getFileName());
+                        photo.setExt(photoJsonHistory.getExt());
+                        photo.setMedia_URL(photoJsonHistory.getMediaURL());
+                        photo.setCreated_Date(photoJsonHistory.getCreatedDate());
+                        photo.setCDN_URL(jsonObjCDN_URL);
+                        listPhoto.add(photo);
+                        Log.d("ContactHistory"," Add Contact = "+  photo.getFile_Name());
+                    }
+                    if (listPhoto.size() != 0) {
+                        databasePhotos.addDevice_Photos_Fast(listPhoto);
+                    }
                 }
-                database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_PHOTO, Date_max, table.getDevice_ID());
+
+                Log.d("PhotoHistory"," CurrentSize PhotoHistory = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                List<Photo> mDataTamp = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize);
+
+                if(checkLoadMore)
+                {
+                    int insertIndex = mData.size();
+                    mData.addAll(insertIndex, mDataTamp);
+                    Log.d("checkdata"," MData Call = "+ mDataTamp.size());
+                    mAdapter.notifyItemRangeInserted(insertIndex,mDataTamp.size() );
+                }
+                else
+                {
+                    mData.clear();
+                    mData.addAll(mDataTamp);
+                    if(mData.size() >= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
+                    mAdapter =  new AdapterPhotoHistory(PhotoHistory.this, mData);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_PHOTO, getTimeNow(), table.getDevice_ID());
                 if (mData.size() == 0) {
                     //txt_No_Data_Photo.setVisibility(View.VISIBLE);
-                    txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                } else {
+                    txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                }
+                else {
                     txt_No_Data_Photo.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                     if (checkPermissions) {
 
@@ -407,8 +493,6 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                             }
                         }
                     }
-
-
                 }
                 aviPhoto.setVisibility(View.GONE);
                 stopAnim(aviPhoto);
@@ -460,11 +544,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     }
 
     public void updateCounter(int counter) {
-        if (counter == 0) {
-            toolbar.setTitle(" \t" + "0" + " item selected");
-        } else {
-            toolbar.setTitle(" \t" + counter + " item selected");
-        }
+        updateViewCounterAll(toolbar, counter);
     }
 
     @Override
@@ -485,7 +565,15 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 clearActionMode();
             }
         } else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
+
+            if(isInActionMode)
+            {
+                clearActionMode();
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         } else if (item.getItemId() == R.id.item_edit) {
             toolbar.getMenu().clear();
             toolbar.inflateMenu(R.menu.menu_action_mode);
@@ -493,9 +581,9 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             mAdapter.notifyDataSetChanged();
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
             }
         }
-
         return true;
     }
     /**
@@ -551,7 +639,6 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
 
             databasePhotos.delete_Photos_History(photo);
         }
-
     }
 
     /**
@@ -570,26 +657,29 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 Log.d("fileName", file + "== ");
             }
         }
-
     }
 
     /**
      * clearActionMode()
      * Go back to the default toolbar, clear List selectionList and refresh AdapterPhotoHistory.
      */
-    public void clearActionMode() {
-        isInActionMode = false;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_edit);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    public void clearActionMode()
+    {
+        if(isInActionMode)
+        {
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_action_edit);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.PHOTO_HISTORY));
+            selectionList.clear();
+            isInActionMode = false;
+            counter = 0;
+            AdapterPhotoHistory.itemStateArrayPhoto = new SparseBooleanArray();
+            mAdapter.notifyDataSetChanged(); // refresh AdapterPhotoHistory.
         }
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.PHOTO_HISTORY)); // set title is Photo History.
-        toolbar.setLogo(R.drawable.photos_store); // set logo to R.drawable.photos_store.
-        selectionList.clear(); // clear list image selected.
-        counter = 0;
-        AdapterPhotoHistory.itemStateArrayPhoto = new SparseBooleanArray();
-        mAdapter.notifyDataSetChanged(); // refresh AdapterPhotoHistory.
     }
 
     /**
@@ -601,7 +691,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     public void onBackPressed() {
         if (isInActionMode) {
             clearActionMode();
-
+            isInActionMode = false;
         } else {
             super.onBackPressed();
         }
@@ -619,30 +709,30 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
      * onResume()
      * Save the image to internal memory if the image has not been saved before.
      */
-    @Override
-    protected void onResume() {
-
-        mData.clear();
-        mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
-        mAdapter = new AdapterPhotoHistory(this, mData);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-        if (mData.size() != 0) {
-            for (int i = 0; i < mData.size(); i++) {
-                fileName = mData.get(i).getFile_Name();
-                CDN_URL = mData.get(i).getCDN_URL();
-                Media_URL = mData.get(i).getMedia_URL();
-                Device_ID = mData.get(i).getDevice_ID();
-                ID = mData.get(i).getID();
-                //If the image has not been saved before, it will save.
-                if (mData.get(i).getIsLoaded() == 0) {
-
-                    saveImage(fileName, CDN_URL, Media_URL, 1, Device_ID, ID);
-                }
-            }
-        }
-        super.onResume();
-    }
+//    @Override
+//    protected void onResume() {
+//
+//        mData.clear();
+//        mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
+//        mAdapter = new AdapterPhotoHistory(this, mData);
+//        mRecyclerView.setAdapter(mAdapter);
+//        mAdapter.notifyDataSetChanged();
+//        if (mData.size() != 0) {
+//            for (int i = 0; i < mData.size(); i++) {
+//                fileName = mData.get(i).getFile_Name();
+//                CDN_URL = mData.get(i).getCDN_URL();
+//                Media_URL = mData.get(i).getMedia_URL();
+//                Device_ID = mData.get(i).getDevice_ID();
+//                ID = mData.get(i).getID();
+//                //If the image has not been saved before, it will save.
+//                if (mData.get(i).getIsLoaded() == 0) {
+//
+//                    saveImage(fileName, CDN_URL, Media_URL, 1, Device_ID, ID);
+//                }
+//            }
+//        }
+//        super.onResume();
+//    }
 
     public void swipeRefreshLayout() {
         swp_PhotoHistory.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -654,7 +744,9 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         listPhoto.clear();
                         clearActionMode();
-                        new getPhotoAsyncTask().execute();
+                        checkLoadMore = false;
+                        currentSize = 0;
+                        new getPhotoAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

@@ -18,6 +18,7 @@
             android:background="@color/bgToolbar"
             android:id="@+id/toolbar_Notes_History"
             android:layout_height="wrap_content"
+            app:contentInsetStartWithNavigation="0dp"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>

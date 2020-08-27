@@ -145,7 +145,7 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
             if (URLHistory.isInActionMode) {
                 if (URLHistory.selectionList.contains(mDataSet.get(position)))
                 {
-                    // background_url_custorm
+                    // background_url_custom
                     holder.txt_Text_URL.setVisibility(View.GONE);
                     holder.lnl_URL_Selected.setBackground(mActivity.getResources().getDrawable(R.drawable.background_url_custorm));
                     holder.img_URL_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.selected_icon));
@@ -169,32 +169,6 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
                 holder.txt_Date_URL.setText(time_URL);
                 holder.txt_Date_URL.setVisibility(View.VISIBLE);
             }
-
-            /*if(position > 0)
-            {
-                String dateNext;
-                String dateHere;
-
-                try {
-                    dateNext = formatDate(mDataSet.get(position-1).getClient_URL_Time(), DEFAULT_DATE_FORMAT);
-                    dateHere = formatDate(mDataSet.get(position).getClient_URL_Time(), DEFAULT_DATE_FORMAT);
-
-                    if(!dateNext.equals(dateHere))
-                    {
-                        holder.txt_Date_URL.setVisibility(View.VISIBLE);
-                        holder.txt_Date_URL.setText(time_URL);
-                    }
-                    else {
-                        holder.txt_Date_URL.setVisibility(View.GONE);
-                    }
-                } catch (ParseException e) {
-                    holder.txt_Date_URL.setVisibility(View.GONE);
-                    e.printStackTrace();
-                }
-            }else {
-                    holder.txt_Date_URL.setText(time_URL);
-                    holder.txt_Date_URL.setVisibility(View.VISIBLE);
-            }*/
         }
     }
 

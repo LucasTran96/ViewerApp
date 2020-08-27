@@ -47,12 +47,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
+import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
+import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
+import static com.jexpa.secondclone.API.Global.GPS_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
@@ -73,12 +79,12 @@ public class HistoryLocation extends AppCompatActivity {
     private TextView txt_No_Data_Location;
     private ProgressBar progressBar_Locations;
     private SwipeRefreshLayout swp_History_Location;
-    //private Logger logger;
-    private String max_Date = "";
-    private String min_Time = "";
     List<GPS> gpsListAdd = new ArrayList<>();
     boolean endLoading = false;
     boolean isLoading = false;
+    private boolean checkLoadMore = false;
+    private int currentSize = 0;
+    boolean selectAll = false;
     //aviLocation
     private AVLoadingIndicatorView aviLocation;
 
@@ -87,10 +93,12 @@ public class HistoryLocation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_location);
         toolbar = findViewById(R.id.toolbar_Location);
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
-        toolbar.setLogo(R.drawable.location);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         databaseGetLocation = new DatabaseGetLocation(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("History_Location.class");
@@ -123,7 +131,7 @@ public class HistoryLocation extends AppCompatActivity {
         if (APIURL.isConnected(this)) {
             aviLocation.setVisibility(View.VISIBLE);
             startAnim(aviLocation);
-            new LocationAsyncTask().execute();
+            new LocationAsyncTask(0).execute();
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
@@ -151,76 +159,77 @@ public class HistoryLocation extends AppCompatActivity {
     // location get method from sever8
     private class LocationAsyncTask extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... strings) {
+        long startIndex;
 
-            Log.d("locationId", table.getDevice_ID() + "");
-            // max_Date is get all the location from the min_date to the max_Date days
-           String min = database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID());
-            min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
-            max_Date = getTimeNow().substring(0, 10) + " 23:59:59";
-            Log.d("min_time", min + "="+min_Time);
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_Time + "\" Max_Date=\"" + max_Date + "\"/>";
-            String function = "GetLocations";
-            return APIURL.POST(value, function);
+        public LocationAsyncTask(long startIndex) {
+            this.startIndex = startIndex;
         }
 
+        @Override
+        protected String doInBackground(String... strings)
+        {
+
+            Log.d("locationId", table.getDevice_ID() + "");
+            return GetJsonFeature(table, this.startIndex,"GetLocations");
+        }
+
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String s) {
             try {
                 APIURL.deviceObject(s);
                 JSONObject jsonObj = new JSONObject(APIURL.bodyLogin.getData());
                 JSONArray jsonArray = jsonObj.getJSONArray("GPS");
-                if (jsonArray.length() != 0) {
+                JSONArray GPSJsonPaging = jsonObj.getJSONArray("Paging");
+                setToTalLog(GPSJsonPaging, GPS_TOTAL, getApplicationContext());
 
-                    List<Integer> listDateCheck = databaseGetLocation.getAll_Location_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
-                    int save;
-                    Log.d("DateCheck", "HistoryLocation = " + listDateCheck.size());
+                if (jsonArray.length() != 0)
+                {
+
                     for (int i = 0; i < jsonArray.length(); i++) {
+
                         Gson gson = new Gson();
                         GPS gps = gson.fromJson(String.valueOf(jsonArray.get(i)), GPS.class);
-
-                        //databaseGetLocation.addDevice(gps);
-                        save = 0;
-                        if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
-                                if (gps.getID() == listCheck) {
-                                    save = 1;
-                                    break;
-                                }
-                            }
-                            if (save == 0) {
-                                gpsListAdd.add(gps);
-                                Log.i("zgetID",gps.getID()+"=");
-                            }
-                        } else {
-                            gpsListAdd.add(gps);
-                        }
+                        gpsListAdd.add(gps);
                     }
                     if (gpsListAdd.size() != 0) {
                         databaseGetLocation.addDevice_GPS(gpsListAdd);
                     }
                 }
-                mData.clear();
-                mData = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),0);
-                mAdapter = new AdapterHistoryLocation(HistoryLocation.this, (ArrayList<GPS>) mData);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                if(mData.size()>= NumberLoad)
+
+                Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                List<GPS> mDataTamp = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),currentSize);
+
+                if(checkLoadMore)
                 {
-                    initScrollListener();
+                    int insertIndex = mData.size();
+                    mData.addAll(insertIndex, mDataTamp);
+                    Log.d("checkdata"," MData Call = "+ mDataTamp.size());
+                    mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
+                    Log.d("CallHistory"," checkLoadMore Contact = "+ true);
                 }
+                else {
+                    Log.d("CallHistory"," checkLoadMore Contact = "+ false);
+                    mData.clear();
+                    mData.addAll(mDataTamp);
+                    if(mData.size() >= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
+                    mAdapter = new AdapterHistoryLocation(HistoryLocation.this, (ArrayList<GPS>) mData);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
+
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_LOCATION, getTimeNow(), table.getDevice_ID());
                 String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID());
                 Log.d("min_time1", min_Time1 + "");
-                if (mData.size() == 0) {
-                    //txt_No_Data_Location.setVisibility(View.VISIBLE);
-                    txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData)+ "  "+"Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                if (mData.size() == 0)
+                {
+                    txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 }else {
                     txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
-                // get Method getThread()
-                //progressDialog.dismiss();
                 stopAnim(aviLocation);
                 aviLocation.setVisibility(View.GONE);
             } catch (JSONException e) {
@@ -247,11 +256,9 @@ public class HistoryLocation extends AppCompatActivity {
                     if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == mData.size() - 1) {
                         //bottom of list!
                         isLoading = true;
-
+                        progressBar_Locations.setVisibility(View.VISIBLE);
                         loadMore();
-
                     }
-
                 }
             }
         });
@@ -259,28 +266,39 @@ public class HistoryLocation extends AppCompatActivity {
 
     private void loadMore() {
         try {
-            mData.add(null);
-            mAdapter.notifyItemInserted(mData.size() - 1);
-            progressBar_Locations.setVisibility(View.VISIBLE);
-
+            checkLoadMore = true;
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mData.remove(mData.size() - 1);
-                    int scrollPosition = mData.size();
-                    mAdapter.notifyItemRemoved(scrollPosition);
-                    int currentSize = scrollPosition;
-                    List<GPS> mDataStamp = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),currentSize);
-                    mData.addAll(mDataStamp);
-                    if(mDataStamp.size()< NumberLoad)
+
+                    currentSize =  mData.size();
+                    if(isConnected(getApplicationContext()))
                     {
-                        endLoading = true;
+                        // Here is the total item value contact of device current has on CPanel
+                        long totalContact = getSharedPreferLong(getApplicationContext(), GPS_TOTAL);
+                        new LocationAsyncTask(currentSize+1).execute();
+                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+                        if((mData.size()+1) >= totalContact)
+                        {
+                            endLoading = true;
+                        }
+                        isLoading = false;
+                        progressBar_Locations.setVisibility(View.GONE);
                     }
-                    Toast.makeText(getApplicationContext(), mData.size()+" = size", Toast.LENGTH_SHORT).show();
-                    mAdapter.notifyDataSetChanged();
-                    progressBar_Locations.setVisibility(View.GONE);
-                    isLoading = false;
+                    else {
+                        List<GPS> mDataCall = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),currentSize);
+                        // Here is the total item value contact of device current has on Cpanel
+                        int insertIndex = mData.size();
+                        mData.addAll(insertIndex,mDataCall);
+                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataCall.size() );
+                        if(mDataCall.size()< NumberLoad)
+                        {
+                            endLoading = true;
+                        }
+                        isLoading = false;
+                        progressBar_Locations.setVisibility(View.GONE);
+                    }
                 }
             }, 2000);
 
@@ -288,8 +306,6 @@ public class HistoryLocation extends AppCompatActivity {
         {
             e.getMessage();
         }
-
-
     }
 
     @Override
@@ -302,37 +318,32 @@ public class HistoryLocation extends AppCompatActivity {
 
         // prepare action mode
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_mode);
+        //toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode = true;
         mAdapter.notifyDataSetChanged();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
-
         prepareSelection(position);
     }
 
     // Lightning events have already been selected, delete is not available then added
     public void prepareSelection(int position) {
 
-        if (!selectionList.contains(mData.get(position))) {
+        if (!selectionList.contains(mData.get(position)))
+        {
             selectionList.add(mData.get(position));
         } else {
             selectionList.remove(mData.get(position));
         }
-
         updateViewCounter();
     }
 
     private void updateViewCounter() {
         int counter = selectionList.size();
-        if (counter == 0) {
-            clearActionMode();
-            //toolbar.getMenu().getItem(0).setVisible(true);
-        } else {
-            //toolbar.getMenu().getItem(0).setVisible(false);
-            toolbar.setTitle("  " + counter + " item selected");
-        }
+        updateViewCounterAll(toolbar, counter);
     }
 
     @Override
@@ -349,9 +360,36 @@ public class HistoryLocation extends AppCompatActivity {
                 clearActionMode();
                 mAdapter.notifyDataSetChanged();
             }
-        } else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            mAdapter.notifyDataSetChanged();
+        }
+        else if(item.getItemId() ==  R.id.item_select_all)
+        {
+            if(!selectAll)
+            {
+                selectAll = true;
+                selectionList.clear();
+                selectionList.addAll(mData);
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+
+            }
+            else {
+                selectAll = false;
+                selectionList.clear();
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+            }
+
+        }
+        else if (item.getItemId() == android.R.id.home)
+        {
+            if(isInActionMode)
+            {
+                clearActionMode();
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
         return true;
     }
@@ -404,15 +442,20 @@ public class HistoryLocation extends AppCompatActivity {
     }
 
     // back toolbar home, clear List selectionList
-    public void clearActionMode() {
-        isInActionMode = false;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_main);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    public void clearActionMode()
+    {
+        if(isInActionMode)
+        {
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_main);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
+            selectionList.clear();
+            isInActionMode = false;
         }
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
-        selectionList.clear();
     }
 
     // Check out the escape without the option will always exit,
@@ -421,6 +464,7 @@ public class HistoryLocation extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionMode) {
             clearActionMode();
+            isInActionMode = false;
             mAdapter.notifyDataSetChanged();
         } else {
             super.onBackPressed();
@@ -441,12 +485,15 @@ public class HistoryLocation extends AppCompatActivity {
             public void onRefresh() {
                 Calendar calendar = Calendar.getInstance();
                 endLoading = false;
+
                 if (isConnected(getApplicationContext()))
                 {
+                    checkLoadMore = false;
+                    currentSize = 0;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         gpsListAdd.clear();
                         clearActionMode();
-                        new LocationAsyncTask().execute();
+                        new LocationAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

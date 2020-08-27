@@ -11,13 +11,19 @@
 package com.jexpa.secondclone.Adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +42,7 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-        TextView txt_name_App_History, txt_Date_App_History;
+        TextView txt_name_App_History, txt_Date_App_History, txt_Status_App;
         View mView;
         ImageView img_icon_AppUsage;
         CardView card_view_Application;
@@ -45,6 +51,7 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
             super(v);
             txt_name_App_History = v.findViewById(R.id.txt_name_App_History);
             txt_Date_App_History = v.findViewById(R.id.txt_Date_App_History);
+            txt_Status_App = v.findViewById(R.id.txt_Status_App);
             card_view_Application = v.findViewById(R.id.card_view_Application);
             img_icon_AppUsage = v.findViewById(R.id.img_icon_AppUsage);
             mView = v;
@@ -95,11 +102,24 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
         ApplicationUsage application_usage = listData.get(position);
         holder.card_view_Application.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
         String time_Location;
-        setIconApp(holder.img_icon_AppUsage, application_usage.getApp_ID());
+        //setIconApp(holder.img_icon_AppUsage, application_usage.getApp_ID());
         time_Location = application_usage.getClient_App_Time().replace("T", " ");
         holder.txt_name_App_History.setText(application_usage.getApp_Name());
-        holder.txt_Date_App_History.setText(time_Location.substring(0, 16));
-        if (ApplicationUsageHistory.isInActionMode) {
+        holder.txt_Date_App_History.setText(time_Location);
+
+        if(application_usage.getApp_Type() == 0)
+        {
+            holder.txt_Status_App.setText(mActivity.getResources().getString(R.string.Close));
+            holder.txt_Status_App.setTextColor(mActivity.getResources().getColor(R.color.red));
+        }
+        else
+        {
+            holder.txt_Status_App.setText(mActivity.getResources().getString(R.string.Open));
+            holder.txt_Status_App.setTextColor(mActivity.getResources().getColor(R.color.green));
+        }
+
+        if (ApplicationUsageHistory.isInActionMode)
+        {
             if (ApplicationUsageHistory.selectionList.contains(listData.get(position))) {
                 holder.card_view_Application.setCardBackgroundColor(mActivity.getResources().getColor(R.color.grey_200));
             }
@@ -121,6 +141,7 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
             e.printStackTrace();
         }
     }
+
 
     @Override
     public int getItemCount() {

@@ -14,7 +14,6 @@ package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,8 +33,10 @@ import com.google.gson.Gson;
 import com.jexpa.secondclone.API.APIMethod;
 import com.jexpa.secondclone.API.APIURL;
 import com.jexpa.secondclone.Adapter.AdapterCallHistory;
+import com.jexpa.secondclone.Adapter.AdapterSMSDetail;
 import com.jexpa.secondclone.Database.DatabaseCallHistory;
 import com.jexpa.secondclone.Database.DatabaseLastUpdate;
+import com.jexpa.secondclone.Model.Call;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -46,41 +47,51 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import static com.jexpa.secondclone.API.APIDatabase.getThread;
+
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
+import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
+import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
+import static com.jexpa.secondclone.Adapter.AdapterCallHistory.itemStateArrayCall;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CALL;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
+import static com.jexpa.secondclone.View.SMSHistoryDetail.selectionList_Detail;
 
 
 public class CallHistory extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    List<com.jexpa.secondclone.Model.CallHistory> mData = new ArrayList<>();
+    List<Call> mData = new ArrayList<>();
     // action mode
     public static boolean isInActionMode = false;
-    public static ArrayList<com.jexpa.secondclone.Model.CallHistory> selectionList = new ArrayList<>();
+    public static ArrayList<Call> selectionList = new ArrayList<>();
     private DatabaseCallHistory database_call;
     private DatabaseLastUpdate database_last_update;
     private Table table;
     private TextView txt_No_Data_Call;
     private SwipeRefreshLayout swp_CallHistory;
-    private String min_Time = "", date_Max = "";
     boolean isLoading = false;
     private ProgressBar progressBar_Call;
     boolean endLoading = false;
-    private List<com.jexpa.secondclone.Model.CallHistory> listCall = new ArrayList<>();
+    private boolean checkLoadMore = false;
+    private int currentSize = 0;
+    // This is the value to store the temporary variable when you choose to select all item or remove all selected items.
+    boolean selectAll = false;
+    private List<Call> listCall = new ArrayList<>();
     private AVLoadingIndicatorView avLoadingIndicatorView;
 
     @Override
@@ -88,24 +99,21 @@ public class CallHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_history);
         toolbar = findViewById(R.id.toolbar_Call);
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.CALL_HISTORY));
-        toolbar.setLogo(R.drawable.call_store);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CALL_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         database_call = new DatabaseCallHistory(this);
         database_last_update = new DatabaseLastUpdate(this);
         table = (Table) getIntent().getSerializableExtra("call");
-        // show dialog Loading...
-        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
-
-        //txt_No_Data_Call.setVisibility(View.GONE);
-        // recyclerView
         setID();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         getCallHistoryInfo();
         // adapter
-        mAdapter = new AdapterCallHistory(this, (ArrayList<com.jexpa.secondclone.Model.CallHistory>) mData);
+        mAdapter = new AdapterCallHistory(this, (ArrayList<Call>) mData);
         mRecyclerView.setAdapter(mAdapter);
         swipeRefreshLayout();
 
@@ -122,29 +130,25 @@ public class CallHistory extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
     }
 
-    @SuppressLint("ObsoleteSdkInt")
+    @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
     private void getCallHistoryInfo() {
         //if there is a network call method
         if (isConnected(this)) {
-            //new getCallAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"getCallAsyncTask");
             avLoadingIndicatorView.setVisibility(View.VISIBLE);
             startAnim(avLoadingIndicatorView);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                new getCallAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            else
-                new getCallAsyncTask().execute();
+            new getCallAsyncTask(0).execute();
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = database_call.getCallCount(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Call.setVisibility(View.VISIBLE);
-                txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData));
 
             } else {
                 mData.clear();
                 mData = database_call.getAll_Call_ID_History(table.getDevice_ID(),0);
-                mAdapter = new AdapterCallHistory(this, (ArrayList<com.jexpa.secondclone.Model.CallHistory>) mData);
+                mAdapter = new AdapterCallHistory(this, (ArrayList<Call>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 if(mData.size()>= NumberLoad)
@@ -177,7 +181,6 @@ public class CallHistory extends AppCompatActivity {
                         progressBar_Call.setVisibility(View.VISIBLE);
                         loadMore();
                     }
-
                 }
             }
         });
@@ -185,32 +188,48 @@ public class CallHistory extends AppCompatActivity {
 
     private void loadMore() {
         try {
-            mData.add(null);
-            mAdapter.notifyItemInserted(mData.size() - 1);
-            //progressBar_Locations.setVisibility(View.VISIBLE);
-
+            checkLoadMore = true;
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
-                public void run() {
-                    mData.remove(mData.size() - 1);
-                    int scrollPosition = mData.size();
-                    mAdapter.notifyItemRemoved(scrollPosition);
-                    int currentSize = scrollPosition;
-                    List<com.jexpa.secondclone.Model.CallHistory> mDataStamp = database_call.getAll_Call_ID_History(table.getDevice_ID(),currentSize);
-
-                    mData.addAll(mDataStamp);
-                    if(mDataStamp.size()< NumberLoad)
+                public void run()
+                {
+                    currentSize =  mData.size();
+                    if(isConnected(getApplicationContext()))
                     {
-                        endLoading = true;
+                        // Here is the total item value contact of device current has on CPanel
+                        long totalContact = getSharedPreferLong(getApplicationContext(), CALL_TOTAL);
+                        new getCallAsyncTask(currentSize+1).execute();
+                        //                        List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
+                        //
+                        //                        mData.addAll(mDataStamp);
+                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+                        if((mData.size()+1) >= totalContact)
+                        {
+                            endLoading = true;
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        //progressBar_Locations.setVisibility(View.GONE);
+                        isLoading = false;
+                        progressBar_Call.setVisibility(View.GONE);
                     }
-                    Toast.makeText(getApplicationContext(), mData.size()+" = size", Toast.LENGTH_SHORT).show();
-                    mAdapter.notifyDataSetChanged();
-                    //progressBar_Locations.setVisibility(View.GONE);
-                    isLoading = false;
-                    progressBar_Call.setVisibility(View.GONE);
+                    else {
+                        List<Call> mDataCall = database_call.getAll_Call_ID_History(table.getDevice_ID(),currentSize);
+                        // Here is the total item value contact of device current has on Cpanel
+                        int insertIndex = mData.size();
+                        mData.addAll(insertIndex,mDataCall);
+                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataCall.size() );
+                        if(mDataCall.size()< NumberLoad)
+                        {
+                            endLoading = true;
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        //progressBar_Locations.setVisibility(View.GONE);
+                        isLoading = false;
+                        progressBar_Call.setVisibility(View.GONE);
+                    }
                 }
-            }, 2000);
+            }, 500);
 
         }catch (Exception e)
         {
@@ -220,18 +239,18 @@ public class CallHistory extends AppCompatActivity {
 
     // location get method from sever
     @SuppressLint("StaticFieldLeak")
-    private class getCallAsyncTask extends AsyncTask<String, Void, String> {
+    private class getCallAsyncTask extends AsyncTask<String, Void, String>
+    {
+        long startIndex;
+
+        public getCallAsyncTask(long startIndex) {
+            this.startIndex = startIndex;
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             Log.d("callId", table.getDevice_ID() + "");
-            // max_Date is get all the location from the min_date to the max_Date days
-            min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
-            String max_Date = getTimeNow().substring(0, 10) + " 23:59:59";
-            date_Max = getTimeNow();
-            Log.d("min_time", min_Time + "");
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_Time + "\" Max_Date=\"" + max_Date + "\" />";
-            String function = "GetCalls";
-            return APIURL.POST(value, function);
+            return GetJsonFeature(table, this.startIndex,"GetCalls");
         }
 
         @SuppressLint("SetTextI18n")
@@ -243,47 +262,53 @@ public class CallHistory extends AppCompatActivity {
                 {
                     JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                     JSONArray GPSJson = jsonObj.getJSONArray("Table");
-                    if (GPSJson.length() != 0) {
-                        //
-                        List<Integer> listDateCheck = database_call.getAll_Call_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));//min_Time.substring(0,10)
+                    JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
+                    setToTalLog(GPSJsonTable1, CALL_TOTAL, getApplicationContext());
 
-                        int save;
-                        Log.d("DateCheck", "CallHistory = " + listDateCheck.size());
+                    if (GPSJson.length() != 0)
+                    {
+
                         for (int i = 0; i < GPSJson.length(); i++) {
+
                             Gson gson = new Gson();
-                            com.jexpa.secondclone.Model.CallHistory callHistory = gson.fromJson(String.valueOf(GPSJson.get(i)), com.jexpa.secondclone.Model.CallHistory.class);
-                            mAdapter.notifyDataSetChanged();
-                            Log.d("Call", callHistory.getRowIndex() + "");
-                            //database_call.addDevice_Call(gps);
-                            save = 0;
-                            if (listDateCheck.size() != 0) {
-                                for (Integer listCheck : listDateCheck) {
-                                    if (callHistory.getID() == listCheck) {
-                                        save = 1;
-                                        break;
-                                    }
-                                }
-                                if (save == 0) {
-                                    listCall.add(callHistory);
-                                }
-                            } else {
-                                listCall.add(callHistory);
-                            }
+                            Call callHistory = gson.fromJson(String.valueOf(GPSJson.get(i)), Call.class);
+                            listCall.add(callHistory);
+                            Log.d("ContactHistory"," Add Contact = "+  callHistory.getContact_Name());
+
                         }
                         if (listCall.size() != 0) {
                             database_call.addDevice_Call_Fast(listCall);
                         }
+                    }
+                    //mData.clear();
+                    Log.d("CallHistory"," currentSize CallHistory = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                    List<Call> mDataTamp = database_call.getAll_Call_ID_History(table.getDevice_ID(),currentSize);
+                    //mData.addAll(mDataTamp);
 
-                    }
-                    mData.clear();
-                    mData = database_call.getAll_Call_ID_History(table.getDevice_ID(),0);
-                    mAdapter = new AdapterCallHistory(CallHistory.this, (ArrayList<com.jexpa.secondclone.Model.CallHistory>) mData);
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    if(mData.size()>= NumberLoad)
+                    if(checkLoadMore)
                     {
-                        initScrollListener();
+                        int insertIndex = mData.size();
+                       // mData.addAll(insertIndex, mDataTamp);
+                        mData.addAll(insertIndex, mDataTamp);
+                        Log.d("checkdata"," MData Call = "+ mDataTamp.size());
+                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
+
+                        Log.d("CallHistory"," checkLoadMore Contact = "+ true);
                     }
+                    else {
+                        Log.d("CallHistory"," checkLoadMore Contact = "+ false);
+                        mData.clear();
+                        mData.addAll(mDataTamp);
+                        if(mData.size() >= NumberLoad)
+                        {
+                            initScrollListener();
+                        }
+                        mAdapter = new AdapterCallHistory(CallHistory.this, (ArrayList<Call>) mData);
+                        mRecyclerView.setAdapter(mAdapter);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    String date_Max = getTimeNow();
                     database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_CALL, date_Max, table.getDevice_ID());
                     String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID());
                     Log.d("min_time1", min_Time1 + "");
@@ -313,19 +338,27 @@ public class CallHistory extends AppCompatActivity {
     public void prepareToolbar(int position) {
         // prepare action mode
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_mode);
+        //toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode = true;
         mAdapter.notifyDataSetChanged();
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
         prepareSelection(position);
     }
 
     public void prepareSelection(int position) {
+        Log.d("selectionList", selectionList.size()+"");
         if (!selectionList.contains(mData.get(position))) {
+
             selectionList.add(mData.get(position));
         } else {
+
             selectionList.remove(mData.get(position));
         }
         updateViewCounter();
@@ -333,14 +366,8 @@ public class CallHistory extends AppCompatActivity {
 
     private void updateViewCounter() {
         int counter = selectionList.size();
-        if (counter == 0) {
-            clearActionMode();
-            //toolbar.getMenu().getItem(0).setVisible(true);
-        } else {
-            //toolbar.getMenu().getItem(0).setVisible(false);
-            toolbar.setTitle("  " + counter + " item selected");
-            toolbar.setLogo(null);
-        }
+        updateViewCounterAll(toolbar, counter);
+
     }
 
     @Override
@@ -360,9 +387,36 @@ public class CallHistory extends AppCompatActivity {
             }
 
 
-        } else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            mAdapter.notifyDataSetChanged();
+        } else if(item.getItemId() ==  R.id.item_select_all)
+        {
+            if(!selectAll)
+            {
+                selectAll = true;
+                selectionList.clear();
+                selectionList.addAll(mData);
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+
+            }
+            else {
+                selectAll = false;
+                selectionList.clear();
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+            }
+
+        }
+        else if (item.getItemId() == android.R.id.home) {
+//            clearActionMode();
+//            mAdapter.notifyDataSetChanged();
+            if(isInActionMode)
+            {
+                clearActionMode();
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
 
         return true;
@@ -408,7 +462,6 @@ public class CallHistory extends AppCompatActivity {
             // get Method getThread()
             //getThread(progressDialog);
             APIMethod.progressDialog.dismiss();
-
         }
     }
 
@@ -416,8 +469,8 @@ public class CallHistory extends AppCompatActivity {
      * Delete the list of selected columns of the callHistory table in SQLite
      * @param selectionList A variable of type ArrayList.
      */
-    public void clearDataSQLite(ArrayList<com.jexpa.secondclone.Model.CallHistory> selectionList) {
-        for (com.jexpa.secondclone.Model.CallHistory gps : selectionList) {
+    public void clearDataSQLite(ArrayList<Call> selectionList) {
+        for (Call gps : selectionList) {
             database_call.delete_Call_History(gps);
         }
     }
@@ -426,16 +479,20 @@ public class CallHistory extends AppCompatActivity {
     /**
      * Delete the list of selected columns of the callHistory table in SQLite
      */
-    public void clearActionMode() {
-        isInActionMode = false;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_main);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    public void clearActionMode()
+    {
+        if(isInActionMode)
+        {
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_main);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CALL_HISTORY));
+            selectionList.clear();
+            isInActionMode = false;
         }
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.CALL_HISTORY));
-        toolbar.setLogo(R.drawable.call_store);
-        selectionList.clear();
     }
 
     // Check out the escape without the option will always exit,
@@ -444,6 +501,7 @@ public class CallHistory extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionMode) {
             clearActionMode();
+            isInActionMode = false;
             mAdapter.notifyDataSetChanged();
         } else {
             super.onBackPressed();
@@ -464,12 +522,15 @@ public class CallHistory extends AppCompatActivity {
             public void onRefresh() {
                 Calendar calendar = Calendar.getInstance();
                 endLoading = false;
+
                 if (isConnected(getApplicationContext()))
                 {
+                    checkLoadMore = false;
+                    currentSize = 0;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         listCall.clear();
                         clearActionMode();
-                        new getCallAsyncTask().execute();
+                        new getCallAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

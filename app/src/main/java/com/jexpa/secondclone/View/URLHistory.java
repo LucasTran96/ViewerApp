@@ -11,8 +11,9 @@
 package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -47,20 +48,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import static com.jexpa.secondclone.API.APIDatabase.getThread;
+
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
+import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
-import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_END;
-import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_START;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.API.Global.URL_TOTAL;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_URL;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -79,11 +83,13 @@ public class URLHistory extends AppCompatActivity {
     private Table table;
     private TextView txt_No_Data_URL;
     private SwipeRefreshLayout swp_URL;
-    private String min_Time,Date_max;
-    boolean loading = false;
+    private String Date_max;
     boolean isLoading = false;
     private ProgressBar progressBar_URL;
     boolean endLoading = false;
+    private boolean checkLoadMore = false;
+    private int currentSize = 0;
+    boolean selectAll = false;
     //aviURL
     private AVLoadingIndicatorView aviURL;
 
@@ -92,14 +98,12 @@ public class URLHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser_history);
         toolbar = findViewById(R.id.toolbar_URL);
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.URL_HISTORY));
-//        toolbar.setLogo(R.drawable.url_store_ios_white);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.URL_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
@@ -133,23 +137,18 @@ public class URLHistory extends AppCompatActivity {
     @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
     private void getBrowserInfo() {
         //if there is a network call method
-        //logger.debug("internet = "+isConnected(this)+"\n==================End!");
         if (isConnected(this)) {
             //new getURLAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             aviURL.setVisibility(View.VISIBLE);
             startAnim(aviURL);
-            //new getURLAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"getURLAsyncTask");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                new getURLAsyncTask().execute();
-            else
-                new getURLAsyncTask().execute();
+            new getURLAsyncTask(0).execute();
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = database_url.get_URLCount_DeviceID(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_URL.setVisibility(View.VISIBLE);
-                txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
@@ -158,26 +157,22 @@ public class URLHistory extends AppCompatActivity {
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                //getThread(APIMethod.progressDialog);
             }
         }
     }
 
     // location get method from sever
     @SuppressLint("StaticFieldLeak")
-    private class getURLAsyncTask extends AsyncTask<String, Void, String> {
+    private class getURLAsyncTask extends AsyncTask<String, Void, String>
+    {
+        long startIndex;
+
+        public getURLAsyncTask(long startIndex) {
+            this.startIndex = startIndex;
+        }
         @Override
         protected String doInBackground(String... strings) {
-            // max_Date is get all the location from the min_date to the max_Date days
-            min_Time = database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + DEFAULT_TIME_START;
-            //private Logger logger;
-            String max_Date = getTimeNow().substring(0, 10) + DEFAULT_TIME_END;
-            Date_max = getTimeNow();
-            Log.d("min_time", min_Time + "");
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_Time + "\" Max_Date=\"" + max_Date + "\"  />";
-            String function = "GetURL";
-            Log.d("hhhh",value);
-            return APIURL.POST(value, function);
+            return GetJsonFeature(table, this.startIndex,"GetURL");
         }
 
         @SuppressLint("SetTextI18n")
@@ -188,61 +183,59 @@ public class URLHistory extends AppCompatActivity {
                 deviceObject(s);
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("DataList");
+                setToTalLog(jsonObj, URL_TOTAL, getApplicationContext());
 
-                if (GPSJson.length() != 0) {
-
-                    List<Integer> listDateCheck = database_url.getAll_URL_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
-                    int save;
-                    Log.d("DateCheck", "URLHistory = " + listDateCheck.size());
+                if (GPSJson.length() != 0)
+                {
                     for (int i = 0; i < GPSJson.length(); i++) {
+
                         Gson gson = new Gson();
                         URL url = gson.fromJson(String.valueOf(GPSJson.get(i)), URL.class);
-                        mAdapter.notifyDataSetChanged();
-                        Log.d("URL", url.getRowIndex() + "");
-                        //database_url.addDevice_Application(url);
-                        save = 0;
-                        if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
-                                if (url.getID() == listCheck) {
-                                    save = 1;
-                                    break;
-                                }
-                            }
-                            if (save == 0) {
-                                urlListAdd.add(url);
-                            }
-                        } else {
-                            urlListAdd.add(url);
-                        }
+                        urlListAdd.add(url);
+                        Log.d("URLHistory"," Add URL = "+  url.getURL_Link());
+
                     }
                     if (urlListAdd.size() != 0) {
-                        database_url.addDevice_Contact(urlListAdd);
+                        database_url.addDevice_URL(urlListAdd);
                     }
+                }
+                //mData.clear();
+                Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                List<URL> mDataTamp = database_url.getAll_URL_ID_History(table.getDevice_ID(),currentSize);
+                //mData.addAll(mDataTamp);
 
-                }
-                mData.clear();
-                mData = database_url.getAll_URL_ID_History(table.getDevice_ID(),0);
-                if(mData.size()>= NumberLoad)
+                if(checkLoadMore)
                 {
-                    initScrollListener();
+                    int insertIndex = mData.size();
+                    mData.addAll(insertIndex, mDataTamp);
+                    Log.d("checkdata"," MData Call = "+ mDataTamp.size());
+                    mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                 }
-                mAdapter = new AdapterURLHistory(URLHistory.this, (ArrayList<URL>) mData);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_URL, Date_max, table.getDevice_ID());
+                else {
+                    mData.clear();
+                    mData.addAll(mDataTamp);
+                    if(mData.size() >= NumberLoad)
+                    {
+                        initScrollListener();
+                    }
+                    mAdapter = new AdapterURLHistory(URLHistory.this, (ArrayList<URL>) mData);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_URL, getTimeNow(), table.getDevice_ID());
                 txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 // get Method getThread()
                 //progressDialog.dismiss();
                 if (mData.size() == 0) {
                     //txt_No_Data_URL.setVisibility(View.VISIBLE);
-                    txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                    txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 }
                 stopAnim(aviURL);
                 aviURL.setVisibility(View.GONE);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
-                //logger.error("\n\n\n\tContactAsyncTask =="+ e+"\n================End");
             }
         }
     }
@@ -257,7 +250,7 @@ public class URLHistory extends AppCompatActivity {
 
         // prepare action mode
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode = true;
         mAdapter.notifyDataSetChanged();
         if (getSupportActionBar() != null) {
@@ -280,13 +273,7 @@ public class URLHistory extends AppCompatActivity {
 
     private void updateViewCounter() {
         int counter = selectionList.size();
-        if (counter == 0) {
-            clearActionMode();
-            //toolbar.getMenu().getItem(0).setVisible(true);
-        } else {
-            //toolbar.getMenu().getItem(0).setVisible(false);
-            toolbar.setTitle("  " + counter + " item selected");
-        }
+        updateViewCounterAll(toolbar, counter);
     }
 
     private void initScrollListener() {
@@ -317,29 +304,44 @@ public class URLHistory extends AppCompatActivity {
 
     private void loadMore() {
         try {
-            mData.add(null);
-            mAdapter.notifyItemInserted(mData.size() - 1);
-            //progressBar_Locations.setVisibility(View.VISIBLE);
 
+            checkLoadMore = true;
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mData.remove(mData.size() - 1);
-                    int scrollPosition = mData.size();
-                    mAdapter.notifyItemRemoved(scrollPosition);
-                    int currentSize = scrollPosition;
-                    List<URL> mDataStamp = database_url.getAll_URL_ID_History(table.getDevice_ID(),currentSize);
 
-                    mData.addAll(mDataStamp);
-                    if(mDataStamp.size()< NumberLoad)
+                    currentSize =  mData.size();
+                    if(isConnected(getApplicationContext()))
                     {
-                        endLoading = true;
+                        // Here is the total item value contact of device current has on CPanel
+                        long totalContact = getSharedPreferLong(getApplicationContext(), URL_TOTAL);
+                        new getURLAsyncTask(currentSize+1).execute();
+                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+                        if((mData.size()+1) >= totalContact)
+                        {
+                            endLoading = true;
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        //progressBar_Locations.setVisibility(View.GONE);
+                        isLoading = false;
+                        progressBar_URL.setVisibility(View.GONE);
                     }
-                    mAdapter.notifyDataSetChanged();
-                    //progressBar_Locations.setVisibility(View.GONE);
-                    isLoading = false;
-                    progressBar_URL.setVisibility(View.GONE);
+                    else {
+                        List<URL> mDataCall = database_url.getAll_URL_ID_History(table.getDevice_ID(),currentSize);
+                        // Here is the total item value contact of device current has on Cpanel
+                        int insertIndex = mData.size();
+                        mData.addAll(insertIndex,mDataCall);
+                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataCall.size() );
+                        if(mDataCall.size()< NumberLoad)
+                        {
+                            endLoading = true;
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        //progressBar_Locations.setVisibility(View.GONE);
+                        isLoading = false;
+                        progressBar_URL.setVisibility(View.GONE);
+                    }
                 }
             }, 1000);
 
@@ -362,7 +364,27 @@ public class URLHistory extends AppCompatActivity {
                 clearActionMode();
                 mAdapter.notifyDataSetChanged();
             }
-        } else if (item.getItemId() == android.R.id.home) {
+        }
+        else if(item.getItemId() ==  R.id.item_select_all)
+        {
+            if(!selectAll)
+            {
+                selectAll = true;
+                selectionList.clear();
+                selectionList.addAll(mData);
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+
+            }
+            else {
+                selectAll = false;
+                selectionList.clear();
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+            }
+
+        }
+        else if (item.getItemId() == android.R.id.home) {
             if(isInActionMode)
             {
                 clearActionMode();
@@ -466,12 +488,16 @@ public class URLHistory extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 Calendar calendar = Calendar.getInstance();
+                currentSize = 0;
+                checkLoadMore = false;
+                endLoading = false;
                 if (isConnected(getApplicationContext()))
                 {
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         urlListAdd.clear();
                         clearActionMode();
-                        new getURLAsyncTask().execute();
+
+                        new getURLAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

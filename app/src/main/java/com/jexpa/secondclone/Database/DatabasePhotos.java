@@ -26,6 +26,7 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
 import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
 import static com.jexpa.secondclone.Database.Entity.PhoneCallRecordEntity.TABLE_PHONECALLRECORD_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.COLUMN_CAPTION_PHOTO;
@@ -72,17 +73,18 @@ public class DatabasePhotos {
         Log.i("addPhoto", "dataURLPhotos add: " + photos.get(0).getID());
         try {
             for (int i = 0; i < photos.size(); i++) {
-                ContentValues contentValues1 = API_Add_Database(photos.get(i),false);
-                // Insert a row of data into the table.
-                database.getWritableDatabase().insert(TABLE_PHOTO_HISTORY, null, contentValues1);
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_PHOTO_HISTORY, COLUMN_DEVICE_ID_PHOTO, photos.get(i).getDevice_ID(), COLUMN_ID_PHOTO, photos.get(i).getID()))
+                {
+                    ContentValues contentValues1 = API_Add_Database(photos.get(i),false);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_PHOTO_HISTORY, null, contentValues1);
+                }
             }
             database.getWritableDatabase().setTransactionSuccessful();
         } finally {
             database.getWritableDatabase().endTransaction();
         }
-
     }
-
 
     public List<Photo> getAll_Photo_ID_History(String deviceID, int offSet) {
 

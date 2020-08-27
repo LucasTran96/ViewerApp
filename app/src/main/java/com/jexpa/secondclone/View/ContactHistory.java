@@ -52,9 +52,11 @@ import java.util.List;
 import java.util.Random;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
+import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.getDateNowInMaxDate;
@@ -84,12 +86,12 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     private TextView txt_No_Data_Contact;
     private ProgressBar progressBar_Contacts;
     private SwipeRefreshLayout swp_Contact;
-    private String max_Date = "";
-    private String Date_max;
     private boolean checkLoadMore = false;
     boolean isLoading = false;
     boolean endLoading = false;
     private int currentSize = 0;
+    // This is the value to store the temporary variable when you choose to select all item or remove all selected items.
+    boolean selectAll = false;
     private AVLoadingIndicatorView avLoadingIndicatorView;
 
     @Override
@@ -97,17 +99,17 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_history);
         toolbar = findViewById(R.id.toolbar_Contact);
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.CONTACT_HISTORY));
-        toolbar.setLogo(R.drawable.contact_store);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CONTACT_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         database_contact = new DatabaseContact(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("ContactHistory.class");
         table = (Table) getIntent().getSerializableExtra("tableContact");
         // show dialog Loading...
-        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
-
         avLoadingIndicatorView = findViewById(R.id.avi);
         startAnim();
         txt_No_Data_Contact = findViewById(R.id.txt_No_Data_Contact);
@@ -120,7 +122,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        getLocationInfo();
+        getContactsInfo();
 
         // adapter
         mAdapter = new AdapterContactHistory(this, (ArrayList<Contact>) mData);
@@ -129,7 +131,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
     }
 
-    private void getLocationInfo() {
+    private void getContactsInfo() {
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
         if (isConnected(this)) {
@@ -212,9 +214,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         // Here is the total item value contact of device current has on CPanel
                         long totalContact = getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL);
                         new contactAsyncTask(currentSize+1).execute();
-//                        List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
-//
-//                        mData.addAll(mDataStamp);
                         Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
                         if((mData.size()+1) >= totalContact)
                         {
@@ -277,14 +276,15 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         @Override
         protected String doInBackground(String... strings) {
 
-            Log.d("ContactId", table.getDevice_ID() + "");
+            /*Log.d("ContactId", table.getDevice_ID() + "");
             // max_Date is get all the location from the min_date to the max_Date days
             max_Date = getDateNowInMaxDate();
             Date_max = getTimeNow();
             Log.d("totalRow", max_Date + "");
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\""+this.startIndex+"\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" + max_Date + "\" />";
-            String function = "GetContacts";
-            return APIURL.POST(value, function);
+            String function = "GetContacts";*/
+
+            return GetJsonFeature(table,this.startIndex, "GetContacts");
         }
 
         @SuppressLint("SetTextI18n")
@@ -328,7 +328,14 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 if(checkLoadMore)
                 {
                     int insertIndex = mData.size();
-                    mData.addAll(insertIndex, mDataTamp);
+
+                    Log.d("checkdata"," MData Contact = "+ mDataTamp.size());
+                    if(mDataTamp.size() >= 20)
+                    {
+                        mData.addAll(insertIndex, mDataTamp);
+                    }else {
+                        mData.addAll(insertIndex-1, mDataTamp);
+                    }
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                     Log.d("ContactHistory"," checkLoadMore Contact = "+ true);
 
@@ -345,13 +352,14 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     mAdapter.notifyDataSetChanged();
                 }
 
+                String Date_max = getTimeNow();
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_CONTACT, Date_max, table.getDevice_ID());
                 String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID());
                 Log.d("min_time1", min_Time1 + "");
-                txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 if (mData.size() == 0) {
-                    //txt_No_Data_Contact.setVisibility(View.VISIBLE);
                     txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+" Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                }else {
+                    txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
                 //getThread(APIMethod.progressDialog);
                 stopAnim();
@@ -385,11 +393,13 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
         // prepare action mode
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_mode);
+        //toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode = true;
         mAdapter.notifyItemChanged(position);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
 
         prepareSelection(contact,position);
@@ -421,13 +431,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
     private void updateViewCounter() {
         int counter = selectionList.size();
-        if (counter == 0) {
-            clearActionMode();
-            //toolbar.getMenu().getItem(0).setVisible(true);
-        } else {
-            //toolbar.getMenu().getItem(0).setVisible(false);
-            toolbar.setTitle("  " + counter + " item selected");
-        }
+        updateViewCounterAll(toolbar, counter);
 
 
     }
@@ -451,9 +455,35 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             }
 
 
-        } else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            mAdapter.notifyDataSetChanged();
+        }
+        else if(item.getItemId() ==  R.id.item_select_all)
+        {
+            if(!selectAll)
+            {
+                selectAll = true;
+                selectionList.clear();
+                selectionList.addAll(mData);
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+
+            }
+            else {
+                selectAll = false;
+                selectionList.clear();
+                updateViewCounter();
+                mAdapter.notifyDataSetChanged();
+            }
+
+        }
+        else if (item.getItemId() == android.R.id.home) {
+            if(isInActionMode)
+            {
+                clearActionMode();
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
         /*if (item.getItemId() == R.id.item_SearchView) {
             return true;
@@ -480,8 +510,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" List_ID=\"" + listID + "\" />";
             String function = "ClearMultiContact";
             return APIURL.POST(value, function);
-
-
         }
 
         @Override
@@ -512,15 +540,20 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
     // back toolbar home, clear List selectionList
     public void clearActionMode() {
-        isInActionMode = false;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_action_searchview);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        if(isInActionMode)
+        {
+            isInActionMode = false;
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.menu_action_searchview);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(null);
+            }
+            toolbar.setTitle("  "+MyApplication.getResourcses().getString(R.string.CONTACT_HISTORY));
+            selectionList.clear();
+            supportInvalidateOptionsMenu();
         }
-        toolbar.setTitle("  "+MyApplication.getResourcses().getString(R.string.CONTACT_HISTORY));
-        selectionList.clear();
-        supportInvalidateOptionsMenu();
 
     }
 
@@ -530,6 +563,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     public void onBackPressed() {
         if (isInActionMode) {
             clearActionMode();
+            isInActionMode = false;
             mAdapter.notifyDataSetChanged();
         } else {
             super.onBackPressed();
@@ -556,6 +590,8 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         contactListAdd.clear();
                         clearActionMode();
                         mData.clear();
+                        checkLoadMore = false;
+                        currentSize = 0;
                         new contactAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
                             @Override

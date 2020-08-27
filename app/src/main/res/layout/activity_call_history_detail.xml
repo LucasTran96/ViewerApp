@@ -15,10 +15,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="5dp"
         android:layout_height="wrap_content">
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="80dp"
+            android:layout_width="60dp"
             android:layout_margin="5dp"
             android:layout_marginStart="2dp"
             android:id="@+id/imgUser_SMS"
@@ -27,7 +28,7 @@
             android:background="@android:color/transparent"
             app:civ_border_color="#a4a2a2"
             app:civ_border_width="1dp"
-            android:layout_height="80dp"  />
+            android:layout_height="60dp"  />
         <TextView
             android:layout_width="wrap_content"
             android:layout_gravity="center_vertical"

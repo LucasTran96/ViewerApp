@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:background="@color/colorPrimary"
             android:id="@+id/toolbar_SMS"
+            app:contentInsetStartWithNavigation="0dp"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"

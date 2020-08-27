@@ -13,9 +13,8 @@ package com.jexpa.secondclone.Adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jexpa.secondclone.Model.CallHistory;
+import com.jexpa.secondclone.Model.Call;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.CallHistoryDetail;
 import com.jexpa.secondclone.View.MyApplication;
@@ -41,7 +40,8 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_FORMAT_AM;
 public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.ViewHolder> {
 
     private Activity mActivity;
-    private static ArrayList<CallHistory> mDataSet;
+    private static ArrayList<Call> mDataSet;
+    public static SparseBooleanArray itemStateArrayCall = new SparseBooleanArray();
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
@@ -77,10 +77,12 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
             int position = getAdapterPosition();
             // Lightning click event.
             if (com.jexpa.secondclone.View.CallHistory.isInActionMode) {
+
                 ((com.jexpa.secondclone.View.CallHistory) mActivity).prepareSelection(getAdapterPosition());
+
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
-                CallHistory call = mDataSet.get(position);
+                Call call = mDataSet.get(position);
                 MyApplication.getInstance().trackEvent("CallHistory", "Call phone number: " + call.getContact_Name(), "" + call.getContact_Name());
                 // Path through new activity.
                 Intent intent = new Intent(mActivity, CallHistoryDetail.class);
@@ -91,7 +93,7 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
         }
     }
 
-    public AdapterCallHistory(Activity activity, ArrayList<CallHistory> myDataSet) {
+    public AdapterCallHistory(Activity activity, ArrayList<Call> myDataSet) {
         mActivity = activity;
         mDataSet = myDataSet;
     }
@@ -107,7 +109,7 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CallHistory call = mDataSet.get(position);
+        Call call = mDataSet.get(position);
         if(call != null)
         {
             holder.cv_Call_History.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
@@ -175,8 +177,8 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
         return mDataSet.size();
     }
 
-    public void removeData(ArrayList<CallHistory> list) {
-        for (CallHistory call : list) {
+    public void removeData(ArrayList<Call> list) {
+        for (Call call : list) {
             mDataSet.remove(call);
         }
         notifyDataSetChanged();

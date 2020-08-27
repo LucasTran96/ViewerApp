@@ -24,17 +24,21 @@
         android:layout_marginEnd="3dp"
         android:layout_marginTop="3dp"
         android:id="@+id/cv_Call_History"
-        android:layout_marginBottom="3dp"
         android:paddingTop="5dp"
         android:paddingBottom="10dp"
         android:layout_height="wrap_content">
-        <ImageView
+        <LinearLayout
             android:layout_width="45dp"
             android:layout_marginStart="10dp"
-            android:id="@+id/img_Name_Call_History"
-            android:src="@drawable/icon_person"
-            android:layout_gravity="center_vertical"
-            android:layout_height="45dp" />
+            android:layout_height="55dp">
+            <ImageView
+                android:layout_width="40dp"
+                android:id="@+id/img_Name_Call_History"
+                android:src="@drawable/icon_person"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
@@ -47,24 +51,25 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/bgToolbar"
                 android:id="@+id/txt_Name_Call_History"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 android:text=""/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_height="wrap_content">
+                android:layout_gravity="center_vertical"
+                android:layout_height="match_parent">
                 <ImageView
-                    android:layout_width="15dp"
+                    android:layout_width="17dp"
                     android:id="@+id/img_Status_Call_History"
                     android:src="@drawable/incoming_call"
                     android:layout_gravity="center_vertical"
-                    android:layout_height="15dp" />
+                    android:layout_height="17dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_marginStart="7dp"
                     android:id="@+id/txt_Number_Call_History"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:textSize="15sp"
                     android:text="911"/>
                 <TextView
@@ -73,6 +78,7 @@
                     android:layout_marginEnd="10dp"
                     android:gravity="right"
                     android:textSize="15sp"
+                    android:layout_gravity="center_vertical"
                     android:id="@+id/txt_Date_Call_History"
                     android:layout_height="wrap_content"
                     android:text="911"/>

@@ -27,6 +27,7 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.API_Add_Database;
 import static com.jexpa.secondclone.API.Global.TAG;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
 import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
 import static com.jexpa.secondclone.Database.Entity.PhotoHistoryEntity.TABLE_PHOTO_HISTORY;
 import static com.jexpa.secondclone.Database.Entity.URLEntity.COLUMN_CLIENT_URL_TIME;
@@ -58,16 +59,19 @@ public class DatabaseURL
         database.getWritableDatabase().execSQL(scriptTable);
     }
 
-    public void addDevice_Contact(List<URL> url) {
+    public void addDevice_URL(List<URL> url) {
 
         Log.i("addURL", "dataURL add: " + url.get(0).getID());
         //  contentValues1 receives the value from the method API_Add_Database()
         database.getWritableDatabase().beginTransaction();
         try {
             for (int i = 0; i < url.size(); i++) {
-                ContentValues contentValues1 = API_Add_Database(url.get(i),false);
-                // Insert a row of data into the table.
-                database.getWritableDatabase().insert(TABLE_URL_HISTORY, null, contentValues1);
+                if(!checkItemExist(database.getWritableDatabase(),TABLE_URL_HISTORY,COLUMN_DEVICE_ID_URL,url.get(i).getDevice_ID(),COLUMN_ID_URL,url.get(i).getID()))
+                {
+                    ContentValues contentValues1 = API_Add_Database(url.get(i),false);
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(TABLE_URL_HISTORY, null, contentValues1);
+                }
             }
 
             database.getWritableDatabase().setTransactionSuccessful();

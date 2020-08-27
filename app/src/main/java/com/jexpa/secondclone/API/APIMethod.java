@@ -22,18 +22,28 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.jexpa.secondclone.Adapter.AdapterPhoneCallRecordHistory;
+import com.jexpa.secondclone.Model.Contact;
+import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.jexpa.secondclone.View.ContactHistory;
 import com.jexpa.secondclone.View.HistoryLocation;
+import com.jexpa.secondclone.View.MyApplication;
+import com.jexpa.secondclone.View.PhoneCallRecordHistory;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -48,6 +58,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
 import static com.jexpa.secondclone.API.APIDatabase.formatDate;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIURL.getDateNowInMaxDate;
+import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.CONTACT_TOTAL;
@@ -55,6 +67,8 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_DATETIME_FORMAT;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT_MMM;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
+import static com.jexpa.secondclone.API.Global.MIN_TIME;
+import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.SETTINGS;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 
@@ -187,6 +201,24 @@ public class APIMethod {
         }
     }
 
+    public static void setToTalLog(JSONObject jsonObject, String name_Log, Context context)
+    {
+
+            String totalRow = "0";
+            try {
+                totalRow = jsonObject.getString("TotalRecord");
+                Log.d("totalRow"," TotalRecord = "+ totalRow);
+                if(totalRow != null)
+                {
+                    setSharedPreferLong(context,name_Log,Long.parseLong(totalRow));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+    }
+
     public static void setSharedPreferLong(Context context,String name, long value)
     {
         SharedPreferences.Editor editor = context.getSharedPreferences(SETTINGS, MODE_PRIVATE).edit();
@@ -274,5 +306,25 @@ public class APIMethod {
 
         // return timer string
         return finalTimerString;
+    }
+
+    public static String GetJsonFeature(Table table, long startIndex, String functionName)
+    {
+        Log.d("ContactId", table.getDevice_ID() + "");
+        // max_Date is get all the location from the min_date to the max_Date days
+        String max_Date = getDateNowInMaxDate();
+        Log.d("totalRow", max_Date + "");
+        String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\""+startIndex+"\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" + max_Date + "\" />";
+        return APIURL.POST(value, functionName);
+    }
+
+    public static void updateViewCounterAll(Toolbar toolbar, int counter)
+    {
+        if (counter == 0) {
+            toolbar.setTitle("  " + counter + " item selected");
+        } else {
+            toolbar.setTitle("  " + counter + " item selected");
+            toolbar.setLogo(null);
+        }
     }
 }

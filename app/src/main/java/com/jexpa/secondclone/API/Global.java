@@ -65,6 +65,13 @@ public class Global {
      */
     public static final String SETTINGS = "Setting";
     public static final String CONTACT_TOTAL = "Contact_Total";
+    public static final String CALL_TOTAL = "Call_Total";
+    public static final String PHONE_CALL_RECORDING_TOTAL = "Phone_Call_Total";
+    public static final String URL_TOTAL = "URL_Total";
+    public static final String APP_USAGE_TOTAL = "App_Usage_Total";
+    public static final String GPS_TOTAL = "GPS_Total";
+    public static final String PHOTO_TOTAL = "Photo_Total";
+
 
     /**
      * Value variable of intent class MainActivity.
