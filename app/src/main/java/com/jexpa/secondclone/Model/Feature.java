@@ -12,6 +12,7 @@ public class Feature implements Serializable {
     int image;
     String featureName;
     String functionName;
+    int notificationNumber;
 
     public Feature(int image, String featureName, String functionName) {
         this.image = image;
@@ -19,7 +20,17 @@ public class Feature implements Serializable {
         this.functionName = functionName;
     }
 
+
+
     public Feature() {
+    }
+
+    public int getNotificationNumber() {
+        return notificationNumber;
+    }
+
+    public void setNotificationNumber(int notificationNumber) {
+        this.notificationNumber = notificationNumber;
     }
 
     public String getFunctionName() {

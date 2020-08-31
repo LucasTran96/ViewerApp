@@ -39,6 +39,15 @@ import com.jexpa.secondclone.View.URLHistory;
 import java.util.ArrayList;
 
 import static com.jexpa.secondclone.API.APIURL.isConnected;
+import static com.jexpa.secondclone.API.Global.SMS_BBM_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_DEFAULT_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_FACEBOOK_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_HANGOUTS_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_KIK_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_LINE_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_SKYPE_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_VIBER_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_WHATSAPP_TYPE;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_BBM;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_FACEBOOK;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_HANGOUTS;
@@ -92,13 +101,15 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
             {
                 if(feature.getFunctionName().equals("GetSMSByDateTime"))
                 {
-                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context,getSMSType(feature.getFeatureName())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context,getSMSType(feature.getFeatureName(),context), holder.txt_total_number).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
                 }
                 else
-                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_ID(),context, holder.txt_total_number).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+            }
+            else {
+                holder.txt_total_number.setVisibility(View.GONE);
             }
         }
-
     }
 
     // Count the number of elements in deviceList
@@ -108,7 +119,7 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txtFeatureName;
+        TextView txtFeatureName, txt_total_number;
         ImageView imgFeature;
         LinearLayout ln_Feature;
         View mView;
@@ -117,9 +128,10 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
             super(itemView);
             mView = itemView;
             txtFeatureName = itemView.findViewById(R.id.txt_Name_Feature);
+            txt_total_number = itemView.findViewById(R.id.txt_total_number);
+            txt_total_number.setVisibility(View.GONE);
             imgFeature = itemView.findViewById(R.id.img_feature);
             ln_Feature = itemView.findViewById(R.id.ln_Feature);
-            //itemView.setOnClickListener(this);
             ln_Feature.setOnClickListener(this);
         }
 
@@ -129,77 +141,80 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION)
             {
-                if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.LOCATION_HISTORY)))
+                if(!featureList.get(position).getFeatureName().isEmpty())
                 {
-                    setIntentDefault(context,table,"table",HistoryLocation.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.SMS_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_SMS,COLUMN_LAST_SMS, "0");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.CALL_HISTORY)))
-                {
-                    setIntentDefault(context,table,"call",CallHistory.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.URL_HISTORY)))
-                {
-                    setIntentDefault(context,table,"tableURL",URLHistory.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.CONTACT_HISTORY)))
-                {
-                    setIntentDefault(context,table,"tableContact",ContactHistory.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.PHOTO_HISTORY)))
-                {
-                    setIntentDefault(context,table,"tablePhoto",PhotoHistory.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.PHONE_CALL_RECORDING)))
-                {
-                    setIntentForCallRecording(context,table, "GetPhoneRecording");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.AMBIENT_VOICE_RECORDING)))
-                {
-                    setIntentForCallRecording(context,table, "GetAmbients");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.WHATSAPP_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_WHATSAPP,COLUMN_LAST_WHATSAPP, "1");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.APPLICATION_USAGE)))
-                {
-                    setIntentDefault(context,table,"tableApplication", ApplicationUsageHistory.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.VIBER_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_VIBER,COLUMN_LAST_VIBER, "3");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.FACEBOOK_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_FACEBOOK,COLUMN_LAST_FACEBOOK, "4");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.SKYPE_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_SKYPE,COLUMN_LAST_SKYPE, "5");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.NOTES_HISTORY)))
-                {
-                    setIntentDefault(context,table,"tableNotes", NotesHistory.class);
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.HANGOUTS_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_HANGOUTS,COLUMN_LAST_HANGOUTS, "9");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.BBM_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_BBM,COLUMN_LAST_BBM, "10");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.LINE_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_LINE,COLUMN_LAST_LINE, "11");
-                }
-                else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.KIK_HISTORY)))
-                {
-                    setIntentForMessage(context,table, TABLE_GET_KIK,COLUMN_LAST_KIK, "12");
+                    if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.LOCATION_HISTORY)))
+                    {
+                        setIntentDefault(context,table,"table",HistoryLocation.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.SMS_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_SMS,COLUMN_LAST_SMS, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.CALL_HISTORY)))
+                    {
+                        setIntentDefault(context,table,"call",CallHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.URL_HISTORY)))
+                    {
+                        setIntentDefault(context,table,"tableURL",URLHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.CONTACT_HISTORY)))
+                    {
+                        setIntentDefault(context,table,"tableContact",ContactHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.PHOTO_HISTORY)))
+                    {
+                        setIntentDefault(context,table,"tablePhoto",PhotoHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.PHONE_CALL_RECORDING)))
+                    {
+                        setIntentForCallRecording(context,table, "GetPhoneRecording");
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.AMBIENT_VOICE_RECORDING)))
+                    {
+                        setIntentForCallRecording(context,table, "GetAmbients");
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.WHATSAPP_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_WHATSAPP,COLUMN_LAST_WHATSAPP, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.APPLICATION_USAGE)))
+                    {
+                        setIntentDefault(context,table,"tableApplication", ApplicationUsageHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.VIBER_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_VIBER,COLUMN_LAST_VIBER, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.FACEBOOK_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_FACEBOOK,COLUMN_LAST_FACEBOOK, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.SKYPE_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_SKYPE,COLUMN_LAST_SKYPE, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.NOTES_HISTORY)))
+                    {
+                        setIntentDefault(context,table,"tableNotes", NotesHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.HANGOUTS_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_HANGOUTS,COLUMN_LAST_HANGOUTS, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.BBM_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_BBM,COLUMN_LAST_BBM, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.LINE_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_LINE,COLUMN_LAST_LINE, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.KIK_HISTORY)))
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_KIK,COLUMN_LAST_KIK, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
                 }
             }
         }
@@ -208,46 +223,47 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
     /**
      * getSMSType is the method of finding out the type of message for which you want to get the total item.
      */
-    private String getSMSType(String nameFeature)
+    public static String getSMSType(String nameFeature, Context context)
     {
+
        if(nameFeature.equals(context.getResources().getString(R.string.SMS_HISTORY)))
         {
-            return "0";
+            return SMS_DEFAULT_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.WHATSAPP_HISTORY)))
         {
-            return "1";
+            return SMS_WHATSAPP_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.VIBER_HISTORY)))
         {
-            return "3";
+            return SMS_VIBER_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.FACEBOOK_HISTORY)))
         {
-            return "4";
+            return SMS_FACEBOOK_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.SKYPE_HISTORY)))
         {
-            return "5";
+            return SMS_SKYPE_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.HANGOUTS_HISTORY)))
         {
-            return "9";
+            return SMS_HANGOUTS_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.BBM_HISTORY)))
         {
-            return "10";
+            return SMS_BBM_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.LINE_HISTORY)))
         {
-            return "11";
+            return SMS_LINE_TYPE;
         }
         else if(nameFeature.equals(context.getResources().getString(R.string.KIK_HISTORY)))
         {
-            return "12";
+            return SMS_KIK_TYPE;
         }
         else {
-           return "0";
+           return SMS_DEFAULT_TYPE;
        }
     }
 

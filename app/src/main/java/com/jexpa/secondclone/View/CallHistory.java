@@ -342,9 +342,6 @@ public class CallHistory extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.menu_action_delete);
         isInActionMode = true;
         mAdapter.notifyDataSetChanged();
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
@@ -367,13 +364,11 @@ public class CallHistory extends AppCompatActivity {
     private void updateViewCounter() {
         int counter = selectionList.size();
         updateViewCounterAll(toolbar, counter);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
             if (isConnected(CallHistory.this)) {
                 // ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 // getProgressDialogDelete();

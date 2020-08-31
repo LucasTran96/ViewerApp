@@ -349,7 +349,6 @@ public class HistoryLocation extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
             if (APIURL.isConnected(HistoryLocation.this)) {
                 //                ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 //getProgressDialogDelete();

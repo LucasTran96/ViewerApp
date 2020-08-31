@@ -61,6 +61,8 @@ import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
+import static com.jexpa.secondclone.API.APIMethod.setSharedPreferLong;
+import static com.jexpa.secondclone.API.APIMethod.setToTalLog;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
@@ -69,6 +71,7 @@ import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
+import static com.jexpa.secondclone.API.Global.AMBIENT_RECORDING_TOTAL;
 import static com.jexpa.secondclone.API.Global.DEFAULT_PRODUCT_NAME;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_PHONE_CALL_RECORD;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
@@ -294,6 +297,8 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                      Log.d("AmbientMediaLink", functionName);
                      String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
                      JSONArray GPSJson = jsonObjData.getJSONArray("Table");
+                     JSONArray GPSJsonTable1 = jsonObjData.getJSONArray("Table1");
+                     setToTalLog(GPSJsonTable1, PHONE_CALL_RECORDING_TOTAL, getApplicationContext());
 
                      if (GPSJson.length() != 0) {
 
@@ -325,6 +330,16 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                      Log.d("AmbientMediaLink", functionName);
                      String jsonObjAmbientMediaLink = jsonObj.getString("AmbientMediaLink");
                      JSONArray GPSJson = jsonObj.getJSONArray("Rows");
+
+                     try {
+                         String totalRows = jsonObj.getString("TotalRows");
+                         if(totalRows != null)
+                         {
+                             setSharedPreferLong(getApplicationContext(),AMBIENT_RECORDING_TOTAL,Long.parseLong(totalRows));
+                         }
+                     } catch (JSONException e) {
+                         e.printStackTrace();
+                     }
 
                      if (GPSJson.length() != 0) {
 
@@ -454,8 +469,8 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
+        if (item.getItemId() == R.id.item_delete)
+        {
             if (isConnected(PhoneCallRecordHistory.this)) {
 
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete),this);

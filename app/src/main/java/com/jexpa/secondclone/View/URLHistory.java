@@ -353,7 +353,8 @@ public class URLHistory extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == R.id.item_delete) {
+        if (item.getItemId() == R.id.item_delete)
+        {
             if (isConnected(URLHistory.this)) {
                 // ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 //getProgressDialogDelete();

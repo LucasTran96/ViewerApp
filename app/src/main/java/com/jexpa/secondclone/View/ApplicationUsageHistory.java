@@ -98,10 +98,12 @@ public class ApplicationUsageHistory extends AppCompatActivity {
         setContentView(R.layout.activity_application_usage_history);
 
         toolbar = findViewById(R.id.toolbar_Application_History);
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.APPLICATION_USAGE));
-        toolbar.setLogo(R.drawable.app_icon_big);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.APPLICATION_USAGE));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         database_application_usage = new DatabaseApplicationUsage(this);
         database_last_update = new DatabaseLastUpdate(this);
         table = (Table) getIntent().getSerializableExtra("tableApplication");
@@ -359,6 +361,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
         prepareSelection(position);
     }
@@ -388,7 +391,6 @@ public class ApplicationUsageHistory extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
             if (isConnected(ApplicationUsageHistory.this)) {
                 //  ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 //getProgressDialogDelete();
@@ -420,8 +422,14 @@ public class ApplicationUsageHistory extends AppCompatActivity {
 
         }
         else if (item.getItemId() == android.R.id.home) {
-            clearActionMode();
-            mAdapter.notifyDataSetChanged();
+            if(isInActionMode)
+            {
+                clearActionMode();
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                super.onBackPressed();
+            }
         }
         return true;
     }
@@ -479,9 +487,10 @@ public class ApplicationUsageHistory extends AppCompatActivity {
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.menu_main);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(null);
         }
-        toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.APPLICATION_USAGE));
+        toolbar.setTitle( MyApplication.getResourcses().getString(R.string.APPLICATION_USAGE));
         selectionList.clear();
     }
 
@@ -491,6 +500,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionMode) {
             clearActionMode();
+            isInActionMode = false;
             mAdapter.notifyDataSetChanged();
         } else {
             super.onBackPressed();

@@ -36,7 +36,6 @@ import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.API.APIDatabase;
 import com.wang.avi.AVLoadingIndicatorView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -203,8 +202,10 @@ public class SMSHistory extends AppCompatActivity {
                 deviceObject(s);
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray SMS_Json = jsonObj.getJSONArray("Table");
+                JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
+                Log.d("txstyle","style = "+ style);
+
                 list_SMS.clear();
-                //databaseGetSMS.delete_AllDevice_SMS(table.getDevice_ID(),TABLE_GET_SMS);
                 if (SMS_Json.length() != 0)
                 {
 
@@ -297,8 +298,8 @@ public class SMSHistory extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.item_delete) {
-            isInActionMode_SMS = false;
+        if (item.getItemId() == R.id.item_delete)
+        {
             if (APIURL.isConnected(SMSHistory.this)) {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_SMS().execute();

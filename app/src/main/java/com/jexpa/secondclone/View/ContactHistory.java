@@ -131,6 +131,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void getContactsInfo() {
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
@@ -143,7 +144,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             int i = database_contact.get_ContactCount_DeviceID(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Contact.setVisibility(View.VISIBLE);
-                txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+" Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
@@ -357,7 +358,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID());
                 Log.d("min_time1", min_Time1 + "");
                 if (mData.size() == 0) {
-                    txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+" Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                    txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 }else {
                     txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
@@ -385,9 +386,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         searchView.setOnQueryTextListener(this);
         return true;
     }
-
-
-
 
     public void prepareToolbar(Contact contact, int position) {
 
@@ -441,7 +439,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
             if (isConnected(ContactHistory.this)) {
                 //                ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 //getProgressDialogDelete();

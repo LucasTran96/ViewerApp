@@ -66,10 +66,22 @@ import static com.jexpa.secondclone.API.Global.CONTACT_TOTAL;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATETIME_FORMAT;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT_MMM;
+import static com.jexpa.secondclone.API.Global.FACEBOOK_TOTAL;
+import static com.jexpa.secondclone.API.Global.HANGOUTS_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.SETTINGS;
+import static com.jexpa.secondclone.API.Global.SKYPE_TOTAL;
+import static com.jexpa.secondclone.API.Global.SMS_DEFAULT_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_FACEBOOK_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_HANGOUTS_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_SKYPE_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_TOTAL;
+import static com.jexpa.secondclone.API.Global.SMS_VIBER_TYPE;
+import static com.jexpa.secondclone.API.Global.SMS_WHATSAPP_TYPE;
+import static com.jexpa.secondclone.API.Global.VIBER_TOTAL;
+import static com.jexpa.secondclone.API.Global.WHATSAPP_TOTAL;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 
 
@@ -182,6 +194,10 @@ public class APIMethod {
         }
     }
 
+    /**
+     * setToTalLog JSONArray is the method to get the total number of items in a feature called from the server.
+     * @return
+     */
     public static void setToTalLog(JSONArray jsonArray, String name_Log, Context context)
     {
         if(jsonArray.length() !=0)
@@ -190,6 +206,7 @@ public class APIMethod {
             try {
                 totalRow = jsonArray.getJSONObject(0).getString("TotalRow");
                 Log.d("totalRow"," totalRow = "+ totalRow);
+                Log.d("txstyle","name_Log = " + name_Log + " totalRow = "+ totalRow );
                 if(totalRow != null)
                 {
                     setSharedPreferLong(context,name_Log,Long.parseLong(totalRow));
@@ -201,6 +218,12 @@ public class APIMethod {
         }
     }
 
+
+
+    /**
+     * setToTalLog JSONObject is the method to get the total number of items in a feature called from the server.
+     * @return
+     */
     public static void setToTalLog(JSONObject jsonObject, String name_Log, Context context)
     {
 
@@ -219,6 +242,99 @@ public class APIMethod {
 
     }
 
+
+    /**
+     * setToTalLog JSONArray is the method to get the total number of items in a feature called from the server.
+     * @return
+     */
+    public static void setToTalLog(String totalRow, String name_Log, Context context)
+    {
+                String totalRowTamp = "0";
+                totalRowTamp = totalRow;
+                Log.d("txstyle","name_Log = " + name_Log + " totalRow = "+ totalRowTamp );
+                if(totalRowTamp != null)
+                {
+                    setSharedPreferLong(context,name_Log,Long.parseLong(totalRowTamp));
+                }
+    }
+
+    /**
+     * setTotalLongForSMS This is a method that supports saving the total number of records for each feature such as SMS, WhatsApp, Skype ...
+     */
+    public static void setTotalLongForSMS(String totalRow, String style,Context context)
+    {
+        switch (style) {
+            case SMS_DEFAULT_TYPE:
+                setToTalLog(totalRow, SMS_TOTAL, context);
+                break;
+            case SMS_WHATSAPP_TYPE:
+                setToTalLog(totalRow, WHATSAPP_TOTAL, context);
+                break;
+            case SMS_VIBER_TYPE:
+                setToTalLog(totalRow, VIBER_TOTAL, context);
+                break;
+            case SMS_FACEBOOK_TYPE:
+                setToTalLog(totalRow, FACEBOOK_TOTAL, context);
+                break;
+            case SMS_SKYPE_TYPE:
+                setToTalLog(totalRow, SKYPE_TOTAL, context);
+                break;
+            case SMS_HANGOUTS_TYPE:
+                setToTalLog(totalRow, HANGOUTS_TOTAL, context);
+                break;
+        }
+    }
+
+    /**
+     * getToTalLog is the method to get the total number of items in a feature called from the server.
+     */
+    public static String getToTalLog(JSONObject jsonObject, JSONArray jsonArray, String nameTotal)
+    {
+        String totalRow;
+        final String empty = "0";
+        if(jsonArray != null)
+        {
+            if(jsonArray.length() !=0)
+            {
+                try {
+                    totalRow = jsonArray.getJSONObject(0).getString(nameTotal);
+                    Log.d("totalRow"," totalRow = "+ totalRow);
+                    if(totalRow != null)
+                    {
+                        return totalRow;
+                    }
+                    else
+                    {
+                        return empty;
+                    }
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                    return empty;
+                }
+            }
+            else {
+                return empty;
+            }
+        }
+        else {
+            try {
+                totalRow = jsonObject.getString(nameTotal);
+                Log.d("totalRow"," TotalRecord = "+ totalRow);
+                if(totalRow != null)
+                {
+                    return  totalRow;
+                }else {
+                    return empty;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return  empty;
+            }
+        }
+    }
+
+
     public static void setSharedPreferLong(Context context,String name, long value)
     {
         SharedPreferences.Editor editor = context.getSharedPreferences(SETTINGS, MODE_PRIVATE).edit();
@@ -230,6 +346,13 @@ public class APIMethod {
     {
         SharedPreferences preferences = context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
         return preferences.getLong(name, 0);
+    }
+
+    public static String getSharedPreferString(Context context,String name)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+        Long totalNumber = preferences.getLong(name, 0);
+        return String.valueOf(totalNumber);
     }
 
     /**

@@ -369,56 +369,6 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 JSONArray GPSJson = jsonObjListImg.getJSONArray("DataList");
                 setToTalLog(jsonObjListImg, PHOTO_TOTAL, getApplicationContext());
 
-               /* if (GPSJson.length() != 0)
-                {
-
-                    List<Integer> listDateCheck = databasePhotos.getAll_Photo_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
-                    int save;
-                    Log.d("DateCheck", "PhotoHistory = " + listDateCheck.size());
-                    Log.d("DateCheck", "GPSJson = " + GPSJson.toString());
-                    for (int i = 0; i < GPSJson.length(); i++)
-                    {
-                        Gson gson = new Gson();
-                        PhotoJson photoJsonHistory = gson.fromJson(String.valueOf(GPSJson.get(i)), PhotoJson.class);
-                        Photo photo = new Photo();
-                        photo.setRowIndex(photoJsonHistory.getID());
-                        photo.setID(photoJsonHistory.getID());
-                        photo.setIsLoaded(0);
-                        photo.setDevice_ID(photoJsonHistory.getDeviceId());
-                        photo.setClient_Captured_Date(photoJsonHistory.getClientCapturedDate());
-                        photo.setCaption(photoJsonHistory.getCaption());
-                        photo.setFile_Name(photoJsonHistory.getFileName());
-                        photo.setExt(photoJsonHistory.getExt());
-                        photo.setMedia_URL(photoJsonHistory.getMediaURL());
-                        photo.setCreated_Date(photoJsonHistory.getCreatedDate());
-                        photo.setCDN_URL(jsonObjCDN_URL);
-                        save = 0;
-                        if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
-                                if (photo.getID() == listCheck) {
-                                    save = 1;
-                                    break;
-                                }
-                            }
-                            if (save == 0) {
-                                listPhoto.add(photo);
-                            }
-                        } else {
-                            listPhoto.add(photo);
-                        }
-                    }
-                    if (listPhoto.size() != 0) {
-                        Log.d("DateCheck", "listPhoto.size() = " + listPhoto.size());
-                        databasePhotos.addDevice_Photos_Fast(listPhoto);
-                    }
-                }
-                mData.clear();
-                Log.d("phota", mData.size()+" SIZE");
-                mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
-                mAdapter = new AdapterPhotoHistory(PhotoHistory.this, mData);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();*/
-
                 if (GPSJson.length() != 0)
                 {
 
@@ -549,8 +499,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.item_delete) {
-            isInActionMode = false;
+        if (item.getItemId() == R.id.item_delete)
+        {
             if (isConnected(PhotoHistory.this)) {
                 if (selectionList.size() == 0) {
                     clearActionMode();
