@@ -167,10 +167,8 @@ public class APIGetTotalItemOfFeature {
                     }
                     else {
                         totalRow = GPSJsonTable1.getJSONObject(0).getString("TotalRow");
-
                     }
                 }
-
 
                 if(!totalRow.equals("0"))
                 {
@@ -187,8 +185,6 @@ public class APIGetTotalItemOfFeature {
                     Log.d("txstyle", "\t\t\t\t"+"setTotalLongForSMS" + " == "+ functionName + " === "+ smsType);
                     setTotalLongForSMS(totalRow,smsType,context);
                 }
-
-
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 Log.d("tasd",  e.getMessage() + " == "+ functionName);

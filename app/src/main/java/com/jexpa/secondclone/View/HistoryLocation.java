@@ -69,7 +69,7 @@ public class HistoryLocation extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    List<GPS> mData = new ArrayList<>();
+    public  static List<GPS> mData = new ArrayList<>();
     // action mode
     public static boolean isInActionMode = false;
     public static ArrayList<GPS> selectionList = new ArrayList<>();

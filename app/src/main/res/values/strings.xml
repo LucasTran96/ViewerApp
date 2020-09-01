@@ -99,4 +99,10 @@
     <string name="auto_turn_on_wifi" translatable="false">Auto Turn ON Wifi If Needs</string>
     <string name="force_opening_internet" translatable="false">Force opening internet connection:</string>
 
+    <string name="download_more" translatable="false">Load\n more</string>
+    <string name="map_type" translatable="false">Map type</string>
+    <string name="normal" translatable="false">Normal</string>
+    <string name="terrain" translatable="false">Terrain</string>
+    <string name="satellite" translatable="false">Satellite</string>
+
 </resources>

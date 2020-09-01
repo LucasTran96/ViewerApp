@@ -27,6 +27,11 @@
     <item name="darkorange" type="color">#FFFF8800</item>
     <item name="darkred" type="color">#FFCC0000</item>
 
+    <color name="color_area">#1E4169E1</color>
+    <color name="mapselect">#E9E7E7</color>
+    <color name="borderMap">#873eeb</color>
+    <color name="black">#000</color>
+
     <integer-array name="androidcolors">
         <item>@color/blue</item>
         <item>@color/purple</item>

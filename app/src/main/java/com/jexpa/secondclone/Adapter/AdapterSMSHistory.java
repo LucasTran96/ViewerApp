@@ -86,7 +86,6 @@ public class AdapterSMSHistory extends RecyclerView.Adapter<AdapterSMSHistory.Vi
                 mActivity.overridePendingTransition(R.anim.slide_in_bottom,  R.anim.slide_out_bottom);
             }
         }
-
     }
 
     public AdapterSMSHistory(Activity activity, List<SMS> myDataSet) {
@@ -122,7 +121,6 @@ public class AdapterSMSHistory extends RecyclerView.Adapter<AdapterSMSHistory.Vi
         else {
             holder.txt_minutes__SMS.setText(dateFinal[0]);
         }
-
 
         if (SMSHistory.isInActionMode_SMS) {
             if (SMSHistory.selectionList.contains(mDataSet.get(position))) {

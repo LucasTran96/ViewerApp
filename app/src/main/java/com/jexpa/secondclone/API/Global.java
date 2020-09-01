@@ -93,6 +93,7 @@ public class Global {
     public static final String SMS_TOTAL = "SMS_Total";
     public static final String SKYPE_TOTAL = "Skype_Total";
     public static final String HANGOUTS_TOTAL = "Hangouts_Total";
+    public static final String MAPTYPE = "maptype";
 
 
     /**
