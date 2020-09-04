@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,7 @@ import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.ContactHistory;
 import com.jexpa.secondclone.View.ContactHistoryDetail;
 import com.jexpa.secondclone.View.MyApplication;
-
 import java.util.ArrayList;
-import java.util.Random;
 
  public class AdapterContactHistory extends RecyclerView.Adapter<AdapterContactHistory.ViewHolder>
         implements Filterable {
@@ -112,7 +111,7 @@ import java.util.Random;
             holder.txt_name_Contact.setText(contact.getContact_Name());
             String textIcon = (contact.getContact_Name().length()>0) ? contact.getContact_Name().charAt(0)+"" : "";
             holder.img_Text_Icon.setText(textIcon.toUpperCase());
-            holder.img_User_Contact.setBackgroundColor(contact.getColor());
+            //holder.img_User_Contact.setBackgroundColor(contact.getColor());
             if (ContactHistory.isInActionMode) {
                 if (ContactHistory.selectionList.contains(contactListFiltered.get(position)))
                 {
@@ -120,20 +119,30 @@ import java.util.Random;
                     holder.img_Text_Icon.setVisibility(View.GONE);
                 }
                 else {
-                    actionModeFalse(holder, contact.getColor());
+                    actionModeFalse(holder, contact.getColor(), contact);
                 }
             }
             else {
-                actionModeFalse(holder, contact.getColor());
+                actionModeFalse(holder, contact.getColor(), contact);
             }
         }
     }
 
-    private void actionModeFalse(ViewHolder holder, int currentColor)
+    private void actionModeFalse(ViewHolder holder, int currentColor, Contact contact)
     {
         holder.img_User_Contact.setImageDrawable(null);
         holder.img_Text_Icon.setVisibility(View.VISIBLE);
-        holder.img_User_Contact.setBackgroundColor(currentColor);
+        if(CharacterIsNumberOrDigitTest(contact.getContact_Name()))
+        {
+            holder.img_User_Contact.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.contact_icon));
+            holder.img_Text_Icon.setVisibility(View.GONE);
+        }
+        else
+        {
+            holder.img_User_Contact.setBackgroundColor(currentColor);
+            holder.img_Text_Icon.setVisibility(View.VISIBLE);
+        }
+
     }
     private void setIMG(ImageView img)
     {
@@ -189,4 +198,17 @@ import java.util.Random;
         notifyDataSetChanged();
     }
 
+     /**
+      * This is a method of checking whether the first letter of the contact's name is a number or is a letter.
+      */
+     private boolean CharacterIsNumberOrDigitTest (String contactName)
+     {
+         boolean flag = false;
+         if(contactName.length() > 0)
+         {
+             flag = Character.isDigit(contactName.charAt(0));
+         }
+         Log.d("checkFlaf", flag + " == "+ contactName);
+         return flag;
+     }
 }

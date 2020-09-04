@@ -14,12 +14,13 @@
 
     <!-- set name Toolbar -->
     <string name="SMS_HISTORY">SMS</string>
-    <string name="CALL_HISTORY">Call Log</string>
-    <string name="LOCATION_HISTORY">GPS History</string>
-    <string name="URL_HISTORY">URL History</string>
+    <string name="CALL_HISTORY">Calls</string>
+    <string name="LOCATION_HISTORY">Locations</string>
+    <string name="URL_HISTORY">Browser History</string>
     <string name="CONTACT_HISTORY">Contacts</string>
+    <string name="CONTACT_DETAIL_HISTORY" translatable="false">Contact Details</string>
     <string name="PHOTO_HISTORY">Photos</string>
-    <string name="APPLICATION_USAGE">App Usage</string>
+    <string name="APPLICATION_USAGE">App Activity</string>
     <string name="PHONE_CALL_RECORDING">Call Recording</string>
     <string name="WHATSAPP_HISTORY">WhatsApp</string>
     <string name="VIBER_HISTORY">Viber</string>
@@ -34,8 +35,8 @@
     <string name="BBM_HISTORY">BBM</string>
     <string name="APP_INSTALL" translatable="false">App Installed</string>
     <string name="NOTIFICATION_HISTORY" translatable="false">Notification</string>
-    <string name="CALENDAR_HISTORY" translatable="false">Calendar</string>
-    <string name="WIFI_HISTORY" translatable="false">WiFi Logger</string>
+    <string name="CALENDAR_HISTORY" translatable="false">Calendars</string>
+    <string name="WIFI_HISTORY" translatable="false">Wi-Fi Logger</string>
     <string name="Alert_HISTORY" translatable="false">Alert</string>
     <string name="CLIPBOARD_HISTORY" translatable="false">Clipboard</string>
     <string name="LINE_HISTORY">LINE</string>
@@ -78,6 +79,7 @@
     <string name="ForgetPassword"><u>Forget Password ?</u></string>
     <string name="Language"><u>Language ?</u></string>
     <string name="SaveAndSync">Save &amp; Sync</string>
+    <string name="SaveAndSync_NotSave" translatable="false">The data of this device %s has not been saved to memory! Please turn on the internet and go back to the app to save the data.</string>
     <string name="SyncSetting" translatable="false">Settings</string>
     <string name="Loading">Loading</string>
     <string name="NoData">No data to display.</string>

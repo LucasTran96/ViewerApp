@@ -150,13 +150,13 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                         File file = new File(filePath);
                         if(file.exists())
                         {
-                            Log.d("cehck","file tồn tại");
+                            Log.d("cehck","file exits");
                             playAudio();
 
                         }
                         else
                         {
-                            Log.d("cehck","file không tồn tại"+ " === "+filePath );
+                            Log.d("cehck","file not exits"+ " === "+filePath );
                             img_Play_PhoneCallRecord.setEnabled(false);
                             sb_Play_PhoneCallRecord.setEnabled(false);
                             fileName = phoneCallRecord.getAudioName();
@@ -283,7 +283,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
             String elapsedTime = createTimeLabel(currentPosition);
             txt_Star.setText(elapsedTime);
             String remainingTime = createTimeLabel(totalTime - currentPosition);
-            txt_end.setText("- " + remainingTime);
+            txt_end.setText(remainingTime);
         }
     };
 
@@ -392,19 +392,19 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                     // phoneCallRecorded.setIsSaved(1);
                     imageViewPlay.setEnabled(true);
                     seekBarPlay.setEnabled(true);
-                    imageViewSaving.setImageResource(R.drawable.call_phonerecord);//If Download completed then change button text
+                    imageViewSaving.setImageResource(R.drawable.call_phonerecord); //If Download completed then change button text
                     imageViewSaving.setVisibility(View.VISIBLE);
                     avIndicatorView.setVisibility(View.GONE);
                     playAudio();
                 } else {
                     txt_saving.setText("download failed!");
-                    imageViewSaving.setImageResource(R.drawable.downloading);//If download failed change button text
+                    imageViewSaving.setImageResource(R.drawable.downloading); //If download failed change button text
                     imageViewSaving.setVisibility(View.VISIBLE);
                     avIndicatorView.setVisibility(View.GONE);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            imageViewSaving.setImageResource(R.drawable.downloading);//Change button text again after 3sec
+                            imageViewSaving.setImageResource(R.drawable.downloading); //Change button text again after 3sec
                             imageViewSaving.setVisibility(View.VISIBLE);
                             avIndicatorView.setVisibility(View.GONE);
                         }

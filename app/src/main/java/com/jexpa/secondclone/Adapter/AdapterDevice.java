@@ -58,6 +58,7 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
         Table device = deviceList.get(position);
         holder.txtDevice.setText(device.getDevice_Name());
         holder.txt_CreateDate.append(": " + getFormatDateAM(device.getCreated_Date()));
+        holder.txt_Device_OS_Status.append(": " + device.getOS_Device());
 
         try {
             if (device.getOS_Device().contains("iOS")) {
@@ -77,7 +78,7 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txtDevice, txt_CreateDate;
+        TextView txtDevice, txt_CreateDate, txt_Device_OS_Status;
         ImageView imgDevice;
         CardView btn_Device;
         View mView;
@@ -87,6 +88,7 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
             mView = itemView;
             txtDevice = itemView.findViewById(R.id.txtDevice);
             txt_CreateDate = itemView.findViewById(R.id.txt_CreateDate);
+            txt_Device_OS_Status = itemView.findViewById(R.id.txt_Device_OS_Status);
             //txt_GPS_Status = itemView.findViewById(R.id.txt_GPS_Status);
             imgDevice = itemView.findViewById(R.id.imgDevice);
             btn_Device = itemView.findViewById(R.id.btn_Device);

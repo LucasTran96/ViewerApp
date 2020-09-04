@@ -26,6 +26,7 @@ import java.util.List;
 
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.TAG;
+import static com.jexpa.secondclone.Database.DatabaseContact.checkItemExist;
 import static com.jexpa.secondclone.Database.DatabaseHelper.getInstance;
 import static com.jexpa.secondclone.Database.Entity.DeviceEntity.TABLE_GET_SETTING;
 import static com.jexpa.secondclone.Database.Entity.SMSEntity.COLUMN_CLIENT_MESSAGE_TIME_SMS;
@@ -135,20 +136,24 @@ public class DatabaseGetSMS
         //  contentValues1 receives the value from the method API_Add_Database()
         //ContentValues contentValues_SMS = API_Add_Database(sms);
         try {
-            for (int i = 0; i < sms.size(); i++) {
-                ContentValues contentValues_SMS = new ContentValues();
-                contentValues_SMS.put(COLUMN_ID_SMS, sms.get(i).getID());
-                contentValues_SMS.put(COLUMN_DEVICE_ID_SMS, sms.get(i).getDevice_ID());
-                contentValues_SMS.put(COLUMN_CLIENT_MESSAGE_TIME_SMS, sms.get(i).getClient_Message_Time());
-                contentValues_SMS.put(COLUMN_PHONE_NUMBER_SIM_SMS, sms.get(i).getPhone_Number_SIM());
-                contentValues_SMS.put(COLUMN_PHONE_NUMBER_SMS, sms.get(i).getPhone_Number());
-                contentValues_SMS.put(COLUMN_DIRECTION_SMS, sms.get(i).getDirection());
-                contentValues_SMS.put(COLUMN_TEXT_MESSAGE_SMS, sms.get(i).getText_Message());
-                contentValues_SMS.put(COLUMN_CONTACT_NAME_SMS, sms.get(i).getContact_Name());
-                contentValues_SMS.put(COLUMN_CREATED_DATE_SMS, sms.get(i).getCreated_Date());
-                // Insert a row of data into the table.
-                database.getWritableDatabase().insert(tableName, null, contentValues_SMS);
 
+            for (int i = 0; i < sms.size(); i++) {
+
+                if(!checkItemExist(database.getWritableDatabase(),tableName,COLUMN_DEVICE_ID_SMS,sms.get(i).getDevice_ID(),COLUMN_ID_SMS,sms.get(i).getID()))
+                {
+                    ContentValues contentValues_SMS = new ContentValues();
+                    contentValues_SMS.put(COLUMN_ID_SMS, sms.get(i).getID());
+                    contentValues_SMS.put(COLUMN_DEVICE_ID_SMS, sms.get(i).getDevice_ID());
+                    contentValues_SMS.put(COLUMN_CLIENT_MESSAGE_TIME_SMS, sms.get(i).getClient_Message_Time());
+                    contentValues_SMS.put(COLUMN_PHONE_NUMBER_SIM_SMS, sms.get(i).getPhone_Number_SIM());
+                    contentValues_SMS.put(COLUMN_PHONE_NUMBER_SMS, sms.get(i).getPhone_Number());
+                    contentValues_SMS.put(COLUMN_DIRECTION_SMS, sms.get(i).getDirection());
+                    contentValues_SMS.put(COLUMN_TEXT_MESSAGE_SMS, sms.get(i).getText_Message());
+                    contentValues_SMS.put(COLUMN_CONTACT_NAME_SMS, sms.get(i).getContact_Name());
+                    contentValues_SMS.put(COLUMN_CREATED_DATE_SMS, sms.get(i).getCreated_Date());
+                    // Insert a row of data into the table.
+                    database.getWritableDatabase().insert(tableName, null, contentValues_SMS);
+                }
             }
             database.getWritableDatabase().setTransactionSuccessful();
         } finally {

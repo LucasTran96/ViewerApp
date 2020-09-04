@@ -47,6 +47,7 @@ public class Global {
     public static final String DEFAULT_TIME_END = " 23:59:59";
     public static final String DEFAULT_DATETIME_FORMAT_AM = "yyyy-MM-dd hh:mm aa";
     static final String DEFAULT_DATETIME_MAX_DATE = "yyyy-MM-dd 23:59:59";
+    public static final String DATE_FORMAT_NUMBER = "yyyyMMdd";
 
     /**
      * Time Refresh List.

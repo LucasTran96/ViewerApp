@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="100dp"
             app:cardCornerRadius="9dp"
             android:clickable="false"
             android:id="@+id/btn_Device"
@@ -50,16 +50,16 @@
                         android:text="Google PX2"
                         android:id="@+id/txtDevice"
                         android:layout_height="wrap_content" />
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:textStyle="normal"-->
-<!--                        android:layout_marginTop="1dp"-->
-<!--                        android:text="@string/gps_status"-->
-<!--                        android:layout_marginStart="12dp"-->
-<!--                        android:textColor="@color/grey_600"-->
-<!--                        android:clickable="false"-->
-<!--                        android:id="@+id/txt_GPS_Status"-->
-<!--                        android:layout_height="wrap_content" />-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:textStyle="normal"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/DeviceOS"
+                        android:layout_marginStart="12dp"
+                        android:textColor="@color/grey_600"
+                        android:clickable="false"
+                        android:id="@+id/txt_Device_OS_Status"
+                        android:layout_height="wrap_content" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:textStyle="normal"
@@ -83,20 +83,8 @@
                     android:layout_height="50dp"
                     app:civ_border_width="1dp"
                     app:civ_border_color="@android:color/transparent"/>
-
             </RelativeLayout>
 
-
-
-
-
-
-
         </android.support.v7.widget.CardView>
-<!--        <Button-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:id="@+id/btn_Device"-->
-<!--            android:background="@android:color/transparent"-->
-<!--            android:layout_height="match_parent" />-->
     </FrameLayout>
 </LinearLayout>

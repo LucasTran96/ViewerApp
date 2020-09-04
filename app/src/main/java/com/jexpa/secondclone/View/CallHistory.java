@@ -315,7 +315,7 @@ public class CallHistory extends AppCompatActivity {
                     txt_No_Data_Call.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                     if (mData.size() == 0) {
                         //txt_No_Data_Call.setVisibility(View.VISIBLE);
-                        txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                        txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData));
                     }
                     // get Method getThread()
                     //getThread(APIMethod.progressDialog);

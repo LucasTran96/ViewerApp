@@ -20,17 +20,21 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.jexpa.secondclone.Model.Contact;
 import com.jexpa.secondclone.R;
 
-public class ContactHistoryDetail extends AppCompatActivity implements View.OnClickListener {
-    TextView txt_name_Contact_Detail, txt_Number_Contact_Detail, txt_MakeCall_Contact_Detail_History,
-            txt_SendMessages_Contact_Detail_History, txt_CopyNumber_Contact_Detail_History;
-    Intent intent_Contact;
-    Contact contact;
+public class ContactHistoryDetail extends AppCompatActivity implements View.OnClickListener
+{
+    private TextView txt_Number_Contact_Detail, txt_Share_Contact;
+    private Contact contact;
+    private Toolbar toolbar;
     boolean testCall = false;
     private static final int EXTERNAL_STORAGE_PERMISSION_CALL_PHONE = 10;
 
@@ -46,21 +50,29 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
         contact = (Contact) getIntent().getSerializableExtra("contact_Detail");
         setID();
 
+
     }
 
     private void setID() {
-        txt_name_Contact_Detail = findViewById(R.id.txt_name_Contact_Detail);
+        toolbar = findViewById(R.id.toolbar_Contact);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CONTACT_DETAIL_HISTORY));
+        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        TextView txt_name_Contact_Detail = findViewById(R.id.txt_name_Contact_Detail);
         txt_Number_Contact_Detail = findViewById(R.id.txt_Number_Contact_Detail);
-        txt_MakeCall_Contact_Detail_History = findViewById(R.id.txt_MakeCall_Contact_Detail_History);
-        txt_SendMessages_Contact_Detail_History = findViewById(R.id.txt_SendMessager_Contact_Detail_History);
-        txt_CopyNumber_Contact_Detail_History = findViewById(R.id.txt_CopyNumber_Contact_Detail_History);
+        txt_Share_Contact = findViewById(R.id.txt_Share_Contact_Detail);
+        TextView txt_MakeCall_Contact_Detail_History = findViewById(R.id.txt_MakeCall_Contact_Detail_History);
+        TextView txt_SendMessages_Contact_Detail_History = findViewById(R.id.txt_SendMessager_Contact_Detail_History);
+        TextView txt_CopyNumber_Contact_Detail_History = findViewById(R.id.txt_CopyNumber_Contact_Detail_History);
         txt_MakeCall_Contact_Detail_History.setOnClickListener(this);
         txt_SendMessages_Contact_Detail_History.setOnClickListener(this);
         txt_CopyNumber_Contact_Detail_History.setOnClickListener(this);
+        txt_Share_Contact.setOnClickListener(this);
         txt_name_Contact_Detail.setText(contact.getContact_Name());
         txt_Number_Contact_Detail.setText(contact.getPhone());
-
-
     }
 
     @Override
@@ -80,7 +92,25 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+       if (item.getItemId() == android.R.id.home) {
+
+                super.onBackPressed();
+
+        }
+        return true;
+    }
+
+    @Override
     public void onClick(View view) {
+        Intent intent_Contact;
         switch (view.getId()) {
             case R.id.txt_MakeCall_Contact_Detail_History: {
 
@@ -102,10 +132,21 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
                 startActivity(intent_Contact);
                 break;
             }
+            case R.id.txt_Share_Contact_Detail: {
+                Log.d("ssdw", "share");
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Name: "+contact.getContact_Name()+"\nPhone: "+ contact.getPhone());
+                sendIntent.setType("text/plain");
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+                break;
+            }
             case R.id.txt_CopyNumber_Contact_Detail_History: {
                 copyToClipBoard(txt_Number_Contact_Detail.getText().toString() + "");
                 break;
             }
+
         }
     }
 

@@ -12,32 +12,19 @@ package com.jexpa.secondclone.View;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.DrawableRes;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jexpa.secondclone.Model.GPS;
 import com.jexpa.secondclone.R;
@@ -50,21 +37,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
 import static com.jexpa.secondclone.API.APIDatabase.formatDate;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
-import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
-import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT_MMM;
 import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_FORMAT_AM;
+import static com.jexpa.secondclone.API.Global.DEFAULT_TIME_START;
 import static com.jexpa.secondclone.API.Global.MAPTYPE;
 import static com.jexpa.secondclone.API.Global.SETTINGS;
 import static com.jexpa.secondclone.Adapter.AdapterHistoryLocation.getAddress;
@@ -74,6 +56,7 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     List<GPS> gpsListShowMap;
+    List<String>gpsDateList;
     private Toolbar toolbar;
     private CircleImageView cimg_SelectMapHistory;
     LinearLayout ln_Map_Type_History_Select;
@@ -81,29 +64,23 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
     private TextView txt_Time_History_Location, txt_Close_History_SelectMap, txt_Normal_History_Map, txt_Terrain_History_Map,txt_Satellite_History_Add;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private String dateSelected = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setTheme(R.style.AppTheme_NoActionBar);
         gpsListShowMap = new ArrayList<>();
+        gpsDateList = new ArrayList<>();
         setContentView(R.layout.activity_history_map_locations);
         sharedPreferences = getApplicationContext().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.apply();
-        toolbar = findViewById(R.id.toolbar_History_Location);
-        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
-        //for crate home button
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setID();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        setID();
         // setEvent() is a method for assigning events to the user's button.
         setEvent();
     }
@@ -193,10 +170,40 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
                 ln_Map_Type_History_Select.setVisibility(View.GONE);
             }
         });
+
+        img_back_History_Location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int numberDateNow = getPositionOfDateSelected();
+                dateSelected = gpsDateList.get(numberDateNow-1);
+                Log.d("dsrra","dateSelected = "+ dateSelected);
+                mMap.clear();
+                setMarker();
+            }
+        });
+
+        img_next_History_Location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int numberDateNow = getPositionOfDateSelected();
+                dateSelected = gpsDateList.get(numberDateNow+1);
+                Log.d("dsrra","dateSelected = "+ dateSelected);
+                mMap.clear();
+                setMarker();
+            }
+        });
     }
 
     private void setID() {
-        // toolbar_History_Location
+
+        toolbar = findViewById(R.id.toolbar_History_Location);
+        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
+        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        //for crate home button
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         cimg_SelectMapHistory = findViewById(R.id.cimg_SelectMapHistory);
         ln_Map_Type_History_Select = findViewById(R.id.ln_Map_Type_History_Select);
         ln_Map_Type_History_Select.setVisibility(View.GONE);
@@ -235,6 +242,8 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
         mMap.getUiSettings().setScrollGesturesEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
+
+        getListDate(mData);
         setMarker();
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -257,24 +266,55 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
         });
     }
 
-    public void setMarker() {
+    private void getListDate(List<GPS> mData) {
+        if(mData.size()>0)
+        {
+            try {
+                String dateTamp = "2012-01-01";
+                for(int i=0; i<mData.size();i++)
+                {
+                    if(!dateTamp.contains(formatDate(mData.get(i).getClient_GPS_Time(), DEFAULT_DATE_FORMAT)))
+                    {
+                        dateTamp = formatDate(mData.get(i).getClient_GPS_Time(), DEFAULT_DATE_FORMAT);
+                        gpsDateList.add(0,dateTamp);
+                        Log.d("dateTamp","dateTamp = "+ dateTamp );
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setMarker()
+    {
         GPS gps = (GPS) getIntent().getSerializableExtra("GPS");
-        String mAddresses = getIntent().getStringExtra("Addresses");
-        String time_URL = getTimeItem(checkValueStringT( gps.getClient_GPS_Time()), DEFAULT_DATE_FORMAT_MMM);
-        txt_Time_History_Location.setText(time_URL);
-        String dateGPS;
+        String time_Date_Location;
+        if(dateSelected.equals("0"))
+            time_Date_Location = getTimeItem(gps.getClient_GPS_Time(), DEFAULT_DATE_FORMAT_MMM);
+        else
+            time_Date_Location = getTimeItem(dateSelected + DEFAULT_TIME_START, DEFAULT_DATE_FORMAT_MMM);
+        Log.d("dateGPS", "dateGPS = "+dateSelected+ " = = "+ time_Date_Location);
+        txt_Time_History_Location.setText(time_Date_Location);
+
         try {
-            dateGPS = formatDate(gps.getClient_GPS_Time(), DEFAULT_DATE_FORMAT);
+
+            if(dateSelected.equals("0"))
+                dateSelected = formatDate(gps.getClient_GPS_Time(), DEFAULT_DATE_FORMAT);
+            Log.d("dateGPS", "dateGPS = "+ dateSelected);
         } catch (ParseException e) {
-            dateGPS = gps.getClient_GPS_Time().substring(0,10);
+            if(dateSelected.equals("0"))
+                dateSelected = gps.getClient_GPS_Time().substring(0,10);
             e.printStackTrace();
         }
 
+        setGoneIMGBackAndNext();
         //2020-08-26 08:20:00
         String date = gps.getClient_GPS_Time();
+        gpsListShowMap.clear();
         for (GPS mGPS:mData)
         {
-            if(mGPS.getClient_GPS_Time().contains(dateGPS))
+            if(mGPS.getClient_GPS_Time().contains(dateSelected))
             {
                 gpsListShowMap.add(mGPS);
             }
@@ -314,94 +354,89 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
                     }
                 });
 
-                if(gpsListShowMap.get(i).getRowIndex() == gps.getRowIndex())
+                if(gps.getClient_GPS_Time().contains(dateSelected))
                 {
-//                    WaitingDialog.dismissDialog();
-//                    hideProgressDialog();
-                    CameraPosition cameraPosition = CameraPosition.builder()
-                            .target(sydney)
-                            .bearing(2.5f)
-                            .tilt(45)
-                            .zoom(14)
-                            .build();
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                    mMap.animateCamera(cameraUpdate, 900, null);
-                }
-        }
-
-
-        Log.d("LatLng", "date = "+ date +" getLatitude = " +gps.getLatitude() + "==" + gps.getLongitude());
-      /*  if(mAddresses.equals("Location not found!")|| mAddresses.equals("null"))
-        {
-            LatLng sydney = new LatLng(gps.getLatitude(), gps.getLongitude());
-            Log.d("LatLng", gps.getLatitude() + "==" + gps.getLongitude());
-            //Toast.makeText(this, gps.getLatitude()+"=="+gps.getLongitude(), Toast.LENGTH_SHORT).show();
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.draggable(true);
-            markerOptions.position(sydney);
-            Marker marker = mMap.addMarker(markerOptions);
-            marker.showInfoWindow();
-            CameraPosition cameraPosition = CameraPosition.builder()
-                    .target(sydney)
-                    .bearing(3.5f)
-                    .tilt(45)
-                    .zoom(15).build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-
-            mMap.animateCamera(cameraUpdate, 1000, null);
-
-
-        }
-        else {
-            String listAddresses [] = mAddresses.split(",");
-            LatLng sydney = new LatLng(gps.getLatitude(), gps.getLongitude());
-            Log.d("LatLng", gps.getLatitude() + "==" + gps.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.draggable(true);
-            try
-            {
-                if(listAddresses.length>0)
-                {
-                    if(listAddresses[0] != null && listAddresses[1] != null)
+                    if(gpsListShowMap.get(i).getRowIndex() == gps.getRowIndex())
                     {
-                        markerOptions.title(listAddresses[0]+","+listAddresses[1]);
-                    }else {
-                        markerOptions.title(mAddresses.replace("null",""));
-                    }
-                    if(listAddresses[1] != null
-                            && listAddresses[2] != null
-                            && listAddresses[3] != null
-                            && (!listAddresses[1].equals(" null")))
-                    {
-                        markerOptions.snippet(listAddresses[1] + "," + listAddresses[2] + "," + listAddresses[3]);
-                    }else {
-                        markerOptions.snippet("Unknown");
+                        CameraPosition cameraPosition = CameraPosition.builder()
+                                .target(sydney)
+                                .bearing(2.5f)
+                                .tilt(45)
+                                .zoom(14)
+                                .build();
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                        mMap.animateCamera(cameraUpdate, 900, null);
                     }
                 }
-            }catch (Exception e)
-            {
-                markerOptions.title(mAddresses.replace(" null",""));
-                markerOptions.snippet(mAddresses.replace(" null",""));
-                e.getMessage();
-            }
-
-            markerOptions.position(sydney);
-            //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.aaaa)));
-            Marker marker = mMap.addMarker(markerOptions);
-            marker.showInfoWindow();
-            //Toast.makeText(this, gps.getLatitude()+"=="+gps.getLongitude(), Toast.LENGTH_SHORT).show();
-            CameraPosition cameraPosition = CameraPosition.builder()
-                    .target(sydney)
-                    .bearing(2.5f)
-                    .tilt(45)
-                    .zoom(15).build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-            mMap.animateCamera(cameraUpdate, 900, null);
-
+                else {
+                    if(i == (gpsListShowMap.size()-1))
+                    {
+                        CameraPosition cameraPosition = CameraPosition.builder()
+                                .target(sydney)
+                                .bearing(2.5f)
+                                .tilt(45)
+                                .zoom(14)
+                                .build();
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                        mMap.animateCamera(cameraUpdate, 900, null);
+                    }
+                }
         }
-*/
     }
 
+    /**
+     * setIMGBackAndNext is a method of checking how many different dates the list of positions has and handling.
+     */
+    private void setGoneIMGBackAndNext() {
+        if(gpsDateList.size()<=1)
+        {
+            img_back_History_Location.setVisibility(View.INVISIBLE);
+            img_next_History_Location.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            img_back_History_Location.setVisibility(View.VISIBLE);
+            img_next_History_Location.setVisibility(View.VISIBLE);
+        }
+
+        getPositionOfDateSelected();
+    }
+
+    private int getPositionOfDateSelected() {
+        int positionDate = 0;
+        Log.d("dsd", "dateSelected = "+ dateSelected);
+        for (int i = 0; i<gpsDateList.size(); i++)
+        {
+            Log.d("dsd", "dateSelected = "+ gpsDateList.get(i));
+            if(gpsDateList.get(i).equals(dateSelected))
+            {
+                positionDate = i;
+            }
+        }
+        if(gpsDateList.size() == 1)
+        {
+            img_back_History_Location.setVisibility(View.INVISIBLE);
+            img_next_History_Location.setVisibility(View.INVISIBLE);
+        }
+        else {
+            Log.d("dsd", "positionDate === "+positionDate);
+            if(positionDate == gpsDateList.size()-1)
+            {
+                Log.d("dsd", "gpsDateList.size()-1");
+                img_back_History_Location.setVisibility(View.VISIBLE);
+                img_next_History_Location.setVisibility(View.INVISIBLE);
+            }
+
+            if(positionDate == 0)
+            {
+                Log.d("dsd", "positionDate == 0");
+                img_back_History_Location.setVisibility(View.INVISIBLE);
+                img_next_History_Location.setVisibility(View.VISIBLE);
+            }
+        }
+
+        return positionDate;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -417,6 +452,4 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
         }
         return true;
     }
-
-
 }

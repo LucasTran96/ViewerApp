@@ -44,6 +44,7 @@ import java.util.Calendar;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.setTotalLongForSMS;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
@@ -55,6 +56,7 @@ import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
+import static com.jexpa.secondclone.Adapter.AdapterFeatureDashboard.getSMSType;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 
 public class SMSHistory extends AppCompatActivity {
@@ -70,7 +72,7 @@ public class SMSHistory extends AppCompatActivity {
     private DatabaseGetSMS databaseGetSMS;
     private DatabaseLastUpdate database_last_update;
     private Table table;
-    public static String style;
+    public static String style = "50";
     private String nameFeature;
     private String nameTable;
     private TextView txt_No_Data_SMS;
@@ -81,6 +83,7 @@ public class SMSHistory extends AppCompatActivity {
     private String date_max = "";
     public static String name_Table_SMSHistory;
     boolean selectAll = false;
+    public static int styleNowOfSMS = 50;
     //aviSMS
     private AVLoadingIndicatorView aviSMS;
 
@@ -163,7 +166,7 @@ public class SMSHistory extends AppCompatActivity {
             if (SMSCount == 0) {
                 APIDatabase.getThread(APIMethod.progressDialog);
                // txt_No_Data_SMS.setVisibility(View.VISIBLE);
-                txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+ "Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 //APIDatabase.getThread(APIMethod.progressDialog);
             } else {
                 list_SMS.clear();
@@ -177,21 +180,24 @@ public class SMSHistory extends AppCompatActivity {
         }
     }
 
-    // location get method from sever
+    /**
+     * getSMS_AsyncTask This is the AsyncTask method used to get SMS data from the server to display to the user.
+     */
     @SuppressLint("StaticFieldLeak")
     private class getSMS_AsyncTask extends AsyncTask<String, Void, String>
     {
         @Override
         protected String doInBackground(String... strings) {
-            Log.d("locationId", table.getDevice_ID() + "");
+            Log.d("SMSId", table.getDevice_ID() + "");
             // max_Date is get all the location from the min_date to the max_Date days
             //min_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE,table.getDevice_ID());
             min_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()).substring(0, 10) + " 00:00:00";
             String max_time = getDateNowInMaxDate();
             date_max = getTimeNow();
             Log.d("min_time", min_time + "");
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"1000\" Min_Date=\"" + min_time + " \" Max_Date=\"" + max_time + " \" Type=\"" + style + "\" />";
+            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\"0\" Length=\"3000\" Min_Date=\"" + min_time + " \" Max_Date=\"" + max_time + " \" Type=\"" + style + "\" />";
             String function = "GetSMSByDateTime";
+            Log.d("SMSId",  "value = "+ value);
             return APIURL.POST(value, function);
         }
 
@@ -200,37 +206,22 @@ public class SMSHistory extends AppCompatActivity {
         protected void onPostExecute(String s) {
             try {
                 deviceObject(s);
+                String totalRow = "0";
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray SMS_Json = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
-                Log.d("txstyle","style = "+ style);
-
+                if(GPSJsonTable1.length()>0)
+                    totalRow = GPSJsonTable1.getJSONObject(0).getString("TotalRow");
+                Log.d("txstsyle", "totalRow SMS = "+ totalRow);
+                setTotalLongForSMS(totalRow, style, getApplicationContext());
                 list_SMS.clear();
                 if (SMS_Json.length() != 0)
                 {
-
-                    List<Integer> listDateCheck = databaseGetSMS.getAll_SMS_ID_History_Date(table.getDevice_ID(), min_time.substring(0, 10), nameTable);
-                    int save;
-                    Log.d("DateCheck", nameFeature + " = " + listDateCheck.size() + "");
                     for (int i = 0; i < SMS_Json.length(); i++) {
                         Gson gson = new Gson();
                         SMS sms = gson.fromJson(String.valueOf(SMS_Json.get(i)), SMS.class);
                         //databaseGetSMS.addDevice(sms,nameTable);
-                        save = 0;
-
-                        if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
-                                if (sms.getID() == listCheck) {
-                                    save = 1;
-                                    break;
-                                }
-                            }
-                            if (save == 0) {
-                                smsList.add(sms);
-                            }
-                        } else {
-                            smsList.add(sms);
-                        }
+                        smsList.add(sms);
                     }
                     if (smsList.size() != 0) {
                         databaseGetSMS.addDevice_SMS(smsList, nameTable);
@@ -248,7 +239,7 @@ public class SMSHistory extends AppCompatActivity {
                     adapter_SMS.notifyDataSetChanged();
                     txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 } else {
-                    txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+ "Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                    txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 }
                 stopAnim(aviSMS);
                 aviSMS.setVisibility(View.GONE);

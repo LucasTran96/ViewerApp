@@ -265,6 +265,7 @@ public class APIDatabase {
                 }
             }
         } catch (ParseException e) {
+            Log.d("dateGPS", e.getMessage());
             e.printStackTrace();
         }
         return dateChange;

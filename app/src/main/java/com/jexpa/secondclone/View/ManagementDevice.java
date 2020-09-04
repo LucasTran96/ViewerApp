@@ -48,6 +48,8 @@ import com.jexpa.secondclone.Model.User;
 import com.jexpa.secondclone.R;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +58,8 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getFormatDateAM;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
+import static com.jexpa.secondclone.API.APIMethod.startAnim;
+import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIMethod.subDate;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
@@ -102,13 +106,14 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
     private TextView txt_NumberDevice;
     public static String android_id;
     private AccountInFo accountInFo ;
-    ProgressDialog progressDialog;
     private String time_Expiry[];
     //private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Table> tableList;
     private List<AccountInFo> accountInFoList;
     private static final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 99;
     public static int packageID;
+    //aviManagement
+    private AVLoadingIndicatorView avLoadingIndicatorView;
 
     @SuppressLint("HardwareIds")
     @Override
@@ -129,7 +134,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         databaseUser = new DatabaseUser(this);
         database_last_update = new DatabaseLastUpdate(this);
         databaseDevice = new DatabaseDevice(this);
-        getProgressDialog();
+        //getProgressDialog();
         setEvent();
         getAccountInfo();
         getDeviceInfo();
@@ -168,17 +173,12 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void getProgressDialog() {
-        progressDialog = new ProgressDialog(ManagementDevice.this);
-        progressDialog.setTitle(MyApplication.getResourcses().getString(R.string.Loading)+"...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-    }
-
     // method of obtaining account information
     @SuppressLint("SetTextI18n")
     private void getAccountInfo() {
         if (isConnected(this)) {
+//            avLoadingIndicatorView.setVisibility(View.VISIBLE);
+//            startAnim(avLoadingIndicatorView);
             new accountAsyncTask().execute();
         } else {
             // int i: Count objects in the User table.
@@ -186,7 +186,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
             int i = databaseUserInfo.getUserInfoCount();
             if (i == 0) {
                 //getToast(ManagementDevice.this,"Database empty!");
-                getThread(progressDialog);
+                //getThread(progressDialog);
             } else {
                 accountInFoList.clear();
                 accountInFoList = databaseUserInfo.getAllUserInfo();
@@ -200,7 +200,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
 //                Log.d("time_Expiry", date_Expiry + "");
                 setHideReNew(accountInFo.getExpiry_Date());
                 packageID = Integer.parseInt(accountInFo.getPackage_ID());
-                getThread(progressDialog);
+                //getThread(progressDialog);
 
 
             }
@@ -212,12 +212,14 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
     private void getDeviceInfo() {
         //if there is a network call method
         if (isConnected(this)) {
+            avLoadingIndicatorView.setVisibility(View.VISIBLE);
+            startAnim(avLoadingIndicatorView);
             new deviceAsyncTask().execute();
         } else {
             int i = databaseDevice.getDeviceCount();
               if (i == 0) {
                 txtNoDevice.setVisibility(View.VISIBLE);
-                getThread(progressDialog);
+
             } else {
                 tableList.clear();
                 tableList = databaseDevice.getAllDevice();
@@ -231,7 +233,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
                 adapterDevice = new AdapterDevice(tableList, R.layout.item_rcv_management_device, ManagementDevice.this);
                 rcvDevice.setAdapter(adapterDevice);
                 adapterDevice.notifyDataSetChanged();
-                getThread(progressDialog);
+
             }
         }
     }
@@ -265,6 +267,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         adapterDevice = new AdapterDevice(tableList, R.layout.item_rcv_management_device, ManagementDevice.this);
         rcvDevice.setLayoutManager(layoutManager);
+        avLoadingIndicatorView = findViewById(R.id.aviManagement);
         rcvDevice.setHasFixedSize(true);
         rcvDevice.setAdapter(adapterDevice);
         adapterDevice.notifyDataSetChanged();
@@ -424,8 +427,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
                         adapterDevice = new AdapterDevice(tableList, R.layout.item_rcv_management_device, ManagementDevice.this);
                         rcvDevice.setAdapter(adapterDevice);
                         adapterDevice.notifyDataSetChanged();
-                        // get Method getThread()
-                        getThread(progressDialog);
+
                         if (tableList.size() == 1 || tableList.size() == 0) {
                             ln_Number_Device.setVisibility(View.GONE);
                         } else {
@@ -435,8 +437,10 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
 
                     } else {
                         txtNoDevice.setVisibility(View.VISIBLE);
-                        getThread(progressDialog);
+
                     }
+                    stopAnim(avLoadingIndicatorView);
+                    avLoadingIndicatorView.setVisibility(View.GONE);
                 }
 
             } catch (JSONException e) {
@@ -446,8 +450,6 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
-
 
 //    public void swipeRefreshLayout() {
 //        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -491,13 +493,6 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
 
     @Override
     protected void onResume() {

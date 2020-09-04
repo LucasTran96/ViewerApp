@@ -38,15 +38,12 @@ import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.google.gson.Gson;
 import com.wang.avi.AVLoadingIndicatorView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
@@ -57,7 +54,6 @@ import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
-import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
 import static com.jexpa.secondclone.API.Global.GPS_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
@@ -92,6 +88,19 @@ public class HistoryLocation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_location);
+        setID();
+
+        databaseGetLocation = new DatabaseGetLocation(this);
+        database_last_update = new DatabaseLastUpdate(this);
+        //logger =  Log4jHelper.getLogger("History_Location.class");
+        table = (Table) getIntent().getSerializableExtra("table");
+        getLocationInfo();
+        swipeRefreshLayout();
+
+    }
+
+    private void setID()
+    {
         toolbar = findViewById(R.id.toolbar_Location);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
@@ -99,12 +108,6 @@ public class HistoryLocation extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        databaseGetLocation = new DatabaseGetLocation(this);
-        database_last_update = new DatabaseLastUpdate(this);
-        //logger =  Log4jHelper.getLogger("History_Location.class");
-        table = (Table) getIntent().getSerializableExtra("table");
-        // show dialog Loading...
-        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
         txt_No_Data_Location = findViewById(R.id.txt_No_Data_Location);
         aviLocation = findViewById(R.id.aviLocation);
         swp_History_Location = findViewById(R.id.swp_History_Location);
@@ -116,13 +119,6 @@ public class HistoryLocation extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        getLocationInfo();
-
-        // adapter
-        mAdapter = new AdapterHistoryLocation(this, (ArrayList<GPS>) mData);
-        mRecyclerView.setAdapter(mAdapter);
-        swipeRefreshLayout();
-
     }
 
     private void getLocationInfo() {
@@ -138,7 +134,7 @@ public class HistoryLocation extends AppCompatActivity {
             int i = databaseGetLocation.getLocationCount(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Location.setVisibility(View.VISIBLE);
-                txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData)+ "  "+"Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 //APIDatabase.getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();

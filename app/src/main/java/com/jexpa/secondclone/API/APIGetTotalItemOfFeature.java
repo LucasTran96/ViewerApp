@@ -68,6 +68,7 @@ import static com.jexpa.secondclone.API.Global.WHATSAPP_TOTAL;
 import static com.jexpa.secondclone.Adapter.AdapterFeatureDashboard.getSMSType;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CONTACT;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
+import static com.jexpa.secondclone.View.SMSHistory.style;
 
 /**
  * Author: Lucaswalker@jexpa.com
@@ -176,14 +177,22 @@ public class APIGetTotalItemOfFeature {
                     txt_total_number.setText(totalRow);
                 }
 
+                Log.d("tal", "totalRow = "+ totalRow + " === "+ functionName);
                 if(!functionName.equals(GET_SMS_HISTORY))
                 {
                     setNewTotalItemOfFeature(functionName, totalRow, txt_total_number);
                 }
                 else {
+                    Log.d("XXtxstyle","style = "+ style+ " smsType = "+ smsType);
+                    if(style != null && !style.equals("50") && style.equals(smsType))
+                    {
+                        Log.d("XXtxstyle","style = "+ style+ " smsType = "+ smsType);
+                        setTotalLongForSMS(totalRow, style, context);
+                    }
                     setNewTotalItemOfFeature(functionName, totalRow, txt_total_number, smsType);
                     Log.d("txstyle", "\t\t\t\t"+"setTotalLongForSMS" + " == "+ functionName + " === "+ smsType);
-                    setTotalLongForSMS(totalRow,smsType,context);
+                    //setTotalLongForSMS(totalRow,smsType,context);
+
                 }
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
@@ -281,11 +290,11 @@ public class APIGetTotalItemOfFeature {
         private void setTotalNumberTextView(String FunctionName, String totalRow)
         {
             long totalOld = Long.parseLong(getSharedPreferString(context,FunctionName));
-            Log.d("txstyle","style = "+ FunctionName + " totalOld = "+ totalOld + " totalRow = "+ totalRow);
+            Log.d("txstsyle","style = "+ FunctionName + " totalOld = "+ totalOld + " totalRow = "+ totalRow);
             if(Long.parseLong(totalRow)>totalOld)
             {
                 txt_total_number.setVisibility(View.VISIBLE);
-                txt_total_number.setText((Long.parseLong(totalRow)-totalOld)+"");
+                txt_total_number.setText((Long.parseLong(totalRow) - totalOld)+"");
             }
             else {
                 txt_total_number.setVisibility(View.GONE);

@@ -173,7 +173,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             int i = databasePhoneCallRecord.getPhoneCallRecordCount(table.getDevice_ID());
             if (i == 0) {
-                txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData));
             } else {
                 mData.clear();
                 mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
@@ -396,7 +396,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
                 if (mData.size() == 0) {
 
-                    txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData)+"  "+"Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                    txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 }else {
                     txt_No_Data_PhoneCallRecord.setText("Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }

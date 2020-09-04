@@ -115,37 +115,36 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         //if there is a network call method
         //logger.info("internet = "+isConnected(this)+"\n==================End!");
         //If we check the network using TRUE, we get the data from the server
-        if (APIURL.isConnected(this)) {
-            int i = databaseGetSMS.getSMSCount(nameTable, nameDevice);
-            if (i == 0) {
-                Toast.makeText(this, "Data empty", Toast.LENGTH_SHORT).show();
-                APIDatabase.getThread(APIMethod.progressDialog);
-            } else {
-                list_SMS_Detail.clear();
-                list_SMS_Detail = databaseGetSMS.getAll_SMS_Name_Offset(SMS_Contact_Name, nameTable,0);
-                if (list_SMS_Detail.size() != 0) {
-                    // When assigning this List to another, the RecyclerView must be initialized
-                    adapter_SMS_Detail = new AdapterSMSDetail(this, list_SMS_Detail);
-                    if(list_SMS_Detail.size()>=5)
-                    {
-                        ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(true);
-                    }else {
-                        ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(false);
-                    }
-                    rcl_SMS_Detail.setAdapter(adapter_SMS_Detail);
-                    adapter_SMS_Detail.notifyDataSetChanged();
-                    if(list_SMS_Detail.size()>= NumberLoad)
-                    {
-                        initScrollListener();
-                    }
 
-                } else {
-                    APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
+        int i = databaseGetSMS.getSMSCount(nameTable, nameDevice);
+        if (i == 0) {
+            Toast.makeText(this, "Data empty", Toast.LENGTH_SHORT).show();
+            APIDatabase.getThread(APIMethod.progressDialog);
+        } else {
+            list_SMS_Detail.clear();
+            list_SMS_Detail = databaseGetSMS.getAll_SMS_Name_Offset(SMS_Contact_Name, nameTable,0);
+            if (list_SMS_Detail.size() != 0) {
+                // When assigning this List to another, the RecyclerView must be initialized
+                adapter_SMS_Detail = new AdapterSMSDetail(this, list_SMS_Detail);
+                if(list_SMS_Detail.size()>=5)
+                {
+                    ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(true);
+                }else {
+                    ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(false);
                 }
+                rcl_SMS_Detail.setAdapter(adapter_SMS_Detail);
+                adapter_SMS_Detail.notifyDataSetChanged();
+                if(list_SMS_Detail.size()>= NumberLoad)
+                {
+                    initScrollListener();
+                }
+
+            } else {
+                APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
             }
         }
         //else If we test the network with false we get the data from SQLite
-        else {
+        /*else {
             int i = databaseGetSMS.getSMSCount(nameTable, nameDevice);
             if (i == 0) {
                 Toast.makeText(this, "Data empty", Toast.LENGTH_SHORT).show();
@@ -167,7 +166,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                     APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
                 }
             }
-        }
+        }*/
     }
 
     @Override
@@ -269,8 +268,6 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.item_delete) {
-            isInActionMode_SMS_Detail = false;
-            isInActionLong = false;
             if (APIURL.isConnected(SMSHistoryDetail.this)) {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_SMS().execute();
@@ -299,12 +296,12 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                 selectAll = true;
             }
             else {
-                selectionList_Detail.clear();
-                selectionList_Detail.addAll(list_SMS_Detail);
                 for (int i = 0; i< list_SMS_Detail.size();i++)
                 {
                     AdapterSMSDetail.itemStateArray.put(i, false);
                 }
+                selectionList_Detail.clear();
+                //selectionList_Detail.addAll(list_SMS_Detail);
                 updateCounter();
                 adapter_SMS_Detail.notifyDataSetChanged();
                 selectAll = false;
@@ -372,7 +369,6 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
 
         if(isInActionMode_SMS_Detail)
         {
-            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.URL_HISTORY));
             selectionList_Detail.clear();
             isInActionLong = false;
             toolbar.getMenu().clear();
