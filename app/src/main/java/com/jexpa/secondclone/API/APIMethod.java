@@ -286,6 +286,36 @@ public class APIMethod {
     }
 
     /**
+     * getTotalLongForSMS This is a method that supports get the total number of records for each feature such as SMS, WhatsApp, Skype ...
+     */
+    public static String getTotalLongForSMS(String style,Context context)
+    {
+        long sms_Total = 1;
+        switch (style) {
+            case SMS_DEFAULT_TYPE:
+                sms_Total = getSharedPreferLong(context, SMS_TOTAL);
+                break;
+            case SMS_WHATSAPP_TYPE:
+                sms_Total = getSharedPreferLong(context, WHATSAPP_TOTAL);
+                break;
+            case SMS_VIBER_TYPE:
+                sms_Total = getSharedPreferLong(context, VIBER_TOTAL);
+                break;
+            case SMS_FACEBOOK_TYPE:
+                sms_Total = getSharedPreferLong(context, FACEBOOK_TOTAL);
+                break;
+            case SMS_SKYPE_TYPE:
+                sms_Total = getSharedPreferLong(context, SKYPE_TOTAL);
+                break;
+            case SMS_HANGOUTS_TYPE:
+                sms_Total = getSharedPreferLong(context, HANGOUTS_TOTAL);
+                break;
+        }
+        Log.d("tal","sms_Total = "+sms_Total+ "  style = "+ style + " === "+SMS_TOTAL);
+        return String.valueOf(sms_Total);
+    }
+
+    /**
      * getToTalLog is the method to get the total number of items in a feature called from the server.
      */
     public static String getToTalLog(JSONObject jsonObject, JSONArray jsonArray, String nameTotal)
@@ -449,5 +479,18 @@ public class APIMethod {
             toolbar.setTitle("  " + counter + " item selected");
             toolbar.setLogo(null);
         }
+    }
+
+    /**
+     * shareContact: This is a method to help share contact information to other applications
+     */
+    public static void shareContact(Context context, String nameContact, String phoneNumber)
+    {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Name: "+nameContact+"\nPhone: "+ phoneNumber);
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        context.startActivity(shareIntent);
     }
 }

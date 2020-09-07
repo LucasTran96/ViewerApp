@@ -125,7 +125,7 @@ public class Global {
      */
 
     public static int ON_BACK = 1;
-    public static int NumberLoad = 20;
+    public static int NumberLoad = 30;
 
     /**
      * Distributing

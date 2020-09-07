@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.Model.URL;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -77,11 +79,12 @@ public class URLHistory extends AppCompatActivity {
     List<URL> urlListAdd = new ArrayList<>();
     // action mode
     public static boolean isInActionMode = false;
-    public static ArrayList<URL> selectionList = new ArrayList<>();
+    public static ArrayList<URL> selectionList;
     private DatabaseURL database_url;
     private DatabaseLastUpdate database_last_update;
     private Table table;
-    private TextView txt_No_Data_URL;
+    private TextView txt_No_Data_URL, txt_Total_Data;
+    private LinearLayout lnl_Total;
     private SwipeRefreshLayout swp_URL;
     private String Date_max;
     boolean isLoading = false;
@@ -97,6 +100,19 @@ public class URLHistory extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser_history);
+        Slidr.attach(this);
+        setID();
+        selectionList = new ArrayList<>();
+        isInActionMode = false;
+        database_url = new DatabaseURL(this);
+        database_last_update = new DatabaseLastUpdate(this);
+        //logger =  Log4jHelper.getLogger("URLHistory.class");
+        table = (Table) getIntent().getSerializableExtra("tableURL");
+        getBrowserInfo();
+        swipeRefreshLayout();
+    }
+
+    private void setID() {
         toolbar = findViewById(R.id.toolbar_URL);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.URL_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
@@ -110,28 +126,18 @@ public class URLHistory extends AppCompatActivity {
         int width = displayMetrics.widthPixels;
         Log.d("hhhh", "\t\t\t\theight = "+ height);
         Log.d("hhhh", "\t\t\t\twidth = "+ width);
-        database_url = new DatabaseURL(this);
-        database_last_update = new DatabaseLastUpdate(this);
-        //logger =  Log4jHelper.getLogger("URLHistory.class");
-        table = (Table) getIntent().getSerializableExtra("tableURL");
-        // show dialog Loading...
-        //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        lnl_Total = findViewById(R.id.lnl_Total);
+        lnl_Total.setVisibility(View.INVISIBLE);
         txt_No_Data_URL = findViewById(R.id.txt_No_Data_URL);
+        txt_Total_Data = findViewById(R.id.txt_Total_Data);
         aviURL = findViewById(R.id.aviURL);
         progressBar_URL = findViewById(R.id.progressBar_URL);
         progressBar_URL.setVisibility(View.GONE);
         swp_URL = findViewById(R.id.swp_URL);
-        //txt_No_Data_URL.setVisibility(View.GONE);
-        // recyclerView
         mRecyclerView = findViewById(R.id.rcl_URL_History);
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        getBrowserInfo();
-        // adapter
-        mAdapter = new AdapterURLHistory(this, (ArrayList<URL>) mData);
-        mRecyclerView.setAdapter(mAdapter);
-        swipeRefreshLayout();
     }
 
     @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
@@ -143,12 +149,14 @@ public class URLHistory extends AppCompatActivity {
             startAnim(aviURL);
             new getURLAsyncTask(0).execute();
         } else {
+            lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = database_url.get_URLCount_DeviceID(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_URL.setVisibility(View.VISIBLE);
                 txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                txt_Total_Data.setText("0");
                 //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
@@ -156,6 +164,7 @@ public class URLHistory extends AppCompatActivity {
                 mAdapter = new AdapterURLHistory(this, (ArrayList<URL>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), URL_TOTAL)+"");
                 txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
         }
@@ -212,6 +221,7 @@ public class URLHistory extends AppCompatActivity {
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                 }
                 else {
+                    lnl_Total.setVisibility(View.VISIBLE);
                     mData.clear();
                     mData.addAll(mDataTamp);
                     if(mData.size() >= NumberLoad)
@@ -224,12 +234,14 @@ public class URLHistory extends AppCompatActivity {
                 }
 
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_URL, getTimeNow(), table.getDevice_ID());
-                txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                // get Method getThread()
-                //progressDialog.dismiss();
                 if (mData.size() == 0) {
                     //txt_No_Data_URL.setVisibility(View.VISIBLE);
                     txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
+                }
+                else {
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), URL_TOTAL)+"");
+                    txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
                 stopAnim(aviURL);
                 aviURL.setVisibility(View.GONE);

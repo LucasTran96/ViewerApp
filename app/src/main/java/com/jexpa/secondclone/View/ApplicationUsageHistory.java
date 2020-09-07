@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.ApplicationUsage;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -74,14 +76,14 @@ public class ApplicationUsageHistory extends AppCompatActivity {
     List<ApplicationUsage> mData = new ArrayList<>();
     List<ApplicationUsage> usageListAdd = new ArrayList<>();
     // action mode
-    public static boolean isInActionMode = false;
-    public static ArrayList<ApplicationUsage> selectionList = new ArrayList<>();
+    public static boolean isInActionMode;
+    public static ArrayList<ApplicationUsage> selectionList;
     private DatabaseApplicationUsage database_application_usage;
     private SwipeRefreshLayout swp_AppUsageHistory;
     private DatabaseLastUpdate database_last_update;
     private Table table;
-    private String max_Date = "";
-    private TextView txt_No_Data_App;
+    private LinearLayout lnl_Total;
+    private TextView txt_No_Data_App, txt_Total_Data;
     private ProgressBar progressBar_AppUsage;
     private boolean checkLoadMore = false;
     boolean isLoading = false;
@@ -96,7 +98,19 @@ public class ApplicationUsageHistory extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_usage_history);
+        Slidr.attach(this);
+        setID();
+        selectionList = new ArrayList<>();
+        isInActionMode = false;
+        database_application_usage = new DatabaseApplicationUsage(this);
+        database_last_update = new DatabaseLastUpdate(this);
+        table = (Table) getIntent().getSerializableExtra("tableApplication");
+        // show dialog Loading...
+        getAppUsageInfo();
+        swipeRefreshLayout();
+    }
 
+    private void setID() {
         toolbar = findViewById(R.id.toolbar_Application_History);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.APPLICATION_USAGE));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);
@@ -104,10 +118,9 @@ public class ApplicationUsageHistory extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        database_application_usage = new DatabaseApplicationUsage(this);
-        database_last_update = new DatabaseLastUpdate(this);
-        table = (Table) getIntent().getSerializableExtra("tableApplication");
-        // show dialog Loading...
+        lnl_Total = findViewById(R.id.lnl_Total);
+        lnl_Total.setVisibility(View.INVISIBLE);
+        txt_Total_Data = findViewById(R.id.txt_Total_Data);
         txt_No_Data_App = findViewById(R.id.txt_No_Data_App);
         progressBar_AppUsage = findViewById(R.id.progressBar_AppUsage);
         progressBar_AppUsage.setVisibility(View.GONE);
@@ -118,10 +131,9 @@ public class ApplicationUsageHistory extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        getAppUsageInfo();
-        swipeRefreshLayout();
     }
 
+    @SuppressLint("SetTextI18n")
     private void getAppUsageInfo() {
         //if there is a network call method
         if (isConnected(this)) {
@@ -129,12 +141,14 @@ public class ApplicationUsageHistory extends AppCompatActivity {
             startAnim(avLoadingIndicatorView);
             new getAppAsyncTask(0).execute();
         } else {
+            lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = database_application_usage.get_ApplicationCount_DeviceID(table.getDevice_ID());
             if (i == 0) {
                 txt_No_Data_App.setVisibility(View.VISIBLE);
                 txt_No_Data_App.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                txt_Total_Data.setText("0");
             } else {
                 mData.clear();
                 mData = database_application_usage.getAll_Application_ID_History(table.getDevice_ID(),0);
@@ -146,6 +160,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 txt_No_Data_App.setText(MyApplication.getResourcses().getString(R.string.TurnOn));
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL)+"");
             }
         }
     }
@@ -278,6 +293,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
             return GetJsonFeature(table, this.startIndex,"GetApps");
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String s) {
             try {
@@ -326,16 +342,18 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
                 }
-
+                lnl_Total.setVisibility(View.VISIBLE);
                 if (mData.size() == 0) {
                     txt_No_Data_App.setVisibility(View.VISIBLE);
                     txt_No_Data_App.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
                 }else {
                     String max_Date = getTimeNow();
                     database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_APPLICATION, max_Date, table.getDevice_ID());
                     String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_APPLICATION, TABLE_LAST_UPDATE, table.getDevice_ID());
                     Log.d("min_time1", min_Time1 + "");
                     txt_No_Data_App.setText(("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_APPLICATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null)));
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL)+"");
                 }
                 stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {

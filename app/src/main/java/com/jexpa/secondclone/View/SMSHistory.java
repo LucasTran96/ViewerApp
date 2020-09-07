@@ -11,6 +11,7 @@
 package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
@@ -35,6 +37,7 @@ import com.jexpa.secondclone.Model.SMS;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.API.APIDatabase;
+import com.r0adkll.slidr.Slidr;
 import com.wang.avi.AVLoadingIndicatorView;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +47,7 @@ import java.util.Calendar;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
+import static com.jexpa.secondclone.API.APIMethod.getTotalLongForSMS;
 import static com.jexpa.secondclone.API.APIMethod.setTotalLongForSMS;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
@@ -56,7 +60,6 @@ import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
-import static com.jexpa.secondclone.Adapter.AdapterFeatureDashboard.getSMSType;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 
 public class SMSHistory extends AppCompatActivity {
@@ -68,14 +71,15 @@ public class SMSHistory extends AppCompatActivity {
     List<SMS> listName = new ArrayList<>();
     // action mode
     public static boolean isInActionMode_SMS = false;
-    public static ArrayList<SMS> selectionList = new ArrayList<>();
+    public static ArrayList<SMS> selectionList;
     private DatabaseGetSMS databaseGetSMS;
     private DatabaseLastUpdate database_last_update;
     private Table table;
     public static String style = "50";
     private String nameFeature;
     private String nameTable;
-    private TextView txt_No_Data_SMS;
+    private TextView txt_No_Data_SMS, txt_Total_Data;
+    private LinearLayout lnl_Total;
     private SwipeRefreshLayout swp_SMS;
     private List<SMS> smsList = new ArrayList<>();
     //private Logger logger;
@@ -91,6 +95,9 @@ public class SMSHistory extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_history);
+        Slidr.attach(this);
+        selectionList = new ArrayList<>();
+        isInActionMode_SMS = false;
         style = getIntent().getStringExtra("style");
         nameTable = getIntent().getStringExtra("nameTable");
         name_Table_SMSHistory = nameTable;
@@ -108,7 +115,10 @@ public class SMSHistory extends AppCompatActivity {
         databaseGetSMS = new DatabaseGetSMS(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("SMSHistory.class");
+        lnl_Total = findViewById(R.id.lnl_Total);
+        lnl_Total.setVisibility(View.INVISIBLE);
         txt_No_Data_SMS = findViewById(R.id.txt_No_Data_SMS);
+        txt_Total_Data = findViewById(R.id.txt_Total_Data);
         swp_SMS = findViewById(R.id.swp_SMS);
         aviSMS = findViewById(R.id.aviSMS);
         rcl_SMS = findViewById(R.id.rcl_SMS_History);
@@ -161,12 +171,14 @@ public class SMSHistory extends AppCompatActivity {
             startAnim(aviSMS);
             new getSMS_AsyncTask().execute();
         } else {
+            lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             int SMSCount = databaseGetSMS.getSMSCount(nameTable, table.getDevice_ID());
             if (SMSCount == 0) {
                 APIDatabase.getThread(APIMethod.progressDialog);
                // txt_No_Data_SMS.setVisibility(View.VISIBLE);
                 txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                txt_Total_Data.setText("0");
                 //APIDatabase.getThread(APIMethod.progressDialog);
             } else {
                 list_SMS.clear();
@@ -174,6 +186,7 @@ public class SMSHistory extends AppCompatActivity {
                 adapter_SMS = new AdapterSMSHistory(this, list_SMS);
                 rcl_SMS.setAdapter(adapter_SMS);
                 adapter_SMS.notifyDataSetChanged();
+                txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext()));
                 txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 //APIDatabase.getThread(APIMethod.progressDialog);
             }
@@ -205,15 +218,10 @@ public class SMSHistory extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             try {
+
                 deviceObject(s);
-                String totalRow = "0";
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray SMS_Json = jsonObj.getJSONArray("Table");
-                JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
-                if(GPSJsonTable1.length()>0)
-                    totalRow = GPSJsonTable1.getJSONObject(0).getString("TotalRow");
-                Log.d("txstsyle", "totalRow SMS = "+ totalRow);
-                setTotalLongForSMS(totalRow, style, getApplicationContext());
                 list_SMS.clear();
                 if (SMS_Json.length() != 0)
                 {
@@ -231,15 +239,18 @@ public class SMSHistory extends AppCompatActivity {
                 String max_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID());
                 Log.d("max_time", max_time + "");
                 int SMSCount = databaseGetSMS.getSMSCount(nameTable, table.getDevice_ID());
+                lnl_Total.setVisibility(View.VISIBLE);
                 if (SMSCount != 0) {
                     list_SMS = databaseGetSMS.get_DISTINCT_SMS_Name(table.getDevice_ID(), nameTable);
                     // When assigning this List to another, the RecyclerView must be initialized
                     adapter_SMS = new AdapterSMSHistory(SMSHistory.this, list_SMS);
                     rcl_SMS.setAdapter(adapter_SMS);
                     adapter_SMS.notifyDataSetChanged();
+                    txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext()));
                     txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 } else {
                     txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
                 }
                 stopAnim(aviSMS);
                 aviSMS.setVisibility(View.GONE);

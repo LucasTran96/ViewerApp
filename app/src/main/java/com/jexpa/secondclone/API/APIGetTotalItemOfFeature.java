@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getSharedPreferString;
@@ -54,6 +55,7 @@ import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.PHONE_CALL_RECORDING_TOTAL;
 import static com.jexpa.secondclone.API.Global.PHOTO_TOTAL;
+import static com.jexpa.secondclone.API.Global.SETTINGS;
 import static com.jexpa.secondclone.API.Global.SKYPE_TOTAL;
 import static com.jexpa.secondclone.API.Global.SMS_DEFAULT_TYPE;
 import static com.jexpa.secondclone.API.Global.SMS_FACEBOOK_TYPE;
@@ -192,7 +194,6 @@ public class APIGetTotalItemOfFeature {
                     setNewTotalItemOfFeature(functionName, totalRow, txt_total_number, smsType);
                     Log.d("txstyle", "\t\t\t\t"+"setTotalLongForSMS" + " == "+ functionName + " === "+ smsType);
                     //setTotalLongForSMS(totalRow,smsType,context);
-
                 }
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
@@ -205,45 +206,44 @@ public class APIGetTotalItemOfFeature {
         private void setNewTotalItemOfFeature(String functionName, String totalRow, TextView txt_total_number)
         {
 
-
             if(functionName.equals(GET_CALL_HISTORY))
             {
-                setTotalNumberTextView(CALL_TOTAL, totalRow);
+                setTotalNumberTextView(CALL_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_CONTACT_HISTORY))
             {
 
-                setTotalNumberTextView(CONTACT_TOTAL, totalRow);
+                setTotalNumberTextView(CONTACT_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_URL_HISTORY))
             {
 
-                setTotalNumberTextView(URL_TOTAL, totalRow);
+                setTotalNumberTextView(URL_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_LOCATION_HISTORY))
             {
 
-                setTotalNumberTextView(GPS_TOTAL, totalRow);
+                setTotalNumberTextView(GPS_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_PHOTO_HISTORY))
             {
 
-                setTotalNumberTextView(PHOTO_TOTAL, totalRow);
+                setTotalNumberTextView(PHOTO_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_PHONE_CALL_RECORDING))
             {
 
-                setTotalNumberTextView(PHONE_CALL_RECORDING_TOTAL, totalRow);
+                setTotalNumberTextView(PHONE_CALL_RECORDING_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_AMBIENT_VOICE_RECORDING))
             {
 
-                setTotalNumberTextView(AMBIENT_RECORDING_TOTAL, totalRow);
+                setTotalNumberTextView(AMBIENT_RECORDING_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_APPLICATION_USAGE))
             {
 
-                setTotalNumberTextView(APP_USAGE_TOTAL, totalRow);
+                setTotalNumberTextView(APP_USAGE_TOTAL, totalRow, false);
             }
             else if(functionName.equals(GET_NOTES_HISTORY))
             {
@@ -260,44 +260,65 @@ public class APIGetTotalItemOfFeature {
             {
                 if(smsType.equals(SMS_DEFAULT_TYPE))
                 {
-                    setTotalNumberTextView(SMS_TOTAL, totalRow);
+                    setTotalNumberTextView(SMS_TOTAL, totalRow, true);
                 }
                 else if(smsType.equals(SMS_WHATSAPP_TYPE))
                 {
-                    setTotalNumberTextView(WHATSAPP_TOTAL, totalRow);
+                    setTotalNumberTextView(WHATSAPP_TOTAL, totalRow, true);
                 }
                 else if(smsType.equals(SMS_VIBER_TYPE))
                 {
-                    setTotalNumberTextView(VIBER_TOTAL, totalRow);
+                    setTotalNumberTextView(VIBER_TOTAL, totalRow, true);
                 }
                 else if(smsType.equals(SMS_FACEBOOK_TYPE))
                 {
-                    setTotalNumberTextView(FACEBOOK_TOTAL, totalRow);
+                    setTotalNumberTextView(FACEBOOK_TOTAL, totalRow, true);
                 }
                 else if(smsType.equals(SMS_SKYPE_TYPE))
                 {
-                    setTotalNumberTextView(SKYPE_TOTAL, totalRow);
+                    setTotalNumberTextView(SKYPE_TOTAL, totalRow, true);
                 }
                 else if(smsType.equals(SMS_HANGOUTS_TYPE))
                 {
-                    setTotalNumberTextView(HANGOUTS_TOTAL, totalRow);
+                    setTotalNumberTextView(HANGOUTS_TOTAL, totalRow, true);
                 }
             }
-
         }
 
         @SuppressLint("SetTextI18n")
-        private void setTotalNumberTextView(String FunctionName, String totalRow)
+        private void setTotalNumberTextView(String FunctionName, String totalRow, boolean checkIfSMS)
         {
-            long totalOld = Long.parseLong(getSharedPreferString(context,FunctionName));
-            Log.d("txstsyle","style = "+ FunctionName + " totalOld = "+ totalOld + " totalRow = "+ totalRow);
-            if(Long.parseLong(totalRow)>totalOld)
+            SharedPreferences preferences = context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+            long totalOld = preferences.getLong(FunctionName, -1);
+            boolean checkOldTotal;
+            if(checkIfSMS)
             {
-                txt_total_number.setVisibility(View.VISIBLE);
-                txt_total_number.setText((Long.parseLong(totalRow) - totalOld)+"");
+                if(totalOld == -1)
+                {
+                    setToTalLog(totalRow, FunctionName, context);
+                    checkOldTotal = false;
+                }
+                else {
+                    checkOldTotal = true;
+                }
             }
             else {
-                txt_total_number.setVisibility(View.GONE);
+                checkOldTotal = true;
+            }
+            if(checkOldTotal)
+            {
+                if(totalOld == -1)
+                    totalOld = 0;
+
+                Log.d("txstsyle","style = "+ FunctionName + " totalOld = "+ totalOld + " totalRow = "+ totalRow);
+                if(Long.parseLong(totalRow) > totalOld)
+                {
+                    txt_total_number.setVisibility(View.VISIBLE);
+                    txt_total_number.setText((Long.parseLong(totalRow) - totalOld)+"");
+                }
+                else {
+                    txt_total_number.setVisibility(View.GONE);
+                }
             }
         }
     }

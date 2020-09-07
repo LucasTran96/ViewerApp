@@ -26,24 +26,30 @@ import android.widget.Toast;
 
 import com.jexpa.secondclone.Model.Call;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrInterface;
 
 import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
+import static com.jexpa.secondclone.API.APIMethod.shareContact;
 
 public class CallHistoryDetail extends AppCompatActivity implements View.OnClickListener {
     TextView txt_Name_User_Call_Detail_History, txt_Time_Call_Detail_History,
             txt_Status_Call_Detail_History, txt_TimeCall_Call_Detail_History,
             txt_PhoneNumber_Call_Detail_History, txt_MakeCall_Call_Detail_History,
-            txt_SendMessages_Call_Detail_History;
+            txt_SendMessages_Call_Detail_History,txt_ShareCallContact;
     ImageView img_Make_Call;
     boolean testCall = false;
     private static final int EXTERNAL_STORAGE_PERMISSION_CALL_PHONE = 10;
     private Call call;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_history_detail);
+        // activity swipe back
+        Slidr.attach(this);
         setID();
         call = (Call) getIntent().getSerializableExtra("Call_Detail");
         if (ActivityCompat.checkSelfPermission(CallHistoryDetail.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -87,10 +93,13 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
 
         txt_MakeCall_Call_Detail_History.setOnClickListener(this);
         txt_SendMessages_Call_Detail_History.setOnClickListener(this);
+        txt_ShareCallContact.setOnClickListener(this);
         img_Make_Call.setOnClickListener(this);
     }
 
     private void setID() {
+        // txt_ShareCallContact
+        txt_ShareCallContact = findViewById(R.id.txt_ShareCallContact);
         txt_Name_User_Call_Detail_History = findViewById(R.id.txt_Name_User_Call_Detail_History);
         txt_Time_Call_Detail_History = findViewById(R.id.txt_Time_Call_Detail_History);
         txt_Status_Call_Detail_History = findViewById(R.id.txt_Tatus_Call_Detail_History);
@@ -132,7 +141,8 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         Intent intent_Call;
         switch (view.getId()) {
-            case R.id.txt_MakeCall_Call_Detail_History: {
+            case R.id.txt_MakeCall_Call_Detail_History:
+            case R.id.img_Make_Call: {
                 if (testCall) {
                     MyApplication.getInstance().trackEvent("CallHistory", "Call: " + call.getContact_Name(), "" + call.getContact_Name());
                     intent_Call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + testPhoneCall(call).trim()));
@@ -149,15 +159,14 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
                 startActivity(intent_Call);
                 break;
             }
-            case R.id.img_Make_Call: {
-                if(testCall){
-                    MyApplication.getInstance().trackEvent("CallHistory", "Call: " + call.getContact_Name(), "" + call.getContact_Name());
-                    intent_Call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + testPhoneCall(call).trim()));
-                    startActivity(intent_Call);
-                }else {
-                    Toast.makeText(this, "Please accept previous call access!", Toast.LENGTH_SHORT).show();
-                }
-
+            case R.id.txt_ShareCallContact:
+            {
+                String phoneNumber = "0";
+                if(call.getPhone_Number().equals("0"))
+                    phoneNumber = call.getPhone_Number_SIM();
+                else
+                    phoneNumber = call.getPhone_Number();
+                shareContact(getApplicationContext(), call.getContact_Name(), phoneNumber);
                 break;
             }
         }

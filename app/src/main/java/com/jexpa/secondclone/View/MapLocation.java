@@ -254,8 +254,8 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
             }
 
             @Override
-            public View getInfoContents(Marker marker) {
-
+            public View getInfoContents(Marker marker)
+            {
                 View v = getLayoutInflater().inflate(R.layout.activity_marker, null);
                 TextView info = v.findViewById(R.id.txt_Info_Location);
                 TextView timeLocation = v.findViewById(R.id.txt_Time_Location);

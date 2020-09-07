@@ -36,6 +36,8 @@ import com.jexpa.secondclone.Adapter.AdapterSMSDetail;
 import com.jexpa.secondclone.Database.DatabaseGetSMS;
 import com.jexpa.secondclone.Model.SMS;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
+
 import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
@@ -53,7 +55,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
     public static boolean isInActionMode_SMS_Detail = false;
     public static boolean isInActionLong = false;
     // The SMS object array stores the checked items
-    public static ArrayList<SMS> selectionList_Detail = new ArrayList<>();
+    public static ArrayList<SMS> selectionList_Detail;
     private DatabaseGetSMS databaseGetSMS;
     private String SMS_Contact_Name, nameTable, nameDevice;
     private ProgressBar progressBar_SMS;
@@ -72,7 +74,9 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_history_detail);
-
+        Slidr.attach(this);
+        selectionList_Detail = new ArrayList<>();
+        isInActionLong = false;
         SMS_Contact_Name = getIntent().getStringExtra("sms_History");
         nameTable = getIntent().getStringExtra("nameTable");
         nameDevice = getIntent().getStringExtra("nameDevice");
@@ -236,7 +240,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                     {
                         endLoading = true;
                     }
-                    Toast.makeText(getApplicationContext(), list_SMS_Detail.size()+" = size", Toast.LENGTH_SHORT).show();
+
                     adapter_SMS_Detail.notifyItemRangeInserted(0, mDataStamp.size());
                     Log.d("currentSize", "currentSize = "+mDataStamp.size()/2);
                     Log.d("currentSize", "currentSize = "+ list_SMS_Detail.get(mDataStamp.size()).getText_Message());

@@ -34,29 +34,63 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <TextView
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_alignParentBottom="true"
-                    android:id="@+id/txt_No_Data_Call"
-                    android:textStyle="bold|italic"
-                    android:textSize="15sp"
+                    android:orientation="horizontal"
                     android:gravity="center_horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_centerHorizontal="true"
-                    android:minWidth="210dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textColor="#252424"
-                    android:background="@drawable/customlastupdate"
-                    android:layout_height="wrap_content"
-                    />
+                    android:id="@+id/lnl_Total"
+                    android:visibility="invisible"
+                    android:background="#fff"
+                    android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:id="@+id/txt_No_Data_Call"
+                            android:textStyle="bold|italic"
+                            android:textSize="15sp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:minWidth="210dp"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:textColor="#252424"
+                            android:background="@drawable/customlastupdate"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:background="@drawable/customtotalitems"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:gravity="center"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:id="@+id/txt_Total_Data_Call"
+                                android:textStyle="bold|italic"
+                                android:textSize="15sp"
+                                android:gravity="center_horizontal"
+                                android:layout_marginEnd="10dp"
+                                android:minWidth="50dp"
+                                android:text=""
+                                android:textColor="#fff"
+                                android:background="@drawable/background_logout_btn"
+                                android:layout_height="wrap_content"
+                                />
+
+                        </LinearLayout>
+
+                </LinearLayout>
+
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:background="#fff"
                     android:id="@+id/rcl_Call_History"
                     android:layout_marginTop="4dp"
-                    android:layout_above="@+id/txt_No_Data_Call"
+                    android:layout_above="@+id/lnl_Total"
                     android:layout_height="match_parent">
                 </android.support.v7.widget.RecyclerView>
                 <ProgressBar

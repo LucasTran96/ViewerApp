@@ -34,6 +34,7 @@ import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ import com.jexpa.secondclone.Model.Photo;
 import com.jexpa.secondclone.Model.PhotoJson;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -90,17 +92,16 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     List<Photo> mData = new ArrayList<>();
     int counter = 0; // counter used to count the number of images selected to be deleted from the device and server.
     private boolean checkPermissions = false; // checkPermissions is variable to check if the user has saved file permissions.
-    public static boolean isInActionMode = false; // Check if you are in action mode.
-    public static ArrayList<Photo> selectionList = new ArrayList<>(); // selectionList is the list of selected images for deletion.
+    public static boolean isInActionMode; // Check if you are in action mode.
+    public static ArrayList<Photo> selectionList; // selectionList is the list of selected images for deletion.
     public static DatabasePhotos databasePhotos;
     private DatabaseLastUpdate database_last_update;
     private Table table;
     private final int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 26;
     private List<Photo> listPhoto = new ArrayList<>();
-    private TextView txt_No_Data_Photo;
+    private TextView txt_No_Data_Photo, txt_Total_Data;
+    private LinearLayout lnl_Total;
     private SwipeRefreshLayout swp_PhotoHistory;
-    private String max_Date = "";
-    private String min_Time = "",Date_max;
     private String fileName, CDN_URL, Media_URL, Device_ID;
     private int ID;
     boolean isLoading = false;
@@ -114,6 +115,9 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_history);
+        Slidr.attach(this);
+        selectionList = new ArrayList<>();
+        isInActionMode = false;
         databasePhotos = new DatabasePhotos(this);
         database_last_update = new DatabaseLastUpdate(this);
         toolbar = findViewById(R.id.toolbar_Photo);
@@ -130,7 +134,10 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         }
         table = (Table) getIntent().getSerializableExtra("tablePhoto");
         //getProgressDialog(MyApplication.getResourcses().getString(R.string.Loading)+"...",this);
+        lnl_Total = findViewById(R.id.lnl_Total);
+        lnl_Total.setVisibility(View.INVISIBLE);
         txt_No_Data_Photo = findViewById(R.id.txt_No_Data_Photo);
+        txt_Total_Data = findViewById(R.id.txt_Total_Data);
         swp_PhotoHistory = findViewById(R.id.swp_PhotoHistory);
         aviPhoto = findViewById(R.id.aviPhoto);
         progressBar_Photo = findViewById(R.id.progressBar_Photo);
@@ -284,12 +291,14 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             startAnim(aviPhoto);
             new getPhotoAsyncTask(0).execute(); // If there is network, then take the image from the server.
         } else {
+            lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             // If there is no network, then take the image from SQLite.
             int i = databasePhotos.getPhotoCount(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Photo.setVisibility(View.VISIBLE);
                 txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                txt_Total_Data.setText("0");
                 //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
@@ -297,6 +306,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 mAdapter = new AdapterPhotoHistory(this, mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL)+"");
                 txt_No_Data_Photo.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 if(mData.size()>= NumberLoad)
                 {
@@ -408,6 +418,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 }
                 else
                 {
+                    lnl_Total.setVisibility(View.VISIBLE);
                     mData.clear();
                     mData.addAll(mDataTamp);
                     if(mData.size() >= NumberLoad)
@@ -423,8 +434,10 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 if (mData.size() == 0) {
                     //txt_No_Data_Photo.setVisibility(View.VISIBLE);
                     txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
                 }
                 else {
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL)+"");
                     txt_No_Data_Photo.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                     if (checkPermissions) {
 

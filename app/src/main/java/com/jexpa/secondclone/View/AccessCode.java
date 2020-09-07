@@ -19,6 +19,7 @@ import android.widget.Button;
 
 import com.jexpa.secondclone.API.APIURL;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 
 public class AccessCode extends AppCompatActivity {
     private TextInputEditText edt_AccessCode;
@@ -28,6 +29,7 @@ public class AccessCode extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_access_code);
+        Slidr.attach(this);
         edt_AccessCode = findViewById(R.id.edt_AccessCode);
         String accessCode = getIntent().getStringExtra("Access_Code");
         edt_AccessCode.setText(accessCode);

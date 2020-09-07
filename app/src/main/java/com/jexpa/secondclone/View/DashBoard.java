@@ -1,6 +1,5 @@
 package com.jexpa.secondclone.View;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +11,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jexpa.secondclone.API.APIDatabase;
-import com.jexpa.secondclone.API.APIGetTotalItemOfFeature;
 import com.jexpa.secondclone.Adapter.AdapterFeatureDashboard;
 import com.jexpa.secondclone.Database.DatabaseDevice;
 import com.jexpa.secondclone.Model.Feature;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,8 @@ public class DashBoard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard_test);
+        setContentView(R.layout.activity_dashboard);
+        Slidr.attach(this);
         String modelDevice = getIntent().getStringExtra("device");
         packageID = getIntent().getIntExtra("packageID",4);
         Log.i("zpackageID",packageID+"");

@@ -69,7 +69,7 @@
         <activity
             android:name=".View.AccessCode"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -91,54 +91,53 @@
         <activity
             android:name=".View.HistoryLocation"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.SMSHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.SMSHistoryDetail"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
 
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.DashBoard"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
-
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.CallHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.CallHistoryDetail"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.ContactHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.ContactHistoryDetail"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.URLHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.NotesHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.NotesHistoryDetail"
@@ -148,11 +147,11 @@
         <activity
             android:name=".View.ApplicationUsageHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.PhotoHistory"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
             android:name=".View.PhotoHistoryDetail"
@@ -161,7 +160,7 @@
         <activity
             android:name=".View.PhoneCallRecordHistory"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator" />
 
         <!--

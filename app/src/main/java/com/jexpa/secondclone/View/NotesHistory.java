@@ -32,6 +32,7 @@ import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Notes;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 //import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,8 +56,8 @@ public class NotesHistory extends AppCompatActivity {
     List<Notes> mData = new ArrayList<>();
     List<Notes> notesListAdd = new ArrayList<>();
     // action mode
-    public static boolean isInActionMode = false;
-    public static ArrayList<Notes> selectionList = new ArrayList<>();
+    public static boolean isInActionMode;
+    public static ArrayList<Notes> selectionList;
     private DatabaseNotes database_notes;
     private DatabaseLastUpdate database_last_update;
     private Table table;
@@ -70,6 +71,9 @@ public class NotesHistory extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_history);
+        Slidr.attach(this);
+        selectionList = new ArrayList<>();
+        isInActionMode = false;
         toolbar = findViewById(R.id.toolbar_Notes_History);
         toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.NOTES_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custombgshopp);

@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +42,8 @@ import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Contact;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
 import com.wang.avi.AVLoadingIndicatorView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
@@ -61,13 +61,11 @@ import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
-import static com.jexpa.secondclone.API.APIURL.getDateNowInMaxDate;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.CONTACT_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
-import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CONTACT;
@@ -80,13 +78,14 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     List<Contact> mData = new ArrayList<>();
     List<Contact> contactListAdd = new ArrayList<>();
     // action mode
-    public static boolean isInActionMode = false;
-    public static ArrayList<Contact> selectionList = new ArrayList<>();
+    public static boolean isInActionMode;
+    public static ArrayList<Contact> selectionList;
     private DatabaseContact database_contact;
     private DatabaseLastUpdate database_last_update;
     private Table table;
-    private TextView txt_No_Data_Contact;
+    private TextView txt_No_Data_Contact,txt_Total_Data;
     private ProgressBar progressBar_Contacts;
+    private LinearLayout lnl_Total;
     private SwipeRefreshLayout swp_Contact;
     private boolean checkLoadMore = false;
     boolean isLoading = false;
@@ -100,7 +99,10 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_history);
+        Slidr.attach(this);
         setID();
+        selectionList = new ArrayList<>();
+        isInActionMode = false;
         database_contact = new DatabaseContact(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("ContactHistory.class");
@@ -121,7 +123,10 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         avLoadingIndicatorView = findViewById(R.id.avi);
-        txt_No_Data_Contact = findViewById(R.id.txt_No_Data_Contact);
+        lnl_Total = findViewById(R.id.lnl_Total);
+        lnl_Total.setVisibility(View.INVISIBLE);
+        txt_No_Data_Contact = findViewById(R.id.txt_No_Data_Contacts);
+        txt_Total_Data = findViewById(R.id.txt_Total_Data);
         progressBar_Contacts = findViewById(R.id.progressBar_Contacts);
         progressBar_Contacts.setVisibility(View.GONE);
         swp_Contact = findViewById(R.id.swp_Contact);
@@ -143,12 +148,14 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             new contactAsyncTask(0).execute();
         }
         else {
+            lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = database_contact.get_ContactCount_DeviceID(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Contact.setVisibility(View.VISIBLE);
                 txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                txt_Total_Data.setText("0");
             } else {
                 mData.clear();
                 mData = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),0);
@@ -159,6 +166,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 {
                     initScrollListener();
                 }
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL)+"");
                 txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
 
             }
@@ -332,6 +340,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
 
                 }
                 else {
+                    lnl_Total.setVisibility(View.VISIBLE);
                     Log.d("ContactHistory"," checkLoadMore Contact = "+ false);
                     mData.addAll(mDataTamp);
                     if(mData.size() >= NumberLoad)
@@ -349,8 +358,10 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 Log.d("min_time1", min_Time1 + "");
                 if (mData.size() == 0) {
                     txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
                 }else {
                     txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL)+"");
                 }
                 //getThread(APIMethod.progressDialog);
                 stopAnim(avLoadingIndicatorView);

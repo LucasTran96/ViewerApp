@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/background_material_light"
     android:layout_height="match_parent"
     tools:context=".View.CallHistoryDetail">
 
@@ -48,96 +49,99 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="15dp"
         android:layout_height="0.5dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="15dp"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:text=""
-                android:layout_marginTop="5dp"
-                android:textColor="#000"
-                android:id="@+id/txt_Time_Call_Detail_History"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:text=""
-                android:textColor="#000"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:id="@+id/txt_Tatus_Call_Detail_History"
-                android:layout_gravity="center_horizontal"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text=""
-            android:layout_marginStart="20dp"
-            android:textColor="#000"
-            android:textSize="17sp"
-            android:id="@+id/txt_TimeCall_Call_Detail_History"
-            android:paddingEnd="40dp"
-            android:gravity="right|bottom"
-            android:textStyle="bold"
-            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/PhoneNumberCall"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textSize="17sp"
+                    android:id="@+id/txt_Phonenumber_Call_Detail_History"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_margin="5dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/call_icon"
+                    android:id="@+id/img_Make_Call"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="40dp"
+                    tools:ignore="ContentDescription,RtlHardcoded" />
+
+            </LinearLayout>
+        </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:background="@android:color/darker_gray"
         android:layout_marginTop="5dp"
         android:layout_marginStart="15dp"
         android:layout_height="0.5dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
 
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="15dp"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="@string/PhoneNumberCall"
-                android:layout_marginTop="5dp"
-                android:textColor="#000"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:text=""
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="17sp"
-                android:id="@+id/txt_Phonenumber_Call_Detail_History"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_marginStart="15dp"
-            android:layout_margin="5dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:src="@drawable/phone"
-                android:id="@+id/img_Make_Call"
-                android:layout_gravity="right"
-                android:layout_marginRight="40dp"
-                tools:ignore="ContentDescription,RtlHardcoded" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:id="@+id/txt_Time_Call_Detail_History"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:textColor="#000"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:id="@+id/txt_Tatus_Call_Detail_History"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:layout_marginStart="20dp"
+                android:textColor="#000"
+                android:textSize="17sp"
+                android:id="@+id/txt_TimeCall_Call_Detail_History"
+                android:paddingEnd="40dp"
+                android:gravity="right|bottom"
+                android:textStyle="bold"
+                tools:ignore="RtlHardcoded,RtlSymmetry" />
 
         </LinearLayout>
-    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_marginTop="5dp"
@@ -184,9 +188,9 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:textSize="17sp"
-        android:id="@+id/txt_ShareContact"
+        android:id="@+id/txt_ShareCallContact"
         android:textStyle="bold"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@android:color/holo_blue_dark"
         android:layout_marginStart="15dp"
         android:gravity="center_vertical"
         android:text="@string/ShareContact" />

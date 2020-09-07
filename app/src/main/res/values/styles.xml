@@ -15,16 +15,31 @@
         <item name="android:windowIsTranslucent">true</item>
 
     </style>
-    <style name="AppTheme.NoActionBarTranslucent">
-        android:theme="@android:style/Theme.Translucent"
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
+<!--    <style name="AppTheme.NoActionBarTranslucent">-->
+<!--        android:theme="@android:style/Theme.Translucent"-->
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
 
-    </style>
+<!--    </style>-->
     <style name="StyleEdit">
         <item name="colorAccent">@color/white</item>
     </style>
 
+
+    <style name="AppTheme.SlidrActivityTheme.NoActionBar">
+        android:theme="@android:style/Theme.Translucent"
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
+
+    <style name="AppTheme.SlidrActivityTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
 
 </resources>

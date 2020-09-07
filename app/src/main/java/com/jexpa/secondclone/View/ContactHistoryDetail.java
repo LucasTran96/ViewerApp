@@ -29,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.jexpa.secondclone.Model.Contact;
 import com.jexpa.secondclone.R;
+import com.r0adkll.slidr.Slidr;
+
+import static com.jexpa.secondclone.API.APIMethod.shareContact;
 
 public class ContactHistoryDetail extends AppCompatActivity implements View.OnClickListener
 {
@@ -42,6 +45,7 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_history_detail);
+        Slidr.attach(this);
         if (ActivityCompat.checkSelfPermission(ContactHistoryDetail.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ContactHistoryDetail.this, new String[]{Manifest.permission.CALL_PHONE}, EXTERNAL_STORAGE_PERMISSION_CALL_PHONE);
         } else {
@@ -132,14 +136,9 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
                 startActivity(intent_Contact);
                 break;
             }
-            case R.id.txt_Share_Contact_Detail: {
-                Log.d("ssdw", "share");
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Name: "+contact.getContact_Name()+"\nPhone: "+ contact.getPhone());
-                sendIntent.setType("text/plain");
-                Intent shareIntent = Intent.createChooser(sendIntent, null);
-                startActivity(shareIntent);
+            case R.id.txt_Share_Contact_Detail:
+            {
+                shareContact(getApplicationContext(), contact.getContact_Name(), contact.getPhone());
                 break;
             }
             case R.id.txt_CopyNumber_Contact_Detail_History: {

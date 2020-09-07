@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ import com.jexpa.secondclone.Model.GPS;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
 import com.google.gson.Gson;
+import com.r0adkll.slidr.Slidr;
 import com.wang.avi.AVLoadingIndicatorView;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,12 +69,13 @@ public class HistoryLocation extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     public  static List<GPS> mData = new ArrayList<>();
     // action mode
-    public static boolean isInActionMode = false;
-    public static ArrayList<GPS> selectionList = new ArrayList<>();
+    public static boolean isInActionMode;
+    public static ArrayList<GPS> selectionList;
     private DatabaseGetLocation databaseGetLocation;
     private DatabaseLastUpdate database_last_update;
     private Table table;
-    private TextView txt_No_Data_Location;
+    private TextView txt_No_Data_Location, txt_Total_Data;
+    private LinearLayout lnl_Total;
     private ProgressBar progressBar_Locations;
     private SwipeRefreshLayout swp_History_Location;
     List<GPS> gpsListAdd = new ArrayList<>();
@@ -89,7 +92,9 @@ public class HistoryLocation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_location);
         setID();
-
+        selectionList = new ArrayList<>();
+        isInActionMode = false;
+        Slidr.attach(this);
         databaseGetLocation = new DatabaseGetLocation(this);
         database_last_update = new DatabaseLastUpdate(this);
         //logger =  Log4jHelper.getLogger("History_Location.class");
@@ -108,7 +113,10 @@ public class HistoryLocation extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        lnl_Total = findViewById(R.id.lnl_Total);
+        lnl_Total.setVisibility(View.INVISIBLE);
         txt_No_Data_Location = findViewById(R.id.txt_No_Data_Location);
+        txt_Total_Data = findViewById(R.id.txt_Total_Data);
         aviLocation = findViewById(R.id.aviLocation);
         swp_History_Location = findViewById(R.id.swp_History_Location);
         progressBar_Locations = findViewById(R.id.progressBar_Locations);
@@ -121,6 +129,7 @@ public class HistoryLocation extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    @SuppressLint("SetTextI18n")
     private void getLocationInfo() {
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
@@ -129,13 +138,14 @@ public class HistoryLocation extends AppCompatActivity {
             startAnim(aviLocation);
             new LocationAsyncTask(0).execute();
         } else {
+            lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
             int i = databaseGetLocation.getLocationCount(table.getDevice_ID());
             if (i == 0) {
                 //txt_No_Data_Location.setVisibility(View.VISIBLE);
                 txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));
-                //APIDatabase.getThread(APIMethod.progressDialog);
+                txt_Total_Data.setText("0");
             } else {
                 mData.clear();
                 mData = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),0);
@@ -146,6 +156,7 @@ public class HistoryLocation extends AppCompatActivity {
                 {
                     initScrollListener();
                 }
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL)+"");
                 txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 //APIDatabase.getThread(APIMethod.progressDialog);
             }
@@ -205,6 +216,7 @@ public class HistoryLocation extends AppCompatActivity {
                     Log.d("CallHistory"," checkLoadMore Contact = "+ true);
                 }
                 else {
+                    lnl_Total.setVisibility(View.VISIBLE);
                     Log.d("CallHistory"," checkLoadMore Contact = "+ false);
                     mData.clear();
                     mData.addAll(mDataTamp);
@@ -223,7 +235,9 @@ public class HistoryLocation extends AppCompatActivity {
                 if (mData.size() == 0)
                 {
                     txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
                 }else {
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL)+"");
                     txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
                 stopAnim(aviLocation);
