@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseURL.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseURL is used to create, add, modify, delete databases, save
   the history URL from the server, use the "URLHistory.class".
@@ -53,7 +53,7 @@ public class DatabaseURL
     public void createTable() {
 
         Log.i(TAG, "DatabaseNotes.onCreate ... " + TABLE_URL_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_URL_HISTORY + "(" + COLUMN_ROWINDEX_URL + " INTEGER ," + COLUMN_ID_URL + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_URL_HISTORY + "(" + COLUMN_ROWINDEX_URL + " LONG ," + COLUMN_ID_URL + " LONG,"
                 + COLUMN_DEVICE_ID_URL + " TEXT," + COLUMN_CLIENT_URL_TIME + " TEXT," + COLUMN_URL_LINK + " TEXT,"
                 + COLUMN_CREATED_DATE_URL + " TEXT" + ")";
         database.getWritableDatabase().execSQL(scriptTable);
@@ -73,14 +73,11 @@ public class DatabaseURL
                     database.getWritableDatabase().insert(TABLE_URL_HISTORY, null, contentValues1);
                 }
             }
-
             database.getWritableDatabase().setTransactionSuccessful();
-
         } finally {
             database.getWritableDatabase().endTransaction();
         }
     }
-
 
     public List<URL> getAll_URL_ID_History(String deviceID, int offSet) {
         Log.i(TAG, "DatabaseNotes.getAll_URL_ID_History ... " + TABLE_URL_HISTORY);
@@ -94,15 +91,14 @@ public class DatabaseURL
         if (cursor.moveToFirst()) {
             do {
                     URL url = new URL();
-                    url.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_URL)));
-                    url.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_URL)));
+                    url.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_URL)));
+                    url.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_URL)));
                     url.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_URL)));
                     url.setClient_URL_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_URL_TIME)));
                     url.setURL_Link(cursor.getString(cursor.getColumnIndex(COLUMN_URL_LINK)));
                     url.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_URL)));
                     // Add in List.
                     url_List.add(url);
-
             } while (cursor.moveToNext());
         }
         // return note list
@@ -110,10 +106,10 @@ public class DatabaseURL
     }
 
     // Method retrieving data by date to compare.
-    public List<Integer> getAll_URL_ID_History_Date(String deviceID, String date) {
+    public List<Long> getAll_URL_ID_History_Date(String deviceID, String date) {
 
         Log.i(TAG, "DatabaseURL.getAll_URL_ID_History_Date... " + TABLE_URL_HISTORY);
-        List<Integer> URL_List = new ArrayList<>();
+        List<Long> URL_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_URL_HISTORY + " WHERE " + COLUMN_DEVICE_ID_URL + " = '" + deviceID + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
@@ -123,7 +119,7 @@ public class DatabaseURL
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_URL_TIME)).substring(0, 10).equals(date)) {
-                    URL_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_URL)));
+                    URL_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_URL)));
                 }
                 // Add in List.
 

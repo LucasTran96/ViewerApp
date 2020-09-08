@@ -1,6 +1,6 @@
 /*
   ClassName: CallHistoryDetail.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class CallHistoryDetail use to display detailed history of who has called, at which time, call minutes, incoming or outgoing calls.
@@ -171,5 +171,4 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
             }
         }
     }
-
 }

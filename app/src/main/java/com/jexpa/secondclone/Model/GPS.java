@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class GPS implements Serializable {
 
     private int RowIndex;
-    private int ID;
+    private long ID;
     private String Device_ID;
     private String Client_GPS_Time;
     private Double Latitude;
@@ -24,7 +24,7 @@ public class GPS implements Serializable {
     private String Created_Date;
 
 
-    public GPS(int rowIndex, int ID, String device_ID, String client_GPS_Time,
+    public GPS(int rowIndex, long ID, String device_ID, String client_GPS_Time,
                Double latitude, Double longitude, int accuracy, String created_Date) {
         RowIndex = rowIndex;
         this.ID = ID;
@@ -48,11 +48,11 @@ public class GPS implements Serializable {
         RowIndex = rowIndex;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 

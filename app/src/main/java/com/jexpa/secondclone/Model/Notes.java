@@ -13,13 +13,13 @@ import java.io.Serializable;
 
 public class Notes implements Serializable {
 
-    private int RowIndex, ID;
+    private long RowIndex, ID;
     private String Device_ID, Client_Note_Time, Content, Created_Date;
 
     public Notes() {
     }
 
-    public Notes(int rowIndex, int ID, String device_ID, String client_Note_Time, String content, String created_Date) {
+    public Notes(long rowIndex, long ID, String device_ID, String client_Note_Time, String content, String created_Date) {
         RowIndex = rowIndex;
         this.ID = ID;
         Device_ID = device_ID;
@@ -28,19 +28,19 @@ public class Notes implements Serializable {
         Created_Date = created_Date;
     }
 
-    public int getRowIndex() {
+    public long getRowIndex() {
         return RowIndex;
     }
 
-    public void setRowIndex(int rowIndex) {
+    public void setRowIndex(long rowIndex) {
         RowIndex = rowIndex;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 

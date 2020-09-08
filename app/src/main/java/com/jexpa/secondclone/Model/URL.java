@@ -14,13 +14,13 @@ import java.io.Serializable;
 
 public class URL implements Serializable {
 
-    private int RowIndex, ID;
+    private long RowIndex, ID;
     private String Device_ID, Client_URL_Time, URL_Link, Created_Date;
 
     public URL() {
     }
 
-    public URL(int rowIndex, int ID, String device_ID, String Client_URL_Time, String URL_Link, String created_Date) {
+    public URL(long rowIndex, long ID, String device_ID, String Client_URL_Time, String URL_Link, String created_Date) {
         RowIndex = rowIndex;
         this.ID = ID;
         Device_ID = device_ID;
@@ -29,19 +29,19 @@ public class URL implements Serializable {
         Created_Date = created_Date;
     }
 
-    public int getRowIndex() {
+    public long getRowIndex() {
         return RowIndex;
     }
 
-    public void setRowIndex(int rowIndex) {
+    public void setRowIndex(long rowIndex) {
         RowIndex = rowIndex;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 

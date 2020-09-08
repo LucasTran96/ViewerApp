@@ -1,6 +1,6 @@
 /*
   ClassName: SMSHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class SMSHistory used to display the SMS list from the server to the RecyclerView of the class.
@@ -11,7 +11,6 @@
 package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,7 +47,6 @@ import java.util.List;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIMethod.getTotalLongForSMS;
-import static com.jexpa.secondclone.API.APIMethod.setTotalLongForSMS;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIMethod.updateViewCounterAll;
@@ -106,7 +104,7 @@ public class SMSHistory extends AppCompatActivity {
         table = (Table) getIntent().getSerializableExtra("table_SMS");
         toolbar = findViewById(R.id.toolbar_SMS);
         setTitle(toolbar, nameTable);
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -176,10 +174,8 @@ public class SMSHistory extends AppCompatActivity {
             int SMSCount = databaseGetSMS.getSMSCount(nameTable, table.getDevice_ID());
             if (SMSCount == 0) {
                 APIDatabase.getThread(APIMethod.progressDialog);
-               // txt_No_Data_SMS.setVisibility(View.VISIBLE);
                 txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));
                 txt_Total_Data.setText("0");
-                //APIDatabase.getThread(APIMethod.progressDialog);
             } else {
                 list_SMS.clear();
                 list_SMS = databaseGetSMS.get_DISTINCT_SMS_Name(table.getDevice_ID(), nameTable);
@@ -188,7 +184,6 @@ public class SMSHistory extends AppCompatActivity {
                 adapter_SMS.notifyDataSetChanged();
                 txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext()));
                 txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                //APIDatabase.getThread(APIMethod.progressDialog);
             }
         }
     }
@@ -307,7 +302,7 @@ public class SMSHistory extends AppCompatActivity {
                 new clear_SMS().execute();
 
             } else {
-                Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
                 adapter_SMS.notifyDataSetChanged();
             }
@@ -352,7 +347,6 @@ public class SMSHistory extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Log.d("clearSMS", table.getDevice_ID() + "");
             StringBuilder listID = new StringBuilder();
-            //Toast.makeText(HistoryLocation.this, selectionList.get(0).getID()+"", Toast.LENGTH_SHORT).show();
             for (int i = 0; i < selectionList.size(); i++) {
                 //if(i != selectionList.size()-1){
                 // listID = listID + selectionList.get(i).getID() + ",";
@@ -369,13 +363,11 @@ public class SMSHistory extends AppCompatActivity {
 
                     }
                 }
-
             }
             Log.d("listID", listID + "");
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" List_ID=\"" + listID + "\"  Chat_Type=\"" + style + "\"/>";
             String function = "DeleteMultiChatDataLog";
             return APIURL.POST(value, function);
-
         }
 
         @Override
@@ -406,7 +398,6 @@ public class SMSHistory extends AppCompatActivity {
             for (SMS sms : listName) {
                 databaseGetSMS.deleteSMS(sms, nameTable);
             }
-
         }
     }
 

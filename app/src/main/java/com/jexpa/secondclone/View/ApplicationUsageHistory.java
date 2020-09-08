@@ -1,6 +1,6 @@
 /*
   ClassName: ApplicationUsageHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class ApplicationUsageHistory used to display the application that the user has downloaded the phone,
@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import static com.jexpa.secondclone.API.APIDatabase.getThread;
+
 import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
 import static com.jexpa.secondclone.API.APIMethod.getSharedPreferLong;
@@ -62,7 +62,6 @@ import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.APP_USAGE_TOTAL;
-import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
@@ -113,7 +112,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
     private void setID() {
         toolbar = findViewById(R.id.toolbar_Application_History);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.APPLICATION_USAGE));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -415,7 +414,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_App().execute();
             } else {
-                Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
                 mAdapter.notifyDataSetChanged();
             }

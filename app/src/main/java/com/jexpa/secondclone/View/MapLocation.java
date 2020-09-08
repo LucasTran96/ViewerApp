@@ -1,6 +1,6 @@
 /*
   ClassName: MapLocation.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class MapLocation use to view location on google map.
@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.jexpa.secondclone.Database.DatabaseGetLocation;
 import com.jexpa.secondclone.Model.GPS;
 import com.jexpa.secondclone.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -65,6 +66,7 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private String dateSelected = "0";
+    private DatabaseGetLocation databaseGetLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
         sharedPreferences = getApplicationContext().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.apply();
+        databaseGetLocation = new DatabaseGetLocation(getApplicationContext());
         setID();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -176,7 +179,6 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 int numberDateNow = getPositionOfDateSelected();
                 dateSelected = gpsDateList.get(numberDateNow-1);
-                Log.d("dsrra","dateSelected = "+ dateSelected);
                 mMap.clear();
                 setMarker();
             }
@@ -187,7 +189,6 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 int numberDateNow = getPositionOfDateSelected();
                 dateSelected = gpsDateList.get(numberDateNow+1);
-                Log.d("dsrra","dateSelected = "+ dateSelected);
                 mMap.clear();
                 setMarker();
             }
@@ -198,7 +199,7 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
 
         toolbar = findViewById(R.id.toolbar_History_Location);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         //for crate home button
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -277,7 +278,6 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
                     {
                         dateTamp = formatDate(mData.get(i).getClient_GPS_Time(), DEFAULT_DATE_FORMAT);
                         gpsDateList.add(0,dateTamp);
-                        Log.d("dateTamp","dateTamp = "+ dateTamp );
                     }
                 }
             } catch (ParseException e) {
@@ -312,7 +312,8 @@ public class MapLocation extends AppCompatActivity implements OnMapReadyCallback
         //2020-08-26 08:20:00
         String date = gps.getClient_GPS_Time();
         gpsListShowMap.clear();
-        for (GPS mGPS:mData)
+        List<GPS> gpsListFromDate = databaseGetLocation.getAll_Location_ID_History_Date(gps.getDevice_ID(),dateSelected);
+        for (GPS mGPS:gpsListFromDate)
         {
             if(mGPS.getClient_GPS_Time().contains(dateSelected))
             {

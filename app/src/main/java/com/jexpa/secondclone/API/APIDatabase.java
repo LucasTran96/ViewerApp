@@ -1,6 +1,6 @@
 /*
   ClassName: APIDatabase.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: class APIDatabase used to create template methods for other reusable classes
@@ -64,7 +64,6 @@ public class APIDatabase {
             } else if (entry.getValue() instanceof Boolean) {
                 if(entry.getKey().equals(COLUMN_WIFI_ENABLED))
                 {
-                    Log.d("txValue", entry.getValue()+" = getValue");
                     contentValues1.put(entry.getKey(), ((Boolean)entry.getValue())?1:0);
                 }
                 else
@@ -162,7 +161,6 @@ public class APIDatabase {
     @SuppressLint("SetTextI18n")
     public static void getTimeLastSync(TextView textView, Context context, String timeModified)
     {
-        Log.d("zime", "timeModified = "+timeModified );
         String time = timeModified;
         String timeDate = timeModified;
         // Two-time comparison method
@@ -179,7 +177,6 @@ public class APIDatabase {
                 int timeBefore = Integer.parseInt(formatDate(timeModified, "mm"));
                 int timeAfter = Integer.parseInt(formatDate(APIURL.getTimeNow(), "mm"));
                 String timeDefault = formatDate(timeModified, DEFAULT_TIME_FORMAT);
-                Log.d("subTime", timeHoursAfter - timeHoursBefore+ "");
                 switch (timeEqual) {
                     case "Equals":
                         if (timeHoursAfter-timeHoursBefore == 0 || timeHoursAfter-timeHoursBefore == 1){
@@ -252,7 +249,6 @@ public class APIDatabase {
 
                 switch (timeEqual) {
                     case "Equals":
-                        Log.d("zdate","timeDefault = "+timeDefault);
                         dateChange = "Today "+timeDefault;
                         break;
                     case "Before":
@@ -282,13 +278,11 @@ public class APIDatabase {
                 LocalDate date1 = LocalDate.parse(getDateNow(formatStringToDate(dateString)));
                 LocalDate date2 = LocalDate.parse(getDateNow(null));
                 long subDate = date1.until(date2, ChronoUnit.DAYS);
-                Log.d("zdate", "subDate = "+ subDate);
                 if(subDate == 1)
                 {
                     dateChange = "Yesterday "+timeDefault ;
                 }
                 else {
-                    Log.d("zdate", "timeModified = "+ dateString);
                     dateChange = formatDateE(dateString,typeFormatDate);
                 }
             }
@@ -299,11 +293,9 @@ public class APIDatabase {
                     dateChange = "Yesterday "+timeDefault ;
                 }
                 else {
-                    Log.d("zdate", "timeModified = "+ dateString);
                     dateChange = formatDateE(dateString,typeFormatDate);
                 }
             }
-            Log.d("dssdsd", "dateChange = "+ dateChange);
             return dateChange;
     }
 

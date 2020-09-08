@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseNotes.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseNotes is used to create, add, modify, delete databases, save
   the history Notes from the server, use the "NotesHistory.class" and "NotesHistoryDetail.class".
@@ -53,7 +53,7 @@ public class DatabaseNotes  {
     public void createTable() {
 
         Log.i(Global.TAG, "DatabaseNotes.onCreate ... " + TABLE_NOTE_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_NOTE_HISTORY + "(" + COLUMN_ROWINDEX_NOTE + " INTEGER ," + COLUMN_ID_NOTE + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_NOTE_HISTORY + "(" + COLUMN_ROWINDEX_NOTE + " LONG ," + COLUMN_ID_NOTE + " LONG,"
                 + COLUMN_DEVICE_ID_NOTE + " TEXT," + COLUMN_CLIENT_NOTE_TIME + " TEXT," + COLUMN_CONTENT_NOTE + " TEXT,"
                 + COLUMN_CREATED_DATE_NOTE + " TEXT" + ")";
         database.getWritableDatabase().execSQL(scriptTable);
@@ -98,8 +98,8 @@ public class DatabaseNotes  {
 
 
                     Notes notes = new Notes();
-                    notes.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_NOTE)));
-                    notes.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_NOTE)));
+                    notes.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_NOTE)));
+                    notes.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_NOTE)));
                     notes.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_NOTE)));
                     notes.setClient_Note_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_NOTE_TIME)));
                     notes.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT_NOTE)));
@@ -115,10 +115,10 @@ public class DatabaseNotes  {
     }
 
     // Method retrieving data by date to compare.
-    public List<Integer> getAll_Location_ID_History_Date(String deviceID, String date) {
+    public List<Long> getAll_Location_ID_History_Date(String deviceID, String date) {
 
         Log.i(TAG, "DatabaseLocation.getAll_Location_ID_History_Date... " + TABLE_NOTE_HISTORY);
-        List<Integer> location_List = new ArrayList<>();
+        List<Long> location_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NOTE_HISTORY + " WHERE " + COLUMN_DEVICE_ID_NOTE + " = '" + deviceID + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
@@ -129,7 +129,7 @@ public class DatabaseNotes  {
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_NOTE_TIME)).substring(0, 10).equals(date)) {
-                    location_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_NOTE)));
+                    location_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_NOTE)));
                 }
                 // Add in List.
 

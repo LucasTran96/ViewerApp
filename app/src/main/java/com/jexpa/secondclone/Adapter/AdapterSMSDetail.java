@@ -1,6 +1,6 @@
 /*
   ClassName: AdapterSMSDetail.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: class AdapterSMSDetail used to customize the adapter for the RecyclerView of the "SMSHistoryDetail.class"
@@ -47,7 +47,6 @@ public class AdapterSMSDetail extends RecyclerView.Adapter {
     private SMSHistoryDetail sms_history_detail;
     private static List<SMS> mMessageList;
     Context context;
-
 
     public AdapterSMSDetail(Activity context, List<SMS> messageList)
     {
@@ -146,16 +145,14 @@ public class AdapterSMSDetail extends RecyclerView.Adapter {
                 try {
                     dateNext = formatDate(sms_history_detail.list_SMS_Detail.get(position-1).getClient_Message_Time(), DEFAULT_DATE_FORMAT);
                     dateHere = formatDate(sms_history_detail.list_SMS_Detail.get(position).getClient_Message_Time(), DEFAULT_DATE_FORMAT);
-                    Log.d("sxa", "dateHere = "+ dateHere + " dateNext = "+ dateNext);
+
                     if(!dateNext.equals(dateHere))
                     {
                         ln_Date_Sent.setVisibility(View.VISIBLE);
                         txt_Date_Unique.setVisibility(View.VISIBLE);
                         txt_Date_Unique.setText(time_Format);
-                        Log.d("sxa", "!dateNext.equals(dateHere)");
                     }
                     else {
-                        Log.d("sxa", "dateNext.equals(dateHere)");
                         ln_Date_Sent.setVisibility(View.GONE);
                         txt_Date_Unique.setVisibility(View.GONE);
                     }
@@ -163,12 +160,10 @@ public class AdapterSMSDetail extends RecyclerView.Adapter {
                     txt_Date_Unique.setVisibility(View.GONE);
                     ln_Date_Sent.setVisibility(View.GONE);
                     e.printStackTrace();
-                    Log.d("sxa", "dateNext "+ e.getMessage());
                 }
 
                 if(sms_history_detail.list_SMS_Detail.get(position-1).getDirection() == 0)
                 {
-
                     if(position < sms_history_detail.list_SMS_Detail.size()-1)
                     {
                         if(sms_history_detail.list_SMS_Detail.get(position+1).getDirection() == 1)
@@ -312,17 +307,14 @@ public class AdapterSMSDetail extends RecyclerView.Adapter {
                     try {
                         dateNext = formatDate(sms_history_detail.list_SMS_Detail.get(position-1).getClient_Message_Time(), DEFAULT_DATE_FORMAT);
                         dateHere = formatDate(sms_history_detail.list_SMS_Detail.get(position).getClient_Message_Time(), DEFAULT_DATE_FORMAT);
-                        Log.d("sxa", "dateHere = "+ dateHere + " dateNext = "+ dateNext);
+
                         if(!dateNext.equals(dateHere))
                         {
                             lnl_date.setVisibility(View.VISIBLE);
                             txt_Date_Unique.setVisibility(View.VISIBLE);
-
                             txt_Date_Unique.setText(time_Format);
-                            Log.d("sxa", "!dateNext.equals(dateHere)");
                         }
                         else {
-                            Log.d("sxa", "dateNext.equals(dateHere)");
                             txt_Date_Unique.setVisibility(View.GONE);
                             lnl_date.setVisibility(View.GONE);
                         }
@@ -330,9 +322,7 @@ public class AdapterSMSDetail extends RecyclerView.Adapter {
                         lnl_date.setVisibility(View.GONE);
                         txt_Date_Unique.setVisibility(View.GONE);
                         e.printStackTrace();
-                        Log.d("sxa", "dateNext "+ e.getMessage());
                     }
-
 
                     // Here is how to handle display corners of messages.
                     if(sms_history_detail.list_SMS_Detail.get(position-1).getDirection() == 1)
@@ -374,8 +364,6 @@ public class AdapterSMSDetail extends RecyclerView.Adapter {
                         profileImage.setImageDrawable(context.getResources().getDrawable(R.drawable.user));
                         messageText.setBackground(context.getResources().getDrawable(R.drawable.their_message));
                     }
-                    int a  = position;
-                    Log.d("pss", "Position = "+ a + " VS "+ "Position - 1 = "+ (a-1));
                 }
                 else {
                     profileImage.setImageDrawable(context.getResources().getDrawable(R.drawable.user));

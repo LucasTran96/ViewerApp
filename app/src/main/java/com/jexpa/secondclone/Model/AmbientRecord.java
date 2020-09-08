@@ -74,9 +74,4 @@ public class AmbientRecord implements Serializable {
         AmbientMediaLink = ambientMediaLink;
     }
 
-    // "date": "8/11/2020 9:42:16 AM",
-    // "fileName": "358333086268268_0.mp4",
-    // "duration": "00:04:15",
-    // "size": 1044656
-    // "AmbientMediaLink": "https://my.secondclone.com/_media/ambient",
 }

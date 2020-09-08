@@ -54,7 +54,6 @@ public class DashBoard extends AppCompatActivity {
         Slidr.attach(this);
         String modelDevice = getIntent().getStringExtra("device");
         packageID = getIntent().getIntExtra("packageID",4);
-        Log.i("zpackageID",packageID+"");
         /* database */
         DatabaseDevice databaseDevice = new DatabaseDevice(this);
         List<Table> tableList = databaseDevice.getAllDevice();

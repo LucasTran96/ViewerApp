@@ -15,7 +15,8 @@ import android.os.Parcelable;
 
 public class Photo implements Parcelable {
 
-    private int rowIndex, ID, IsLoaded;
+    private int IsLoaded;
+    private long rowIndex, ID;
     private String device_ID, client_Captured_Date, caption, file_Name, ext, media_URL, created_Date, CDN_URL;
 
     public Photo(Parcel in) {
@@ -36,19 +37,19 @@ public class Photo implements Parcelable {
 
     }
 
-    public int getRowIndex() {
+    public long getRowIndex() {
         return rowIndex;
     }
 
-    public void setRowIndex(int rowIndex) {
+    public void setRowIndex(long rowIndex) {
         this.rowIndex = rowIndex;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 
@@ -143,8 +144,8 @@ public class Photo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(rowIndex);
-        parcel.writeInt(ID);
+        parcel.writeLong(rowIndex);
+        parcel.writeLong(ID);
         parcel.writeInt(IsLoaded);
         parcel.writeString(device_ID);
         parcel.writeString(client_Captured_Date);
@@ -154,6 +155,5 @@ public class Photo implements Parcelable {
         parcel.writeString(media_URL);
         parcel.writeString(created_Date);
         parcel.writeString(CDN_URL);
-
     }
 }

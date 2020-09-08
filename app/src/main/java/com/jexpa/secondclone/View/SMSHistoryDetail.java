@@ -1,6 +1,6 @@
 /*
   ClassName: SMSHistoryDetail.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class SMSHistoryDetail use to show detailed SMS and SMS delete function.
@@ -11,7 +11,6 @@
 package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -25,8 +24,6 @@ import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.jexpa.secondclone.API.APIDatabase;
@@ -86,7 +83,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
         toolbar.setTitle(SMS_Contact_Name);
         // Set a logo to the toolbar.
         //toolbar.setLogo(R.drawable.user_small);
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -147,30 +144,6 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                 APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
             }
         }
-        //else If we test the network with false we get the data from SQLite
-        /*else {
-            int i = databaseGetSMS.getSMSCount(nameTable, nameDevice);
-            if (i == 0) {
-                Toast.makeText(this, "Data empty", Toast.LENGTH_SHORT).show();
-                APIDatabase.getThread(APIMethod.progressDialog);
-            } else {
-                list_SMS_Detail.clear();
-                list_SMS_Detail = databaseGetSMS.getAll_SMS_Name_Offset(SMS_Contact_Name, nameTable,0);
-                if (list_SMS_Detail.size() != 0) {
-                    // When assigning this List to another, the RecyclerView must be initialized
-                    adapter_SMS_Detail = new AdapterSMSDetail(this, list_SMS_Detail);
-                    ((LinearLayoutManager) mLayoutManager_Detail).setStackFromEnd(true);
-                    rcl_SMS_Detail.setAdapter(adapter_SMS_Detail);
-                    adapter_SMS_Detail.notifyDataSetChanged();
-                    if(list_SMS_Detail.size()>= NumberLoad)
-                    {
-                        initScrollListener();
-                    }
-                } else {
-                    APIURL.alertDialog(SMSHistoryDetail.this, "Messages", "Messages Empty!");
-                }
-            }
-        }*/
     }
 
     @Override
@@ -221,7 +194,6 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                 }
                 onCreateCroll = true;
             }
-
         });
     }
 
@@ -278,15 +250,13 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
             }
             else {
                 // If there is no internet we do not let users delete SMS :)
-                Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
                 adapter_SMS_Detail.notifyDataSetChanged();
             }
         }
         else if(item.getItemId() ==  R.id.item_select_all)
         {
-
-            Log.d("TestselectAll", "TestselectAll = "+selectAll+"");
             if(!selectAll)
             {
                 selectionList_Detail.clear();

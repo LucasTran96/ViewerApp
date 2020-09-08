@@ -1,6 +1,6 @@
 /*
   ClassName: URLHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class URLHistory used to display the URL list of the phone being called from the sever to the RecyclerView of the class.
@@ -11,8 +11,6 @@
 package com.jexpa.secondclone.View;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -115,7 +113,7 @@ public class URLHistory extends AppCompatActivity {
     private void setID() {
         toolbar = findViewById(R.id.toolbar_URL);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.URL_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,8 +122,8 @@ public class URLHistory extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
         int width = displayMetrics.widthPixels;
-        Log.d("hhhh", "\t\t\t\theight = "+ height);
-        Log.d("hhhh", "\t\t\t\twidth = "+ width);
+        Log.d("height", "\theight = "+ height);
+        Log.d("width", "\ttwidth = "+ width);
         lnl_Total = findViewById(R.id.lnl_Total);
         lnl_Total.setVisibility(View.INVISIBLE);
         txt_No_Data_URL = findViewById(R.id.txt_No_Data_URL);
@@ -201,15 +199,13 @@ public class URLHistory extends AppCompatActivity {
                         Gson gson = new Gson();
                         URL url = gson.fromJson(String.valueOf(GPSJson.get(i)), URL.class);
                         urlListAdd.add(url);
-                        Log.d("URLHistory"," Add URL = "+  url.getURL_Link());
 
                     }
                     if (urlListAdd.size() != 0) {
                         database_url.addDevice_URL(urlListAdd);
                     }
                 }
-                //mData.clear();
-                Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+
                 List<URL> mDataTamp = database_url.getAll_URL_ID_History(table.getDevice_ID(),currentSize);
                 //mData.addAll(mDataTamp);
 
@@ -217,7 +213,6 @@ public class URLHistory extends AppCompatActivity {
                 {
                     int insertIndex = mData.size();
                     mData.addAll(insertIndex, mDataTamp);
-                    Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                 }
                 else {
@@ -251,7 +246,6 @@ public class URLHistory extends AppCompatActivity {
             }
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -329,7 +323,6 @@ public class URLHistory extends AppCompatActivity {
                         // Here is the total item value contact of device current has on CPanel
                         long totalContact = getSharedPreferLong(getApplicationContext(), URL_TOTAL);
                         new getURLAsyncTask(currentSize+1).execute();
-                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
                         if((mData.size()+1) >= totalContact)
                         {
                             endLoading = true;
@@ -373,7 +366,7 @@ public class URLHistory extends AppCompatActivity {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_Location().execute();
             } else {
-                Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
                 mAdapter.notifyDataSetChanged();
             }
@@ -406,7 +399,6 @@ public class URLHistory extends AppCompatActivity {
             else {
                 super.onBackPressed();
             }
-
         }
         return true;
     }

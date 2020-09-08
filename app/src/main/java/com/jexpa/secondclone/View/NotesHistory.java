@@ -1,6 +1,6 @@
 /*
   ClassName: NotesHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class NotesHistory used to display the Notes history list from the sever on the RecyclerView of the class.
@@ -76,7 +76,7 @@ public class NotesHistory extends AppCompatActivity {
         isInActionMode = false;
         toolbar = findViewById(R.id.toolbar_Notes_History);
         toolbar.setTitle("  " + MyApplication.getResourcses().getString(R.string.NOTES_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -148,7 +148,7 @@ public class NotesHistory extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 if (GPSJson.length() != 0) {
-                    List<Integer> listDateCheck = database_notes.getAll_Location_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
+                    List<Long> listDateCheck = database_notes.getAll_Location_ID_History_Date(table.getDevice_ID(), min_Time.substring(0, 10));
                     int save;
                     Log.d("DateCheck", "NotesHistory = " + listDateCheck.size());
                     for (int i = 0; i < GPSJson.length(); i++) {
@@ -159,7 +159,7 @@ public class NotesHistory extends AppCompatActivity {
                         //database_notes.addDevice_Application(notes);
                         save = 0;
                         if (listDateCheck.size() != 0) {
-                            for (Integer listCheck : listDateCheck) {
+                            for (long listCheck : listDateCheck) {
                                 if (notes.getID() == listCheck) {
                                     save = 1;
                                     break;
@@ -261,7 +261,6 @@ public class NotesHistory extends AppCompatActivity {
                 selectionList.addAll(mData);
                 updateViewCounter();
                 mAdapter.notifyDataSetChanged();
-
             }
             else {
                 selectAll = false;
@@ -269,7 +268,6 @@ public class NotesHistory extends AppCompatActivity {
                 updateViewCounter();
                 mAdapter.notifyDataSetChanged();
             }
-
         }
         else if (item.getItemId() == android.R.id.home) {
             if(isInActionMode)
@@ -281,7 +279,6 @@ public class NotesHistory extends AppCompatActivity {
                 super.onBackPressed();
             }
         }
-
         return true;
     }
 
@@ -304,8 +301,6 @@ public class NotesHistory extends AppCompatActivity {
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" List_ID=\"" + listID + "\" />";
             String function = "ClearMultiNote";
             return APIURL.POST(value, function);
-
-
         }
 
         @Override
@@ -321,8 +316,6 @@ public class NotesHistory extends AppCompatActivity {
                 Toast.makeText(NotesHistory.this, bodyLogin.getDescription(), Toast.LENGTH_SHORT).show();
                 clearActionMode();
             }
-
-
             // get Method getThread()
             //getThread(progressDialog);
             APIMethod.progressDialog.dismiss();
@@ -365,16 +358,6 @@ public class NotesHistory extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-//    @Override
-//    protected void onResume() {
-//        mData.clear();
-//        mData = database_notes.getAll_Notes_ID_History(table.getDevice_ID());
-//        mAdapter = new AdapterNoteHistory(NotesHistory.this, (ArrayList<Notes>) mData);
-//        mRecyclerView.setAdapter(mAdapter);
-//        mAdapter.notifyDataSetChanged();
-//        super.onResume();
-//    }
 
     @Override
     protected void onDestroy() {

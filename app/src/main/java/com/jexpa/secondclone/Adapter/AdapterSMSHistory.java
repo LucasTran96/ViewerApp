@@ -1,6 +1,6 @@
 /*
   ClassName: AdapterSMSHistory.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: class AdapterSMSHistory used to customize the adapter for the RecyclerView of the "SMSHistory.class"
@@ -73,7 +73,6 @@ public class AdapterSMSHistory extends RecyclerView.Adapter<AdapterSMSHistory.Vi
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
                 SMS sms = mDataSet.get(position);
-                Log.d("dssdsd", sms.getClient_Message_Time());
                 MyApplication.getInstance().trackEvent("SMSHistory", "View SMS detail: " + sms.getContact_Name(), "" + sms.getContact_Name());
                 // Path through new activity.
                 Log.d("nameTable", SMSHistory.name_Table_SMSHistory);
@@ -105,13 +104,11 @@ public class AdapterSMSHistory extends RecyclerView.Adapter<AdapterSMSHistory.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SMS sms = mDataSet.get(position);
-        Log.d("dssdsd", sms.getClient_Message_Time());
         holder.txt_User_Name_SMS.setText(sms.getContact_Name());
         holder.txt_Message__SMS.setText(sms.getText_Message());
         String time_SMS;
         time_SMS = checkValueStringT(sms.getClient_Message_Time());
         String date = getTimeItem(time_SMS,null);
-        Log.d("dssdsd", "date = "+date);
         String dateFinal [] = date.split(" ");
         holder.txt_time_SMS.setText(dateFinal[0]);
         if(dateFinal.length>1)

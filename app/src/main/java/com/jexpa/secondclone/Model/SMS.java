@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class SMS implements Serializable {
 
 
-    private int ID;
+    private long ID;
     private String Device_ID;
     private String Client_Message_Time;
     private String Phone_Number_SIM;
@@ -25,7 +25,7 @@ public class SMS implements Serializable {
     private String Contact_Name;
     private String Created_Date;
 
-    public SMS(int ID, String device_ID, String client_Message_Time, String phone_Number_SIM
+    public SMS(long ID, String device_ID, String client_Message_Time, String phone_Number_SIM
             , String phone_Number, int direction, String text_Message, String contact_Name
             , String created_Date) {
         this.ID = ID;
@@ -42,11 +42,11 @@ public class SMS implements Serializable {
     public SMS() {
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 

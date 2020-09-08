@@ -34,7 +34,6 @@ import com.google.gson.Gson;
 import com.jexpa.secondclone.API.APIMethod;
 import com.jexpa.secondclone.API.APIURL;
 import com.jexpa.secondclone.Adapter.AdapterCallHistory;
-import com.jexpa.secondclone.Adapter.AdapterSMSDetail;
 import com.jexpa.secondclone.Database.DatabaseCallHistory;
 import com.jexpa.secondclone.Database.DatabaseLastUpdate;
 import com.jexpa.secondclone.Model.Call;
@@ -67,10 +66,8 @@ import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
-import static com.jexpa.secondclone.Adapter.AdapterCallHistory.itemStateArrayCall;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CALL;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
-import static com.jexpa.secondclone.View.SMSHistoryDetail.selectionList_Detail;
 
 
 public class CallHistory extends AppCompatActivity {
@@ -106,7 +103,7 @@ public class CallHistory extends AppCompatActivity {
         isInActionMode = false;
         toolbar = findViewById(R.id.toolbar_Call);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CALL_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -211,10 +208,7 @@ public class CallHistory extends AppCompatActivity {
                         // Here is the total item value contact of device current has on CPanel
                         long totalContact = getSharedPreferLong(getApplicationContext(), CALL_TOTAL);
                         new getCallAsyncTask(currentSize+1).execute();
-                        //                        List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
-                        //
-                        //                        mData.addAll(mDataStamp);
-                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+
                         if((mData.size()+1) >= totalContact)
                         {
                             endLoading = true;

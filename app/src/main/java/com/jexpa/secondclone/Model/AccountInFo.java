@@ -1,7 +1,7 @@
 /*
   ClassName: AccountInFo.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description:
   History:2018-10-08
@@ -28,24 +28,6 @@ public class AccountInFo implements Serializable {
     private String Last_IP_Access;
     private String Last_Time_Access;
     private String Time_Zone_ID;
-
-//    public AccountInFo(String ID, String login_Name, String password, String expiry_Date, String status, String created_Date, String modified_Date, String user_Type, String nick_Name, String max_Device, String package_ID, String tracking_Level, String last_IP_Access, String last_Time_Access, String time_Zone_ID) {
-//        this.ID = ID;
-//        Login_Name = login_Name;
-//        Password = password;
-//        Expiry_Date = expiry_Date;
-//        Status = status;
-//        Created_Date = created_Date;
-//        Modified_Date = modified_Date;
-//        User_Type = user_Type;
-//        Nick_Name = nick_Name;
-//        Max_Device = max_Device;
-//        Package_ID = package_ID;
-//        Tracking_Level = tracking_Level;
-//        Last_IP_Access = last_IP_Access;
-//        Last_Time_Access = last_Time_Access;
-//        Time_Zone_ID = time_Zone_ID;
-//    }
 
     public AccountInFo() {
     }

@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseDevice.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseDevice is used to create, add, modify, delete databases, save
   the Device from the server, use the "ManagementDevice.class".
@@ -73,7 +73,7 @@ public class DatabaseDevice
         Log.i(TAG, "DatabaseUser.onCreate ... " + TABLE_DEVICE);
         // Script create tables.
         String scriptTable = "CREATE TABLE " + TABLE_DEVICE + "("
-                + COLUMN_ID + " INTEGER ,"
+                + COLUMN_ID + " LONG ,"
                 + COLUMN_LOGIN_NAME + " TEXT,"
                 + COLUMN_Device_ID + " TEXT,"
                 + COLUMN_DEVICE_NAME + " TEXT,"

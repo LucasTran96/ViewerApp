@@ -21,12 +21,13 @@ public class Contact implements Serializable {
 
     private String Device_ID, Client_Contact_Time,
             Contact_Name, Phone, Email, Organization, Address, Created_Date;
-    private int RowIndex, ID,color;
+    private int color;
+    private long RowIndex, ID;
 
     public Contact() {
     }
 
-    public Contact(String device_ID, String client_Contact_Time, String contact_Name, String phone, String email, String organization, String address, String created_Date, int rowIndex, int ID) {
+    public Contact(String device_ID, String client_Contact_Time, String contact_Name, String phone, String email, String organization, String address, String created_Date, long rowIndex, long ID) {
         Device_ID = device_ID;
         Client_Contact_Time = client_Contact_Time;
         Contact_Name = contact_Name;
@@ -112,19 +113,19 @@ public class Contact implements Serializable {
         Created_Date = created_Date;
     }
 
-    public int getRowIndex() {
+    public long getRowIndex() {
         return RowIndex;
     }
 
-    public void setRowIndex(int rowIndex) {
+    public void setRowIndex(long rowIndex) {
         RowIndex = rowIndex;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 }

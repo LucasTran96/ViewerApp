@@ -19,8 +19,6 @@ public class Data implements Serializable {
     private String DeviceFeature;
     private String DeviceLive;
 
-
-
     public Data() {
     }
 

@@ -149,9 +149,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
             if (sub_Date / (DATE) > -6) {
                 // show button renew
                 ln_Renew.setVisibility(View.VISIBLE);
-
             } else {
-
                 // If before 5 days will hide the button renew
                 //hide button renew
                 ln_Renew.setVisibility(View.GONE);
@@ -177,8 +175,6 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
     @SuppressLint("SetTextI18n")
     private void getAccountInfo() {
         if (isConnected(this)) {
-//            avLoadingIndicatorView.setVisibility(View.VISIBLE);
-//            startAnim(avLoadingIndicatorView);
             new accountAsyncTask().execute();
         } else {
             // int i: Count objects in the User table.
@@ -450,38 +446,6 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
             }
         }
     }
-
-//    public void swipeRefreshLayout() {
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                Calendar calendar = Calendar.getInstance();
-//                if (isConnected(getApplicationContext())) {
-//                    if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-//                        new deviceAsyncTask().execute();
-//                        new accountAsyncTask().execute();
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//
-//                                swipeRefreshLayout.setRefreshing(false);
-//                                Toast.makeText(ManagementDevice.this, "The data has been updated.", Toast.LENGTH_SHORT).show();
-//                                Calendar calendar1 = Calendar.getInstance();
-//                                time_Refresh_Device = calendar1.getTimeInMillis();
-//                            }
-//                        }, 1000);
-//                    } else {
-//                        swipeRefreshLayout.setRefreshing(false);
-//                        Toast.makeText(ManagementDevice.this, "The data has been updated.", Toast.LENGTH_SHORT).show();
-//                        // Toast.makeText(ManagementDevice.this, calendar.getTimeInMillis()- timeRefresh_Device +"", Toast.LENGTH_SHORT).show();
-//                    }
-//                } else {
-//                    swipeRefreshLayout.setRefreshing(false);
-//                    noInternet(ManagementDevice.this);
-//                }
-//            }
-//        });
-//    }
 
     @Override
     public void onBackPressed() {

@@ -1,6 +1,6 @@
 /*
   ClassName: APIURL.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class APIURL use this to create a method to associate the form to other classes
@@ -96,6 +96,7 @@ public class APIURL {
             } else {
                 result = "Did not work!";
             }
+            Log.d("tsdds","result = "+result+ " function = "+ function);
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }

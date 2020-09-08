@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseUserInfo.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseUser is used to create, add, modify, delete databases, save
   the history User from sever, use the "ManagementDevice.class" and "Dashboard.class".
@@ -59,7 +59,7 @@ public class DatabaseUserInfo
         Log.i(TAG, "DatabaseUser.onCreate ... " + TABLE_USER_INFO);
         // Script create table.
         String scriptTable = "CREATE TABLE " + TABLE_USER_INFO + "("
-                + COLUMN_ID_USERINFO + " INTEGER PRIMARY KEY," + COLUMN_LOGIN_NAME_USER + " TEXT,"
+                + COLUMN_ID_USERINFO + " LONG PRIMARY KEY," + COLUMN_LOGIN_NAME_USER + " TEXT,"
                 + COLUMN_PASSWORD_USER + " TEXT," + COLUMN_EXPIRY_DATE + " TEXT," + COLUMN_STATUS + " TEXT,"
                 + COLUMN_CREATED_DATE_USER + " TEXT," + COLUMN_MODIFIED_DATE + " TEXT," +
                 COLUMN_USER_TYPE + " TEXT," + COLUMN_NICK_NAME + " TEXT," + COLUMN_MAX_DEVICE + " TEXT,"
@@ -77,8 +77,6 @@ public class DatabaseUserInfo
         database.getWritableDatabase().insert(TABLE_USER_INFO, null, values);
         //Close the database connection.
         database.close();
-
-
     }
 
     // User user1=getNote(1);
@@ -95,7 +93,7 @@ public class DatabaseUserInfo
         if (cursor.moveToFirst()) {
             do {
                 AccountInFo accountInFo = new AccountInFo();
-                accountInFo.setID(String.valueOf(cursor.getInt(0)));
+                accountInFo.setID(String.valueOf(cursor.getLong(0)));
                 accountInFo.setLogin_Name(cursor.getString(1));
                 accountInFo.setPassword(cursor.getString(2));
                 accountInFo.setExpiry_Date(cursor.getString(3));

@@ -1,7 +1,7 @@
 /*
   ClassName: AdapterCallHistory.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: class AdapterCallHistory used to customize the adapter for the RecyclerView of the "CallHistory.class"
   History:2018-10-08
@@ -130,7 +130,7 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
                 //holder.txt_Number_Call_History.setText(call.getPhone_Number_SIM());
                 holder.txt_Number_Call_History.setText(call.getPhone_Number_SIM());
             }
-            if (call.getDuration() == 0 && call.getDirection() == 1) {
+            if (call.getDuration() == 0) {
                 holder.img_Status_Call_History.setImageResource(R.drawable.miss_call);
             } else {
                 //Incoming call or outgoing call.

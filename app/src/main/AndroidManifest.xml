@@ -34,7 +34,7 @@
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/iconappsecondclone"
-        android:label="Viewer App"
+        android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/iconappsecondclone_round"
         android:supportsRtl="true"

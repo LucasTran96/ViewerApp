@@ -1,6 +1,6 @@
 /*
   ClassName: DatabaseCall.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseCall is used to create, add, modify, delete databases, save
@@ -55,7 +55,7 @@ public class DatabaseCallHistory {
     private void createTable() {
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_CALL_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_CALL_HISTORY + "(" + COLUMN_ROWINDEX_CALL + " INTEGER ," + COLUMN_ID_CALL + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_CALL_HISTORY + "(" + COLUMN_ROWINDEX_CALL + " LONG ," + COLUMN_ID_CALL + " LONG,"
                 + COLUMN_DEVICE_ID_CALL + " TEXT," + COLUMN_CLIENT_CALL_TIME_CALL + " TEXT," + COLUMN_PHONE_NUMBER_SIM_CALL + " TEXT,"
                 + COLUMN_PHONE_NUMBER_CALL + " TEXT," + COLUMN_DIRECTION_CALL + " INTEGER," + COLUMN_DURATION_CALL + " INTEGER," +
                 COLUMN_CONTACT_NAME + " TEXT," + COLUMN_CREATED_DATE + " TEXT" + ")";

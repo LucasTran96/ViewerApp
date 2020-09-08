@@ -1,6 +1,6 @@
 /*
   ClassName: ContactHistoryDetail.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class ContactHistoryDetail use to display a contact and add a call or message function or copy a phone number.
@@ -21,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +59,7 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
     private void setID() {
         toolbar = findViewById(R.id.toolbar_Contact);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CONTACT_DETAIL_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -145,7 +144,6 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
                 copyToClipBoard(txt_Number_Contact_Detail.getText().toString() + "");
                 break;
             }
-
         }
     }
 

@@ -12,7 +12,7 @@
         android:id="@+id/toolbar_History_Location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/custombgshopp"
+        android:background="@drawable/custom_bg_shopp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
@@ -20,7 +20,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/custombgshopp">
+        android:background="@drawable/custom_bg_shopp">
 
         <ImageView
             android:id="@+id/img_back_History_Location"

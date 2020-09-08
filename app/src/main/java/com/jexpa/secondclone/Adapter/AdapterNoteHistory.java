@@ -1,6 +1,6 @@
 /*
   ClassName: AdapterNoteHistory.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: class AdapterNoteHistory used to customize the adapter for the RecyclerView of the "NotesHistory.class"

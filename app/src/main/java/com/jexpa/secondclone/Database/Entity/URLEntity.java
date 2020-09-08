@@ -1,7 +1,7 @@
 /*
   ClassName: URLEntity.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   History:2018-10-08
   Copyright © 2018 Jexpa LLC. All rights reserved.

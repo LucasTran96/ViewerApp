@@ -2,49 +2,48 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- "SecondClone" ==> This is the default name of the application you can replace it at will.-->
-    <string name = "PRODUCT_NAME" tools:ignore="MissingTranslation" translatable="false">SecondClone</string>
+    <string name = "PRODUCT_NAME" tools:ignore="MissingTranslation" translatable="false">ViewerApp</string>
+
+    <!--NOTE: how to change application LABEL-->
+    /* app_name: Please open the strings.xml to change app_name. */
 
     <!-- "1.01.11" ==> This is the version that is used to display the activity of the application you can replace it as desired.-->
-    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">1.01.18</string>
+    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">1.01.20</string>
+
     <!--NOTE: how to change default version of the application -->
     <!--1.Go to build.gradle(Module: app)  in Android/Gradle Scripts/build.gradle(Module: app)-->
     <!--2.Look in the build.gradle(Module: app) file for the defaultConfig{ } tag.-->
     <!--3.In the tag, look for versionName "1.01.16" tag.-->
     <!--4.Set the value of versionName tag as-->
-    <!--versionName "1.01.11"-->
+    <!--versionName "1.01.20"-->
     <!--Rename to-->
     <!--versionName "Number version of you"-->
 
-    <!--Copyright © 2010-2018 SecondClone. All rights reserved.-->
     <!--This is the default copyright you can change it under the copyright you need to use.-->
-    <string name = "COPYRIGHT" tools:ignore="MissingTranslation,TypographyDashes" translatable="false">Copyright © 2010-2019 SecondClone. All rights reserved.</string>
+    <string name = "COPYRIGHT" tools:ignore="MissingTranslation,TypographyDashes" translatable="false">Copyright © 2010-2020 SecondClone. All rights reserved.</string>
 
     <!--"http://my.secondclone.com/favicon.ico" ==> This is the default icon used for Class: ManagementDevice, Authentication, LaunchScreen.-->
     <!--This is the default icon link you can change with the icon you need to use.-->
     <string name = "LOGO_IMAGE_PATH" tools:ignore="MissingTranslation,ReferenceType" translatable="false">https://my.secondclone.com/favicon.ico</string>
 
-    <!--http://monitor-protocol-a.secondclone.com-->
+    <!--http://monitor-protocol-a.secondclone.com--> <!--http://protocol-viewer-a.copy9.com-->
     <!--This is the default protocol link you can change by the protocol you need to use.-->
-    <string name = "DEFAULT_URL_LINK" tools:ignore="MissingTranslation" translatable="false">http://monitor-protocol-a.secondclone.com</string>
+    <string name = "DEFAULT_LINK_PROTOCOL_URL" tools:ignore="MissingTranslation" translatable="false">http://protocol-viewer-a.copy9.com</string>
 
-    <!--http://my.secondclone.com/Account/ForgotPassword-->
     <!--This is the default FORGET PASSWORD you can change by the FORGET PASSWORD you need to use.-->
     <string name = "LINK_FORGET_PASSWORD" tools:ignore="MissingTranslation" translatable="false">https://my.secondclone.com/Account/ForgotPassword</string>
 
-    <!--http://secondclone.com/about-us/-->
     <!--This is the default ABOUT US you can change by the ABOUT US you need to use.-->
     <string name = "LINK_ABOUT_US" tools:ignore="MissingTranslation" translatable="false">https://www.secondclone.com/about-us/</string>
 
-    <!--http://my.secondclone.com/Prices-->
     <!--This is the default Renew you can change by the Renew you need to use.-->
     <string name = "LINK_RENEW" tools:ignore="MissingTranslation" translatable="false">https://my.secondclone.com/Prices</string>
 
-    <!--http://my.secondclone.com/Account/SignUp-->
     <!--This is the default link Register you can change by the link Register you need to use.-->
     <string name = "LINK_REGISTER" tools:ignore="MissingTranslation" translatable="false">http://my.secondclone.com/Account/SignUp</string>
 
     <!--NOTE: how to change trackingId of Google Analytics -->
-    <!--1.Go to app_tracker in app/res/app_tracker.xml-->
+    <!--1.Go to app_tracker in app/res/xml/app_tracker.xml-->
     <!--2.In the tag, look for <string name="ga_trackingId"></string> tag.-->
     <!--3.Set the value of name="ga_trackingId" tag as-->
     <!--<string name="ga_trackingId">UA-63493131-2</string>-->
@@ -62,16 +61,6 @@
             <!--android:icon="@drawable/Name your icon"-->
     <!--You are done. Save the changes and test.-->
 
-    <!--NOTE: how to change application LABEL-->
-    <!--1.Go to AndroidManifest.xml in app/manifests/AndroidManifests.xml-->
-    <!--2.Look in the application's AndroidManifest.xml file for the <application> tag.-->
-    <!--3.In the tag, look for android:Label tag.-->
-    <!--4.Set the value of android:Label tag as-->
-    <!--android:label="SecondClone.Server"-->
-    <!--Rename to-->
-    <!--android:icon="your label"-->
-    <!--You are done. Save the changes and test.-->
-
 
     <!--COMPANY & PRODUCT Jexpa-->
     <string name="COMPANY_NAME" tools:ignore="MissingTranslation" translatable="false">Centered System LLC</string>
@@ -85,7 +74,6 @@
 
     <!--LINKS & WEBSITE-->
     <string name="WEBSITE_ANDROID_DOWNLOAD" tools:ignore="MissingTranslation" translatable="false">http://d.secondclone.com</string>
-    <string name="WEBSITE_BLOG" tools:ignore="MissingTranslation" translatable="false">http://blog.secondclone.com</string>
     <string name="WEBSITE_PROTOCOL" tools:ignore="MissingTranslation" translatable="false">monitor-protocol-a.secondclone.com</string>
     <string name="LINK_WEBSITE" tools:ignore="MissingTranslation" translatable="false">https://secondclone.com</string>
 

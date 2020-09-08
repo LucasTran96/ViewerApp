@@ -1,6 +1,6 @@
 /*
   ClassName: ContactHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class ContactHistory used to display the phone's history of phone calls from the sever on display on the RecyclerView of the class.
@@ -13,7 +13,6 @@ package com.jexpa.secondclone.View;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -117,7 +116,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     {
         toolbar = findViewById(R.id.toolbar_Contact);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.CONTACT_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -168,7 +167,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 }
                 txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL)+"");
                 txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-
             }
         }
     }
@@ -216,7 +214,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         // Here is the total item value contact of device current has on CPanel
                         long totalContact = getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL);
                         new contactAsyncTask(currentSize+1).execute();
-                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
                         if((mData.size()+1) >= totalContact)
                         {
                             endLoading = true;
@@ -321,6 +318,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 //mData.clear();
                 Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                 List<Contact> mDataTamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
+                Log.d("ContactHistory"," currentSize "+ mDataTamp.size());
                 //mData.addAll(mDataTamp);
 
 
@@ -406,7 +404,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     }
 
     public void prepareSelection(Contact contact,int position) {
-        int contactID = contact.getID();
+        long contactID = contact.getID();
         int add = 0;
        for (Contact row : selectionList){
            if(row.getID()==(contactID)){
@@ -447,7 +445,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 new clear_Contact().execute();
 
             } else {
-                Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
                 mAdapter.notifyDataSetChanged();
             }

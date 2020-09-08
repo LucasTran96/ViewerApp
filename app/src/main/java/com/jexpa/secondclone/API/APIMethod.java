@@ -1,6 +1,6 @@
 /*
   ClassName: APIMethod.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: class APIMethod used to create template methods for other reusable classes
@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jexpa.secondclone.Adapter.AdapterPhoneCallRecordHistory;
+import com.jexpa.secondclone.Model.AmbientRecord;
 import com.jexpa.secondclone.Model.Contact;
 import com.jexpa.secondclone.Model.Table;
 import com.jexpa.secondclone.R;
@@ -83,6 +84,7 @@ import static com.jexpa.secondclone.API.Global.SMS_WHATSAPP_TYPE;
 import static com.jexpa.secondclone.API.Global.VIBER_TOTAL;
 import static com.jexpa.secondclone.API.Global.WHATSAPP_TOTAL;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
+import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_CREATED_DATE_AMBIENTRECORD;
 
 
 public class APIMethod {
@@ -156,14 +158,11 @@ public class APIMethod {
             if (!(str.startsWith("http://") || str.startsWith("https://"))) {
                 str =  str.replace("http://","").replace("https://","");
                 str = "http://"+ str.trim();
-                Log.d("txhost", str+" 16");
 
             }
             String host = new URI(str).getHost();
-            Log.d("txhost", host+" 18");
             if(host != null && (!host.isEmpty()))
             {
-                Log.d("txhost", host+" 20");
                 if (host.contains("www.")) {
                     host = host.replace("www.","");
                 }
@@ -186,7 +185,6 @@ public class APIMethod {
                 }
 
             }
-            Log.d("txhost", host+"");
             return host.trim();
         } catch (Throwable th) {
             th.printStackTrace();
@@ -205,8 +203,6 @@ public class APIMethod {
             String totalRow = "0";
             try {
                 totalRow = jsonArray.getJSONObject(0).getString("TotalRow");
-                Log.d("totalRow"," totalRow = "+ totalRow);
-                Log.d("txstyle","name_Log = " + name_Log + " totalRow = "+ totalRow );
                 if(totalRow != null)
                 {
                     setSharedPreferLong(context,name_Log,Long.parseLong(totalRow));
@@ -218,8 +214,6 @@ public class APIMethod {
         }
     }
 
-
-
     /**
      * setToTalLog JSONObject is the method to get the total number of items in a feature called from the server.
      * @return
@@ -230,7 +224,6 @@ public class APIMethod {
             String totalRow = "0";
             try {
                 totalRow = jsonObject.getString("TotalRecord");
-                Log.d("totalRow"," TotalRecord = "+ totalRow);
                 if(totalRow != null)
                 {
                     setSharedPreferLong(context,name_Log,Long.parseLong(totalRow));
@@ -251,7 +244,6 @@ public class APIMethod {
     {
                 String totalRowTamp = "0";
                 totalRowTamp = totalRow;
-                Log.d("txstyle","name_Log = " + name_Log + " totalRow = "+ totalRowTamp );
                 if(totalRowTamp != null)
                 {
                     setSharedPreferLong(context,name_Log,Long.parseLong(totalRowTamp));
@@ -311,7 +303,6 @@ public class APIMethod {
                 sms_Total = getSharedPreferLong(context, HANGOUTS_TOTAL);
                 break;
         }
-        Log.d("tal","sms_Total = "+sms_Total+ "  style = "+ style + " === "+SMS_TOTAL);
         return String.valueOf(sms_Total);
     }
 
@@ -328,7 +319,6 @@ public class APIMethod {
             {
                 try {
                     totalRow = jsonArray.getJSONObject(0).getString(nameTotal);
-                    Log.d("totalRow"," totalRow = "+ totalRow);
                     if(totalRow != null)
                     {
                         return totalRow;
@@ -400,6 +390,25 @@ public class APIMethod {
             cursor.close();
             return false;
         }
+    }
+
+    /**
+     * checkItemExist This is a support method to check whether this record already exists in the database or not and add it to the database.
+     */
+    public static String checkItemExistWithDeviceIDString(SQLiteDatabase database, String tableName, String rawDeviceID, String deviceID, String rawIdContact, String nameFile, AmbientRecord ambientRecord){
+
+        boolean checkExits;
+        String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'", tableName, rawDeviceID, deviceID, rawIdContact, nameFile);
+        Cursor cursor = database.rawQuery(query, null);
+        String timeOld = "";
+        if (cursor.moveToFirst())
+        {
+            timeOld = cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_AMBIENTRECORD));
+            cursor.close();
+        } else {
+            cursor.close();
+        }
+        return timeOld;
     }
 
     /*

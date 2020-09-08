@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseGetSetting.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseGetSetting is used to create, add, modify, delete databases, save
   the history Setting from the server, use the "Dashboard.class".
@@ -114,7 +114,7 @@ public class DatabaseGetSetting
         Log.i(TAG, "DatabaseFeature.onCreate ... " + TABLE_GET_SETTING);
         // PRIMARY KEY
         String scriptTable = "CREATE TABLE " + TABLE_GET_SETTING + "("
-                + COLUMN_GETSETTING_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_GETSETTING_ID + " LONG PRIMARY KEY,"
                 + COLUMN_GETSETTING_Device_ID + " TEXT,"
                 + COLUMN_GETSETTING_CALENDAR + " TEXT,"
                 + COLUMN_GETSETTING_SMS + " INTEGER,"
@@ -191,12 +191,10 @@ public class DatabaseGetSetting
         ContentValues contentValues1 = API_Add_Database(deviceFeature,true);
         if(!checkItemExist(COLUMN_GETSETTING_ID,String.valueOf(deviceFeature.getID()),TABLE_GET_SETTING))
         {
-            Log.d("checka", "checkItemExist = "+false);
             database.getWritableDatabase().insert(TABLE_GET_SETTING, null, contentValues1);
         }
         else
         {
-            Log.d("checka", "checkItemExist = "+true);
             database.getWritableDatabase().update(TABLE_GET_SETTING,  contentValues1,COLUMN_GETSETTING_ID + " = ?",
                     new String[]{String.valueOf(deviceFeature.getID())});
         }

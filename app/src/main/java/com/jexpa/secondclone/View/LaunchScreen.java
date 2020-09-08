@@ -1,6 +1,6 @@
 /*
   ClassName: LaunchScreen.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class LaunchScreen use to check whether logged in or not logged in before
@@ -14,6 +14,7 @@ import com.jexpa.secondclone.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -58,7 +59,8 @@ public class LaunchScreen extends AppCompatActivity {
         String language = prefs.getString("MyLang", "");
         setLocale(language);
         //The method of checking the file distributing.xml exists or not.
-        checkFileDistributingExist();
+        checkFileDistributingExist(getApplicationContext());
+
         ImageView img_Logo_Launch = findViewById(R.id.img_Logo_Launch);
         TextView txt_AppName_Launch = findViewById(R.id.txt_AppName_Launch);
         TextView txt_VersionName_Launch = findViewById(R.id.txt_VersionName_Launch);
@@ -127,39 +129,37 @@ public class LaunchScreen extends AppCompatActivity {
         editor.apply();
     }
 
-    private void checkFileDistributingExist() {
-        int resId = LaunchScreen.this.getResources().getIdentifier(
+    public static void checkFileDistributingExist(Context context) {
+        int resId = context.getResources().getIdentifier(
                 "PRODUCT_NAME",
                 "string",
-                LaunchScreen.this.getPackageName()
+                context.getPackageName()
         );
         try {
             Log.d("resId", resId + "");
             if (resId != 0) {
 
-                DEFAULT_PROTOCOL_LINK = getStringResourceByName("DEFAULT_URL_LINK") + "/api/apiv2";
-                DEFAULT_LINK_FORGETPASSWORD = getStringResourceByName("LINK_FORGET_PASSWORD");
-                DEFAULT_PRODUCT_NAME = getStringResourceByName("PRODUCT_NAME");
-                DEFAULT_VERSION_NAME = getStringResourceByName("VERSION_NAME");
-                DEFAULT_COPYRIGHT = getStringResourceByName("COPYRIGHT");
-                DEFAULT_LOGO_IMAGE_PATH = getStringResourceByName("LOGO_IMAGE_PATH");
-                DEFAULT_LINK_ABOUTUS = getStringResourceByName("LINK_ABOUT_US");
-                DEFAULT_LINK_REGISTER = getStringResourceByName("LINK_REGISTER");
-                DEFAULT_LINK_RENEW = getStringResourceByName("LINK_RENEW");
-            } else {
-                this.setTitle(DEFAULT_PRODUCT_NAME);
+                DEFAULT_PROTOCOL_LINK = getStringResourceByName("DEFAULT_LINK_PROTOCOL_URL",context) + "/api/apiv2";
+                DEFAULT_LINK_FORGETPASSWORD = getStringResourceByName("LINK_FORGET_PASSWORD",context);
+                DEFAULT_PRODUCT_NAME = getStringResourceByName("PRODUCT_NAME",context);
+                DEFAULT_VERSION_NAME = getStringResourceByName("VERSION_NAME",context);
+                DEFAULT_COPYRIGHT = getStringResourceByName("COPYRIGHT",context);
+                DEFAULT_LOGO_IMAGE_PATH = getStringResourceByName("LOGO_IMAGE_PATH",context);
+                DEFAULT_LINK_ABOUTUS = getStringResourceByName("LINK_ABOUT_US",context);
+                DEFAULT_LINK_REGISTER = getStringResourceByName("LINK_REGISTER",context);
+                DEFAULT_LINK_RENEW = getStringResourceByName("LINK_RENEW",context);
             }
-
         } catch (Exception e) {
             MyApplication.getInstance().trackException(e);
             e.getMessage();
         }
     }
 
-    private String getStringResourceByName(String aString) {
-        String packageName = getPackageName();
-        int resId = getResources().getIdentifier(aString, "string", packageName);
-        return getString(resId);
+    public static String getStringResourceByName(String aString, Context context) {
+        String packageName = context.getPackageName();
+        int resId = context.getResources().getIdentifier(aString, "string", packageName);
+        Log.d("textPtcl", context.getString(resId) );
+        return context.getString(resId);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -177,9 +177,7 @@ public class LaunchScreen extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             deviceObject(result);
-            Log.i("login_Z", result);
             try {
-                Log.i("login_Z", bodyLogin.getDescription());
                 if (bodyLogin.getResultId().equals("1") && bodyLogin.getIsSuccess().equals("1")) {
                     Intent intentMain = new Intent(getApplicationContext(), ManagementDevice.class);
                     //intentMain.putExtra("userName1",user);
@@ -191,7 +189,6 @@ public class LaunchScreen extends AppCompatActivity {
                     Intent intentMain = new Intent(getApplicationContext(), Authentication.class);
                     startActivity(intentMain);
                     finish();
-                    Log.d("login_Z", bodyLogin.getDescription());
                 }
             } catch (Exception e) {
                 Toast.makeText(LaunchScreen.this, "Has an error with the link protocol", Toast.LENGTH_SHORT).show();
@@ -202,7 +199,6 @@ public class LaunchScreen extends AppCompatActivity {
                 Log.e("ExceptionLogin", e.getMessage());
                 Toast.makeText(LaunchScreen.this, "Has an error with the link protocol", Toast.LENGTH_SHORT).show();
                 e.getMessage();
-
             }
         }
     }

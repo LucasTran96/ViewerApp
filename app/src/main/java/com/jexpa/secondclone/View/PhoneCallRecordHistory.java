@@ -1,6 +1,6 @@
 /*
   ClassName: PhotoHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-11-16
   Description:
@@ -12,12 +12,12 @@ package com.jexpa.secondclone.View;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -38,7 +38,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.jexpa.secondclone.API.APIMethod;
 import com.jexpa.secondclone.API.APIURL;
-import com.jexpa.secondclone.Adapter.AdapterFeatureDashboard;
 import com.jexpa.secondclone.Adapter.AdapterPhoneCallRecordHistory;
 import com.jexpa.secondclone.Database.DatabaseAmbientRecord;
 import com.jexpa.secondclone.Database.DatabaseLastUpdate;
@@ -58,7 +57,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import static com.jexpa.secondclone.API.APIDatabase.getThread;
+
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
@@ -74,19 +73,11 @@ import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
 import static com.jexpa.secondclone.API.Global.AMBIENT_RECORDING_TOTAL;
-import static com.jexpa.secondclone.API.Global.DEFAULT_PRODUCT_NAME;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_PHONE_CALL_RECORD;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
-import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.PHONE_CALL_RECORDING_TOTAL;
 import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_AUDIO_NAME_AMBIENTRECORD;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_CDN_URL_AMBIENTRECORD;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_CREATED_DATE_AMBIENTRECORD;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_DEVICE_ID_AMBIENTRECORD;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_DURATION_AMBIENTRECORD;
-import static com.jexpa.secondclone.Database.Entity.AmbientRecordEntity.COLUMN_ISSAVED_AMBIENTRECORD;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHONE_CALL_RECORDING;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 
@@ -144,17 +135,15 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
             request = true;
         }
-
         getPhoneCallHistoryInfo();
         swipeRefreshLayout();
-
     }
 
     private void setID() {
 
         toolbar = findViewById(R.id.toolbar_PhoneCallRecord);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.PHONE_CALL_RECORDING));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -361,9 +350,8 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                          e.printStackTrace();
                      }
 
-                     if (GPSJson.length() != 0) {
-
-
+                     if (GPSJson.length() != 0)
+                     {
                          for (int i = 0; i < GPSJson.length(); i++) {
                              Gson gson = new Gson();
                              AmbientRecord ambientRecord = gson.fromJson(String.valueOf(GPSJson.get(i)), AmbientRecord.class);
@@ -450,7 +438,6 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                     Toast.makeText(this, "You please accept the file read permission to save audio!", Toast.LENGTH_LONG).show();
                     finish();
                 }
-
             }
         }
     }
@@ -500,7 +487,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
             } else {
 
-                Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
             }
         }
@@ -557,14 +544,33 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
             for (int i = 0; i < selectionList.size(); i++) {
                 if (i != selectionList.size() - 1) {
 
-                    listID.append(selectionList.get(i).getID()).append(",");
+                    if(functionName.equals("GetPhoneRecording"))
+                        listID.append(selectionList.get(i).getID()).append(",");
+                    else
+                        listID.append(selectionList.get(i).getAudioName()).append(",");
                 } else {
 
-                    listID.append(selectionList.get(i).getID());
+
+                    if(functionName.equals("GetPhoneRecording"))
+                        listID.append(selectionList.get(i).getID());
+                    else
+                        listID.append(selectionList.get(i).getAudioName());
                 }
             }
-            String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" List_ID=\"" + listID + "\" />";
-            String function = "ClearMultiPhoneRecording";
+
+            String value;
+            String function;
+            if(functionName.equals("GetPhoneRecording"))
+            {
+                value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" List_ID=\"" + listID + "\" />";
+                function = "ClearMultiPhoneRecording";//ClearMultiAmbient da70c0862faf50cf.mp4
+                Log.d("tsdds","value = "+value+ " function = "+ function);
+            }
+            else {
+                value = "<RequestParams List_File=\"" + listID + "\" />";
+                function = "ClearMultiAmbient";//ClearMultiAmbient da70c0862faf50cf.mp4
+                Log.d("tsdds","value = "+value+ " function = "+ function);
+            }
             return APIURL.POST(value, function);
         }
 
@@ -602,15 +608,23 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         for (AudioGroup phoneCallRecord : selectionList) {
 
             for (int i = 0; i < selectionList.size(); i++) {
-
-                String fileName = phoneCallRecord.getAudioName();
-                File file = new File(File_PATH_SAVE_PHONE_CALL_RECORD + "/" + fileName);
-                file.delete();
-                getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-                Log.d("fileNames", file + " == ");
+                deleteFileAudioWithName(getApplicationContext(), phoneCallRecord.getAudioName());
             }
         }
     }
+
+    /**
+     * deleteFileAudioWithName This is a method that supports deleting audio files stored in the device's memory SD card
+     */
+    public static void deleteFileAudioWithName(Context context, String fileName)
+    {
+
+        File file = new File(File_PATH_SAVE_PHONE_CALL_RECORD + "/" + fileName);
+        file.delete();
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        Log.d("fileNames", file + " == ");
+    }
+
 
     public void clearActionMode() {
 
@@ -659,17 +673,6 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-  /*  @Override
-    protected void onResume() {
-
-        mData.clear();
-        mData = getAllPhoneCall();
-        mAdapter = new AdapterPhoneCallRecordHistory(PhoneCallRecordHistory.this, mData);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-        super.onResume();
-    }*/
-
     private List<AudioGroup> getAllPhoneCall()
     {
         List<AudioGroup> mdatabase;
@@ -681,9 +684,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         {
             mdatabase = databaseAmbientRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
         }
-
         return mdatabase;
-
     }
 
     public void swipeRefreshLayout() {

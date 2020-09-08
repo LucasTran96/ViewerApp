@@ -24,7 +24,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="@drawable/custombgshopp"
+                    android:background="@drawable/custom_bg_shopp"
                     android:gravity="right"
                     tools:ignore="RtlHardcoded">
 
@@ -49,7 +49,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="115dp"
-                    android:background="@drawable/custombgshopp"
+                    android:background="@drawable/custom_bg_shopp"
                     android:orientation="horizontal">
 
                     <ImageView

@@ -16,7 +16,8 @@ public class AudioGroup {
     Url
      */
     private String duration, contactName, date, deviceID, URL_Audio, audioName;
-    private int isSave, isAmbient, ID;
+    private int isSave, isAmbient;
+    private long  ID;
 
     public AudioGroup() {
     }
@@ -25,11 +26,11 @@ public class AudioGroup {
         return audioName;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(long ID) {
         this.ID = ID;
     }
 

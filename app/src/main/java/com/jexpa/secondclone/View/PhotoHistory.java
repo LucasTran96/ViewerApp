@@ -1,6 +1,6 @@
 /*
   ClassName: PhotoHistory.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-11-16
   Description:
@@ -61,7 +61,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import static com.jexpa.secondclone.API.APIDatabase.getThread;
+
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.GetJsonFeature;
 import static com.jexpa.secondclone.API.APIMethod.getProgressDialog;
@@ -75,7 +75,6 @@ import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.getTimeNow;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.APIURL.noInternet;
-import static com.jexpa.secondclone.API.Global.CALL_TOTAL;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_IMAGE;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
@@ -103,7 +102,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     private LinearLayout lnl_Total;
     private SwipeRefreshLayout swp_PhotoHistory;
     private String fileName, CDN_URL, Media_URL, Device_ID;
-    private int ID;
+    private long ID;
     boolean isLoading = false;
     private boolean checkLoadMore = false;
     private int currentSize = 0;
@@ -122,7 +121,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         database_last_update = new DatabaseLastUpdate(this);
         toolbar = findViewById(R.id.toolbar_Photo);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.PHOTO_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -160,7 +159,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
      * @param photoID ID of image use update saved status image.
      */
     public void saveImage(final String name, String CDN_URL, String Media_URL, final int value,
-                          final String deviceID, final int photoID) {
+                          final String deviceID, final long photoID) {
 
         Picasso.with(PhotoHistory.this).load(CDN_URL + Media_URL + "/thumb/l" + "/" + name)
                 .into(new Target() {
@@ -183,12 +182,10 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                                   MyApplication.getInstance().trackException(e);
                               }
                           }
-
                           @Override
                           public void onBitmapFailed(Drawable errorDrawable) {
                               Log.i("BitmapFailed", name);
                           }
-
                           @Override
                           public void onPrepareLoad(Drawable placeHolderDrawable) {
                           }
@@ -229,18 +226,6 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    /*currentSize =  mData.size();
-                    List<Photo> mDataStamp = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize);
-                    mData.addAll(mDataStamp);
-                    if(mDataStamp.size()< NumberLoad)
-                    {
-                        endLoading = true;
-                    }
-                    Toast.makeText(getApplicationContext(), mData.size()+" = size", Toast.LENGTH_SHORT).show();
-                    mAdapter.notifyDataSetChanged();
-                    //progressBar_Locations.setVisibility(View.GONE);
-                    isLoading = false;
-                    progressBar_Photo.setVisibility(View.GONE);*/
 
                     currentSize =  mData.size();
                     if(isConnected(getApplicationContext()))
@@ -451,6 +436,16 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
 
                                 if (mData.get(i).getIsLoaded() == 0) {
 
+                                    try {
+                                        File myDir = new File(File_PATH_SAVE_IMAGE);
+                                        if (!myDir.exists()) {
+                                            myDir.mkdirs();
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.getMessage();
+                                    }
                                     saveImage(fileName, CDN_URL, Media_URL, 1, Device_ID, ID);
                                 }
                             }
@@ -521,10 +516,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                     getProgressDialog("Deleting....",this);
                     new clear_PhotoAsyncTask().execute();
                 }
-
-
             } else {
-                Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
             }
         } else if (item.getItemId() == android.R.id.home) {
@@ -549,6 +542,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         }
         return true;
     }
+
     /**
      * clear_PhotoAsyncTask()
      * delete image from sever and next clearDataSQLite(), clearFileImage(), clearActionMode()
@@ -672,30 +666,6 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
      * onResume()
      * Save the image to internal memory if the image has not been saved before.
      */
-//    @Override
-//    protected void onResume() {
-//
-//        mData.clear();
-//        mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
-//        mAdapter = new AdapterPhotoHistory(this, mData);
-//        mRecyclerView.setAdapter(mAdapter);
-//        mAdapter.notifyDataSetChanged();
-//        if (mData.size() != 0) {
-//            for (int i = 0; i < mData.size(); i++) {
-//                fileName = mData.get(i).getFile_Name();
-//                CDN_URL = mData.get(i).getCDN_URL();
-//                Media_URL = mData.get(i).getMedia_URL();
-//                Device_ID = mData.get(i).getDevice_ID();
-//                ID = mData.get(i).getID();
-//                //If the image has not been saved before, it will save.
-//                if (mData.get(i).getIsLoaded() == 0) {
-//
-//                    saveImage(fileName, CDN_URL, Media_URL, 1, Device_ID, ID);
-//                }
-//            }
-//        }
-//        super.onResume();
-//    }
 
     public void swipeRefreshLayout() {
         swp_PhotoHistory.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

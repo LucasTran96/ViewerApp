@@ -20,8 +20,6 @@ public class Feature implements Serializable {
         this.functionName = functionName;
     }
 
-
-
     public Feature() {
     }
 

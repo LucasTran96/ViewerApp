@@ -1,7 +1,7 @@
 /*
   ClassName: DatabasePhotos.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabasePhotos is used to create, add, modify, delete databases, save
   the history Photo from the server, use the "PhotoHistory.class" and "PhotoHistoryDetail.class".
@@ -59,7 +59,7 @@ public class DatabasePhotos {
 
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_PHOTO_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_PHOTO_HISTORY + "(" + COLUMN_ROWINDEX_PHOTO + " INTEGER ," + COLUMN_ID_PHOTO + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_PHOTO_HISTORY + "(" + COLUMN_ROWINDEX_PHOTO + " LONG ," + COLUMN_ID_PHOTO + " LONG,"
                 + COLUMN_ISLOADED_PHOTO + " INTEGER," + COLUMN_DEVICE_ID_PHOTO + " TEXT," + COLUMN_CLIENT_CAPTURED_DATE_PHOTO + " TEXT," + COLUMN_CAPTION_PHOTO + " TEXT,"
                 + COLUMN_FILE_NAME_PHOTO + " TEXT," + COLUMN_EXT_PHOTO + " TEXT," + COLUMN_MEDIA_URL_PHOTO + " TEXT," +
                 COLUMN_CREATED_DATE_PHOTO + " TEXT," + COLUMN_CDN_URL_PHOTO + " TEXT" + ")";
@@ -103,8 +103,8 @@ public class DatabasePhotos {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHOTO)).equals(deviceID)) {
 
                     Photo photo = new Photo();
-                    photo.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_PHOTO)));
-                    photo.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_PHOTO)));
+                    photo.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_PHOTO)));
+                    photo.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PHOTO)));
                     photo.setIsLoaded(cursor.getInt(cursor.getColumnIndex(COLUMN_ISLOADED_PHOTO)));
                     photo.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHOTO)));
                     photo.setClient_Captured_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CAPTURED_DATE_PHOTO)));
@@ -118,7 +118,6 @@ public class DatabasePhotos {
                     // Add in List.
                     photos_List.add(photo);
                 }
-
             } while (cursor.moveToNext());
         }
         // return note list
@@ -126,7 +125,7 @@ public class DatabasePhotos {
         return photos_List;
     }
 
-    public void update_Photos_History(int value, String nameDeviceID, int photoID) {
+    public void update_Photos_History(int value, String nameDeviceID, long photoID) {
 
         // contentValues1 receives the value from the method API_Add_Database()
         Log.d("isLoading = ", COLUMN_ISLOADED_PHOTO + "=" + value + "");
@@ -141,8 +140,6 @@ public class DatabasePhotos {
     public int getPhotoCount(String deviceID) {
         Log.i(TAG, "DatabasePhotos.getPhotoCount ... " + TABLE_PHOTO_HISTORY);
 
-        //String countQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY;
-
         Cursor cursor = database.getWritableDatabase().query(TABLE_PHOTO_HISTORY, new String[]{COLUMN_DEVICE_ID_PHOTO
                 }, COLUMN_DEVICE_ID_PHOTO + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
@@ -150,30 +147,27 @@ public class DatabasePhotos {
         cursor.close();
         // return count
         return count;
-
     }
 
     public void delete_Photos_History(Photo photo) {
         Log.i("deletePhoto", "DatabasePhotos.deletePhoto ... " + photo.getID() + "== " + photo.getCaption());
-
         database.getWritableDatabase().delete(TABLE_PHOTO_HISTORY, COLUMN_ID_PHOTO + " = ?",
                 new String[]{String.valueOf(photo.getID())});
         database.close();
     }
 
-    public void delete_Photos_History_File(int id) {
+    public void delete_Photos_History_File(long id) {
         Log.i("deletePhoto", "DatabasePhotos.deletePhoto ... " + id);
-
         database.getWritableDatabase().delete(TABLE_PHOTO_HISTORY, COLUMN_ID_PHOTO + " = ?",
                 new String[]{String.valueOf(id)});
         database.close();
     }
 
-    public List<Integer> getAll_Photo_ID_History_Date(String deviceID, String date) {
+    public List<Long> getAll_Photo_ID_History_Date(String deviceID, String date) {
 
         Log.i(TAG, "DatabasePhotos.getAll_Photo... " + TABLE_PHOTO_HISTORY);
 
-        List<Integer> photos_List = new ArrayList<>();
+        List<Long> photos_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY + " WHERE " + COLUMN_DEVICE_ID_PHOTO + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         //SQLiteDatabase database = this.getWritableDatabase();
@@ -184,7 +178,7 @@ public class DatabasePhotos {
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CAPTURED_DATE_PHOTO)).substring(0, 10).equals(date)) {
-                    photos_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_PHOTO)));
+                    photos_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PHOTO)));
                 }
                 // Add in List.
 

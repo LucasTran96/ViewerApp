@@ -17,7 +17,7 @@
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
                 android:minHeight="100dp"
-                android:background="@drawable/custombgshopp"
+                android:background="@drawable/custom_bg_shopp"
                 android:layout_height="wrap_content">
 
                 <ImageView

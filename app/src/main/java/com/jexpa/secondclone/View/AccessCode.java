@@ -1,6 +1,6 @@
 /*
   ClassName: AccessCode.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class AccessCode use this to select code that you manually specify to hide or show the app icon.

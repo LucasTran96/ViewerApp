@@ -103,7 +103,7 @@ public class PhotoHistoryDetail extends AppCompatActivity {
                 getProgressDialog(getString(R.string.Loading)+"...",this);
                 new clear_PhotoAsyncTask().execute();
             } else {
-                Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
             }
         } else if (item.getItemId() == android.R.id.home) {
             finish();
@@ -121,13 +121,11 @@ public class PhotoHistoryDetail extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-
             return PlaceholderFragment.newInstance(position, data.get(position).getCaption(), data.get(position).getCDN_URL() + data.get(position).getMedia_URL() + "/" + data.get(position).getFile_Name(), data.get(position).getFile_Name());
         }
 
         @Override
         public int getCount() {
-
             return data.size();
         }
 
@@ -153,7 +151,6 @@ public class PhotoHistoryDetail extends AppCompatActivity {
             this.title = args.getString(ARG_IMG_TITLE);
             this.url = args.getString(ARG_IMG_URL);
             this.name = args.getString(ARG_IMG_FILENAME);
-
         }
 
         public static PlaceholderFragment newInstance(int sectionNumber, String title, String url, String name) {
@@ -173,7 +170,6 @@ public class PhotoHistoryDetail extends AppCompatActivity {
         @Override
         public void onStart() {
             super.onStart();
-
         }
 
         @Override
@@ -239,8 +235,6 @@ public class PhotoHistoryDetail extends AppCompatActivity {
         File file = new File(File_PATH_SAVE_IMAGE + "/" + photo.getFile_Name());
         file.delete();
         getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-
-
     }
     @Override
     protected void onDestroy() {

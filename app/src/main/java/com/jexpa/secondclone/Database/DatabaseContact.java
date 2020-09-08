@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseContact.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseContact is used to create, add, modify, delete databases, save
   the history Contact from the server, use the "ContactHistory.class" and "ContactHistoryDetail.class".
@@ -52,7 +52,7 @@ public class DatabaseContact  {
     private void createTable() {
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_CONTACT_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_CONTACT_HISTORY + "(" + COLUMN_ROWINDEX_CONTACT + " INTEGER ," + COLUMN_ID_CONTACT + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_CONTACT_HISTORY + "(" + COLUMN_ROWINDEX_CONTACT + " LONG ," + COLUMN_ID_CONTACT + " LONG,"
                 + COLUMN_DEVICE_ID_CONTACT + " TEXT," + COLUMN_CLIENT_CONTACT_TIME + " TEXT," + COLUMN_CONTACT_NAME + " TEXT,"
                 + COLUMN_PHONE_CONTACT + " TEXT," + COLUMN_EMAIL_CONTACT + " INTEGER," + COLUMN_ORGANIZATION_CONTACT + " INTEGER," +
                 COLUMN_ADDRESS_CONTACT + " TEXT," + COLUMN_CREATED_DATE_CONTACT + " TEXT," + COLUMN_COLOR_CONTACT + " INTEGER" + ")";
@@ -88,7 +88,7 @@ public class DatabaseContact  {
     /**
      * checkItemExist This is a support method to check whether this record already exists in the database or not and add it to the database.
      */
-    public static boolean checkItemExist(SQLiteDatabase database, String tableName,String rawDeviceID, String deviceID,String rawIdContact, int idContact){
+    public static boolean checkItemExist(SQLiteDatabase database, String tableName,String rawDeviceID, String deviceID,String rawIdContact, long idContact){
 
         String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = %s", tableName, rawDeviceID, deviceID, rawIdContact, idContact);
         Cursor cursor = database.rawQuery(query, null);
@@ -116,8 +116,8 @@ public class DatabaseContact  {
                 //if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CONTACT)).equals(deviceID)) {
 
                     Contact contact = new Contact();
-                    contact.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_CONTACT)));
-                    contact.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_CONTACT)));
+                    contact.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_CONTACT)));
+                    contact.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_CONTACT)));
                     contact.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CONTACT)));
                     contact.setClient_Contact_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CONTACT_TIME)));
                     contact.setContact_Name(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_NAME)));
@@ -137,11 +137,11 @@ public class DatabaseContact  {
     }
 
     // Method retrieving data by date to compare.
-    public List<Integer> getAll_Contact_ID_History_Date(String deviceID) {
+    public List<Long> getAll_Contact_ID_History_Date(String deviceID) {
 
         Log.i(TAG, "DatabaseContact.getAll_Contact_ID_History_Date..." + TABLE_CONTACT_HISTORY);
 
-        List<Integer> contact_List = new ArrayList<>();
+        List<Long> contact_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACT_HISTORY + " WHERE " + COLUMN_DEVICE_ID_CONTACT + " = '" + deviceID + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
@@ -151,7 +151,7 @@ public class DatabaseContact  {
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
-                contact_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_CONTACT)));
+                contact_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_CONTACT)));
                 // Add in List.
             }
             while (cursor.moveToNext());

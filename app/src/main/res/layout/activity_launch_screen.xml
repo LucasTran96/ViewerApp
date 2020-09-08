@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/custombgshopp"
+    android:background="@drawable/custom_bg_shopp"
     tools:context=".View.LaunchScreen">
     <ImageView
         android:layout_width="250dp"
@@ -22,13 +22,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SecondClone"
+            android:text="ViewerApp"
             android:textStyle="bold"
             android:textSize="50sp"
             android:id="@+id/txt_AppName_Launch"
             android:textColor="#fff"
             android:layout_gravity="center_horizontal"
-
             />
 
     </LinearLayout>
@@ -39,7 +38,6 @@
         android:id="@+id/txt_VersionName_Launch"
         android:textColor="#fff"
         android:layout_gravity="center_horizontal"
-
         />
 
     <ProgressBar

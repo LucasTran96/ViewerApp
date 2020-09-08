@@ -1,6 +1,6 @@
 /*
   ClassName: DatabaseApplicationUsage.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseApplicationUsage is used to create, add, modify, delete databases, save
@@ -62,7 +62,7 @@ public class DatabaseApplicationUsage
 
 
         Log.i(Global.TAG, "DatabaseApplicationUsage.onCreate ... " + TABLE_APPLICATION_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_APPLICATION_HISTORY + "(" + COLUMN_ROWINDEX_APPLICATION + " INTEGER ," + COLUMN_ID_APPLICATION + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_APPLICATION_HISTORY + "(" + COLUMN_ROWINDEX_APPLICATION + " LONG ," + COLUMN_ID_APPLICATION + " LONG,"
                 + COLUMN_DEVICE_ID_APPLICATION + " TEXT," + COLUMN_APP_TYPE_APPLICATION + " INTEGER,"
                 + COLUMN_APP_NAME_APPLICATION + " TEXT," + COLUMN_CLIENT_APPLICATION_TIME + " TEXT,"
                 + COLUMN_APP_ID_APPLICATION + " TEXT," +

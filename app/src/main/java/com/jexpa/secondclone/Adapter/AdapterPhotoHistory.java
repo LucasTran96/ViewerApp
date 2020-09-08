@@ -1,6 +1,6 @@
 /*
   ClassName: AdapterPhotoHistory.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-11-16
   Description: class AdapterPhotoHistory used to customize the adapter for the RecyclerView of the "PhotoHistory.class"
@@ -109,7 +109,6 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter {
                     Glide.with(photoHistory).load(photo.getCDN_URL() + photo.getMedia_URL() + "/thumb/l" + "/" + photo.getFile_Name())
                             .thumbnail(0.5f).override(200, 200).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.spinner).error(R.drawable.no_image)
                             .into(img_photo_History);
-
                 }
             } else {
 
@@ -155,7 +154,6 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter {
                 intent.putParcelableArrayListExtra("data", (ArrayList<? extends Parcelable>) photoList);
                 intent.putExtra("position", adapterPosition);
                 photoHistory.startActivity(intent);
-
             }
         }
     }
@@ -166,6 +164,4 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter {
         }
         notifyDataSetChanged();
     }
-
-
 }

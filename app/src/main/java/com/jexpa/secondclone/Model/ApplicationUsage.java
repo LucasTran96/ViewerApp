@@ -1,7 +1,7 @@
 /*
   ClassName: ApplicationUsage.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description:
   History:2018-10-08
@@ -19,8 +19,6 @@ public class ApplicationUsage implements Serializable {
     private String Device_ID, Client_App_Time,
             App_Name, App_ID, Created_Date;
     private int RowIndex, ID, App_Type;
-
-
 
     public ApplicationUsage() {
     }

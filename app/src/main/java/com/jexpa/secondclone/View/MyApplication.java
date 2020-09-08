@@ -1,6 +1,6 @@
 /*
   ClassName: MyApplication.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class MyApplication used to create log files and configure the project.

@@ -62,50 +62,75 @@ public class DatabaseGetSMS
         createTable();
     }
 
-    private static final String CREATE_TABLE_SMS = " CREATE TABLE " + TABLE_GET_SMS + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+/*    private static final String CREATE_TABLE_SMS = " CREATE TABLE " + TABLE_GET_SMS + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
-    private static final String CREATE_TABLE_WHATSAPP = " CREATE TABLE " + TABLE_GET_WHATSAPP + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
-            + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
-            + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
-            COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
-
-    private static final String CREATE_TABLE_VIBER = " CREATE TABLE " + TABLE_GET_VIBER + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_WHATSAPP = " CREATE TABLE " + TABLE_GET_WHATSAPP + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    private static final String CREATE_TABLE_FACEBOOK = " CREATE TABLE " + TABLE_GET_FACEBOOK + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_VIBER = " CREATE TABLE " + TABLE_GET_VIBER + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    private static final String CREATE_TABLE_SKYPE = " CREATE TABLE " + TABLE_GET_SKYPE + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_FACEBOOK = " CREATE TABLE " + TABLE_GET_FACEBOOK + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    private static final String CREATE_TABLE_HANGOUTS = " CREATE TABLE " + TABLE_GET_HANGOUTS + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_SKYPE = " CREATE TABLE " + TABLE_GET_SKYPE + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    private static final String CREATE_TABLE_BBM = " CREATE TABLE " + TABLE_GET_BBM + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_HANGOUTS = " CREATE TABLE " + TABLE_GET_HANGOUTS + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    private static final String CREATE_TABLE_LINE = " CREATE TABLE " + TABLE_GET_LINE + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_BBM = " CREATE TABLE " + TABLE_GET_BBM + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
-    private static final String CREATE_TABLE_KIK = " CREATE TABLE " + TABLE_GET_KIK + "(" + COLUMN_ID_SMS + " INTEGER  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+    private static final String CREATE_TABLE_LINE = " CREATE TABLE " + TABLE_GET_LINE + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
             + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
             + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
             COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
 
+    private static final String CREATE_TABLE_KIK = " CREATE TABLE " + TABLE_GET_KIK + "(" + COLUMN_ID_SMS + " LONG  ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+            + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
+            + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
+            COLUMN_CREATED_DATE_SMS + " TEXT" + ")";*/
+
+    private static final String CREATE_TABLE_SMS = createTableMethod(TABLE_GET_SMS);
+    private static final String CREATE_TABLE_WHATSAPP = createTableMethod(TABLE_GET_WHATSAPP);
+
+    private static final String CREATE_TABLE_VIBER = createTableMethod(TABLE_GET_VIBER);
+
+    private static final String CREATE_TABLE_FACEBOOK = createTableMethod(TABLE_GET_FACEBOOK);
+
+    private static final String CREATE_TABLE_SKYPE = createTableMethod(TABLE_GET_SKYPE);
+
+    private static final String CREATE_TABLE_HANGOUTS = createTableMethod(TABLE_GET_HANGOUTS);
+
+    private static final String CREATE_TABLE_BBM = createTableMethod(TABLE_GET_BBM);
+
+    private static final String CREATE_TABLE_LINE = createTableMethod(TABLE_GET_LINE);
+
+    private static final String CREATE_TABLE_KIK = createTableMethod(TABLE_GET_KIK);
+
+
+    private static String createTableMethod(String tableName)
+    {
+        return " CREATE TABLE " + tableName + "(" + COLUMN_ID_SMS + " LONG ," + COLUMN_DEVICE_ID_SMS + " TEXT,"
+                + COLUMN_CLIENT_MESSAGE_TIME_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SIM_SMS + " TEXT," + COLUMN_PHONE_NUMBER_SMS + " TEXT,"
+                + COLUMN_DIRECTION_SMS + " INTEGER," + COLUMN_TEXT_MESSAGE_SMS + " TEXT," + COLUMN_CONTACT_NAME_SMS + " TEXT," +
+                COLUMN_CREATED_DATE_SMS + " TEXT" + ")";
+    }
 
     public void createTable() {
         Log.i(TAG, "DatabaseSMS.onCreate ... " + TABLE_GET_SMS);
@@ -177,7 +202,7 @@ public class DatabaseGetSMS
             do {
                 if (cursor.getString(7).equals(Name)) {
                     SMS sms = new SMS();
-                    sms.setID(cursor.getInt(0));
+                    sms.setID(cursor.getLong(0));
                     sms.setDevice_ID(cursor.getString(1));
                     sms.setClient_Message_Time(cursor.getString(2));
                     sms.setPhone_Number_SIM(cursor.getString(3));
@@ -210,7 +235,7 @@ public class DatabaseGetSMS
         if (cursor.moveToFirst()) {
             do {
                     SMS sms = new SMS();
-                    sms.setID(cursor.getInt(0));
+                    sms.setID(cursor.getLong(0));
                     sms.setDevice_ID(cursor.getString(1));
                     sms.setClient_Message_Time(cursor.getString(2));
                     sms.setPhone_Number_SIM(cursor.getString(3));
@@ -245,7 +270,7 @@ public class DatabaseGetSMS
             do {
                 if (cursor.getString(1).equals(device_ID)) {
                     SMS sms = new SMS();
-                    sms.setID(cursor.getInt(0));
+                    sms.setID(cursor.getLong(0));
                     sms.setDevice_ID(cursor.getString(1));
                     sms.setClient_Message_Time(cursor.getString(2));
                     sms.setPhone_Number_SIM(cursor.getString(3));
@@ -265,11 +290,11 @@ public class DatabaseGetSMS
     }
 
     // Method retrieving data by date to compare.
-    public List<Integer> getAll_SMS_ID_History_Date(String deviceID, String date, String tableName) {
+    public List<Long> getAll_SMS_ID_History_Date(String deviceID, String date, String tableName) {
 
         Log.i(TAG, "DatabaseSMS.getAll_SMS_ID_History_Date... " + tableName);
 
-        List<Integer> sms_List = new ArrayList<>();
+        List<Long> sms_List = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + tableName + " WHERE " + COLUMN_DEVICE_ID_SMS + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         //SQLiteDatabase database = this.getWritableDatabase();
@@ -280,7 +305,7 @@ public class DatabaseGetSMS
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_MESSAGE_TIME_SMS)).substring(0, 10).equals(date)) {
-                    sms_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_SMS)));
+                    sms_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_SMS)));
                 }
                 // Add in List.
 
@@ -305,7 +330,7 @@ public class DatabaseGetSMS
             do {
                 if (cursor.getString(7).equals(name)) {
                     SMS sms = new SMS();
-                    sms.setID(cursor.getInt(0));
+                    sms.setID(cursor.getLong(0));
                     sms.setDevice_ID(cursor.getString(1));
                     sms.setClient_Message_Time(cursor.getString(2));
                     sms.setPhone_Number_SIM(cursor.getString(3));

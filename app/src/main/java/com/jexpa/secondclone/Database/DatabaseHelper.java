@@ -38,8 +38,8 @@ import static com.jexpa.secondclone.Database.Entity.UserEntity.TABLE_USER_INFO;
  */
 public class DatabaseHelper extends SQLiteOpenHelper
 {
-    public static final String DATABASE_NAME = "db_SecondClone";
-    public static final int DATABASE_VERSION = 3;
+    public static final String DATABASE_NAME = "db_DViewerApp";
+    public static final int DATABASE_VERSION = 4;
 
     private static DatabaseHelper instance;
 

@@ -1,6 +1,6 @@
 /*
   ClassName: Authentication.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class Authentication used to check and confirm user login account to use the SecondClone app.
@@ -54,6 +54,7 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_PRODUCT_NAME;
 import static com.jexpa.secondclone.API.Global.DEFAULT_VERSION_NAME;
 import static com.jexpa.secondclone.API.Global.SETTINGS;
 import static com.jexpa.secondclone.Adapter.AdapterURLHistory.startOpenWebPage;
+import static com.jexpa.secondclone.View.LaunchScreen.checkFileDistributingExist;
 
 public class Authentication extends AppCompatActivity {
 
@@ -70,7 +71,7 @@ public class Authentication extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
-
+        checkFileDistributingExist(getApplicationContext());
         loadLocale();
         if (ActivityCompat.checkSelfPermission(Authentication.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 12;
@@ -197,7 +198,6 @@ public class Authentication extends AppCompatActivity {
             String function = "AuthenticateWithoutDevice";
             return APIURL.POST(value, function);
             //return POST(urls[0]);
-
         }
 
         @Override

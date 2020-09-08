@@ -110,7 +110,6 @@ public class APIGetTotalItemOfFeature {
             String value;
             if(functionName.equals("GetSMSByDateTime"))
             {
-
                 value = "<RequestParams Device_ID=\"" + deviceID + "\" Start=\"0\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" +  getDateNowInMaxDate() + "\" Type=\"" + smsType + "\" />";
             }
             else {
@@ -159,7 +158,6 @@ public class APIGetTotalItemOfFeature {
                     JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
                     if(GPSJsonTable1.length()>0)
                         totalRow = GPSJsonTable1.getJSONObject(0).getString("TotalRow");
-                    Log.d("txstyle", "\t\t\t\t"+totalRow + " == "+ functionName);
                 }
                 else
                 {
@@ -173,31 +171,27 @@ public class APIGetTotalItemOfFeature {
                     }
                 }
 
+                Log.d("totalRow", "totalRow = "+ totalRow + " functionName = "+ functionName);
+
                 if(!totalRow.equals("0"))
                 {
                     txt_total_number.setVisibility(View.VISIBLE);
                     txt_total_number.setText(totalRow);
                 }
 
-                Log.d("tal", "totalRow = "+ totalRow + " === "+ functionName);
                 if(!functionName.equals(GET_SMS_HISTORY))
                 {
                     setNewTotalItemOfFeature(functionName, totalRow, txt_total_number);
                 }
                 else {
-                    Log.d("XXtxstyle","style = "+ style+ " smsType = "+ smsType);
                     if(style != null && !style.equals("50") && style.equals(smsType))
                     {
-                        Log.d("XXtxstyle","style = "+ style+ " smsType = "+ smsType);
                         setTotalLongForSMS(totalRow, style, context);
                     }
                     setNewTotalItemOfFeature(functionName, totalRow, txt_total_number, smsType);
-                    Log.d("txstyle", "\t\t\t\t"+"setTotalLongForSMS" + " == "+ functionName + " === "+ smsType);
-                    //setTotalLongForSMS(totalRow,smsType,context);
                 }
             } catch (JSONException e) {
                 MyApplication.getInstance().trackException(e);
-                Log.d("tasd",  e.getMessage() + " == "+ functionName);
                 e.printStackTrace();
             }
         }
@@ -310,7 +304,6 @@ public class APIGetTotalItemOfFeature {
                 if(totalOld == -1)
                     totalOld = 0;
 
-                Log.d("txstsyle","style = "+ FunctionName + " totalOld = "+ totalOld + " totalRow = "+ totalRow);
                 if(Long.parseLong(totalRow) > totalOld)
                 {
                     txt_total_number.setVisibility(View.VISIBLE);

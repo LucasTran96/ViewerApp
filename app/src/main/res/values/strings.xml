@@ -1,5 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- set app_name -->
+    <string name="app_name" translatable="false">Viewer App</string>
+
     <string name="Register"><u>Sign Up</u></string>
     <string name="SignIn">Log In</string>
     <string name="Password">Password</string>

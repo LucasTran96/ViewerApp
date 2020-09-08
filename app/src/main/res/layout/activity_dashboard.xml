@@ -14,7 +14,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:gravity="right"
-                android:background="@drawable/custombgshopp"
+                android:background="@drawable/custom_bg_shopp"
                 android:layout_height="40dp"
                 tools:ignore="RtlHardcoded">
                 <Button
@@ -38,7 +38,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
-                android:background="@drawable/custombgshopp"
+                android:background="@drawable/custom_bg_shopp"
                 android:layout_height="125dp">
                 <ImageView
                     android:layout_width="100dp"

@@ -1,6 +1,6 @@
 /*
   ClassName: HistoryLocation.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class HistoryLocation used to display the history list of phone calls from the sever on the RecyclerView of the class.
@@ -108,7 +108,7 @@ public class HistoryLocation extends AppCompatActivity {
     {
         toolbar = findViewById(R.id.toolbar_Location);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LOCATION_HISTORY));
-        toolbar.setBackgroundResource(R.drawable.custombgshopp);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -158,7 +158,6 @@ public class HistoryLocation extends AppCompatActivity {
                 }
                 txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL)+"");
                 txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                //APIDatabase.getThread(APIMethod.progressDialog);
             }
         }
     }
@@ -211,7 +210,6 @@ public class HistoryLocation extends AppCompatActivity {
                 {
                     int insertIndex = mData.size();
                     mData.addAll(insertIndex, mDataTamp);
-                    Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                     Log.d("CallHistory"," checkLoadMore Contact = "+ true);
                 }
@@ -231,7 +229,6 @@ public class HistoryLocation extends AppCompatActivity {
 
                 database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_LOCATION, getTimeNow(), table.getDevice_ID());
                 String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID());
-                Log.d("min_time1", min_Time1 + "");
                 if (mData.size() == 0)
                 {
                     txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));
@@ -288,7 +285,7 @@ public class HistoryLocation extends AppCompatActivity {
                         // Here is the total item value contact of device current has on CPanel
                         long totalContact = getSharedPreferLong(getApplicationContext(), GPS_TOTAL);
                         new LocationAsyncTask(currentSize+1).execute();
-                        Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
+
                         if((mData.size()+1) >= totalContact)
                         {
                             endLoading = true;
@@ -365,7 +362,7 @@ public class HistoryLocation extends AppCompatActivity {
                 getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
                 new clear_Location().execute();
             } else {
-                Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();
                 mAdapter.notifyDataSetChanged();
             }

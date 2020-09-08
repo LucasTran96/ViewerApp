@@ -1,7 +1,7 @@
 /*
   ClassName: DatabaseLastUpdate.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class DatabaseLastUpdate is used to create, add, modify, delete databases, save
   the history Time last update from the server, use the "Dashboard.class".

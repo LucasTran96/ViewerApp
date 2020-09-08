@@ -51,17 +51,17 @@
                         android:textSize="15sp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:minWidth="210dp"
+                        android:minWidth="110dp"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
                         android:textColor="#252424"
-                        android:background="@drawable/customlastupdate"
+                        android:background="@drawable/custom_last_update"
                         android:layout_height="wrap_content"
-                        />
+                    />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:background="@drawable/customtotalitems"
+                        android:background="@drawable/custom_total_items"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         android:gravity="center"

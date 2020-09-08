@@ -1,6 +1,6 @@
 /*
   ClassName: Dashboard.java
-  AppName: SecondClone
+  AppName: ViewerApp
   Created by Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class Dashboard use to display a list of settings for enabling or disabling features such as:
@@ -100,7 +100,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
         setID();
         setEvent();
         getSetting();
-
     }
 
 
@@ -167,8 +166,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
         setSpinner();
     }
 
-
-
     private void setPackageID() {
         switch (packageID){
 
@@ -195,7 +192,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
     @Override
     protected void onResume() {
         MyApplication.getInstance().trackScreenView("Dashboard Screen");
@@ -227,28 +223,18 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                         break;
                     }
                 }
+
                 /*
                   if(testDevice == true) is table exists
                  */
-
                 if (testDevice) {
                     APIDatabase.getTimeLastSync(txt_Last_Sync, SyncSettings.this, table.getLast_Online());
 
                     txt_Access_Code.setText(deviceFeature.getSecret_Key());
-                 /*   if(deviceFeature.getConnection_Type()==null || deviceFeature.getConnection_Type().contains("WiFi|"))
-                    {
-                        spn_Transfer_multimedia_data.setSelection(1);
-                    }else {
-
-                        spn_Transfer_multimedia_data.setSelection(0);
-                    }
-                        spn_GPS_Interval.setSelection(checkDataGPSInterval(deviceFeature.getgPS_Interval()));
-                        spn_Distance_Filter.setSelection(check_Distance_Filter(deviceFeature.getHorizontal()));
-
-*/
 
                     // assignment on enabled or off the same button for the node
                     setSwitchCompatList(deviceFeature);
+
                   /*  if (deviceFeature.getgPS() == 1) {
                         wc_History_Location.setChecked(true);
                     }
@@ -314,6 +300,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     if (deviceFeature.getSave_Battery() == 1) {
                         wc_Save_Battery.setChecked(true);
                     }*/
+
                     Log.d("xae",deviceFeature.getConnection_Type()+ " =  getConnection_Type" );
                     if (deviceFeature.getConnection_Type().contains("AutoOpenAllTypes")) {
                         wc_Auto_TurnOn_Wifi.setChecked(true);
@@ -388,10 +375,8 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     spn_Distance_Filter.setEnabled(true);
                     spn_Transfer_multimedia_data.setEnabled(true);
                 }
-
                 break;
             }
-            //wc_Save_Battery
         }
     }
 
@@ -404,7 +389,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             String value = "<RequestParams Client_Time=\"" + APIURL.getTimeNow() + "\" Device_ID=\"" + table.getDevice_ID() + "\"/>";
             String function = "GetSetting";
             return APIURL.POST(value, function);
-
         }
 
         @Override
@@ -415,16 +399,14 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 JSONObject jsonObjectDaTa = new JSONObject(body.getData());
                 Gson gson = new Gson();
                 Data data = APIURL.dataJson(jsonObjectDaTa);
-                //JSONObject jsonObject_DeviceFeature = new JSONObject(data.getDeviceFeature());
-                Log.d("zzzz", "data.getDeviceFeature() = "+data.getDeviceFeature()+ "");
                 DeviceFeatures deviceFeature = gson.fromJson(data.getDeviceFeature(), DeviceFeatures.class);
 
-                Log.d("zzzz", deviceFeature.getgPS_Interval() + " = getgPS_Interval");
                 databaseGetSetting.addGetSetting(deviceFeature);
                 txt_Access_Code.setText(String.valueOf(deviceFeature.getSecret_Key()));
                 APIDatabase.getTimeLastSync(txt_Last_Sync, SyncSettings.this, table.getLast_Online());
 
                 setSwitchCompatList(deviceFeature);
+
              /*   if (deviceFeature.getgPS() == 1) {
                     wc_History_Location.setChecked(true);
                 }
@@ -554,7 +536,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     wc_History_Clipboard.setChecked(true);
                 }*/
 
-                Log.d("xae",deviceFeature.getConnection_Type()+ " =  getConnection_Type" );
                 if (deviceFeature.getConnection_Type().contains("AutoOpenAllTypes")) {
                     wc_Auto_TurnOn_Wifi.setChecked(true);
                 }
@@ -566,7 +547,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 //logger.error("getSettingAsyncTask =="+ e+"\n================End");
             }
         }
-
     }
 
     private void setSwitchCompatList(DeviceFeatures deviceFeature)
@@ -864,7 +844,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
-
     }
 
     public void swp_Dashboard() {
@@ -881,9 +860,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                             public void run() {
 
                                 swp_Dashboard.setRefreshing(false);
-                                //
-                                //new getSettingAsyncTask().execute();
-                                //getTimeLastSync(txt_Last_Sync,Dashboard.this,table.getDevice_ID());
                                 Calendar calendar1 = Calendar.getInstance();
                                 time_Refresh_Setting = calendar1.getTimeInMillis();
                             }
@@ -952,27 +928,27 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
     }
     private int checkData(String time){
         int check = 0;
-        if(time.equals("5 minute(s)")){
+        if(time.equals("5 " + getString(R.string.minutes))){
             check = 5;
-        }else if(time.equals("15 minute(s)"))
+        }else if(time.equals("15 " + getString(R.string.minutes)))
         {
             check = 15;
-        }else if(time.equals("30 minute(s)"))
+        }else if(time.equals("30 " + getString(R.string.minutes)))
         {
             check = 30;
-        }else if(time.equals("60 minute(s)"))
+        }else if(time.equals("60 " + getString(R.string.minutes)))
         {
             check = 60;
-        }else if(time.equals("90 minute(s)"))
+        }else if(time.equals("90 " + getString(R.string.minutes)))
         {
             check = 90;
-        }else if(time.equals("120 minute(s)"))
+        }else if(time.equals("120 " + getString(R.string.minutes)))
         {
             check = 120;
-        }else if(time.equals("150 minute(s)"))
+        }else if(time.equals("150 " + getString(R.string.minutes)))
         {
             check = 150;
-        }else if(time.equals("180 minute(s)"))
+        }else if(time.equals("180 " + getString(R.string.minutes)))
         {
             check = 180;
         }
@@ -980,36 +956,36 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
     }
     private int check_Data_Distance_Filter(String time){
         int check = 0;
-        if(time.equals("50 meters")){
+        if(time.equals("50 " + getString(R.string.meters))){
             check = 50;
-        }else if(time.equals("500 meters"))
+        }else if(time.equals("500 " + getString(R.string.meters)))
         {
             check = 500;
-        }else if(time.equals("1000 meters"))
+        }else if(time.equals("1000 " + getString(R.string.meters)))
         {
             check = 1000;
-        }else if(time.equals("1500 meters"))
+        }else if(time.equals("1500 " + getString(R.string.meters)))
         {
             check = 1500;
-        }else if(time.equals("2000 meters"))
+        }else if(time.equals("2000 " + getString(R.string.meters)))
         {
             check = 2000;
-        }else if(time.equals("2500 meters"))
+        }else if(time.equals("2500 " + getString(R.string.meters)))
         {
             check = 2500;
-        }else if(time.equals("3000 meters"))
+        }else if(time.equals("3000 " + getString(R.string.meters)))
         {
             check = 3000;
-        }else if(time.equals("3500 meters"))
+        }else if(time.equals("3500 " + getString(R.string.meters)))
         {
             check = 3500;
-        }else if(time.equals("4000 meters"))
+        }else if(time.equals("4000 " + getString(R.string.meters)))
         {
             check = 4000;
-        }else if(time.equals("4500 meters"))
+        }else if(time.equals("4500 " + getString(R.string.meters)))
         {
             check = 4500;
-        }else if(time.equals("5000 meters"))
+        }else if(time.equals("5000 " + getString(R.string.meters)))
         {
             check = 5000;
         }

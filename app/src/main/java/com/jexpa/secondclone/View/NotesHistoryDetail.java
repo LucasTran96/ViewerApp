@@ -1,7 +1,7 @@
 /*
   ClassName: NotesHistoryDetail.java
-  Project: SecondClone
-  author  Lucas Walker (lucas.walker@jexpa.com)
+  Project: ViewerApp
+ author  Lucas Walker (lucas.walker@jexpa.com)
   Created Date: 2018-06-05
   Description: Class NotesHistoryDetail used to display the contents of a Notes.
   History:2018-10-08
@@ -64,13 +64,10 @@ public class NotesHistoryDetail extends AppCompatActivity implements View.OnClic
                 if (isConnected(NotesHistoryDetail.this)) {
                     new clear_Note().execute();
                 } else {
-                    Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             }
-
-
         }
     }
 
@@ -96,8 +93,6 @@ public class NotesHistoryDetail extends AppCompatActivity implements View.OnClic
                 Toast.makeText(NotesHistoryDetail.this, bodyLogin.getDescription(), Toast.LENGTH_SHORT).show();
 
             }
-
-
         }
     }
 }
