@@ -423,8 +423,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
                         adapterDevice = new AdapterDevice(tableList, R.layout.item_rcv_management_device, ManagementDevice.this);
                         rcvDevice.setAdapter(adapterDevice);
                         adapterDevice.notifyDataSetChanged();
-                        stopAnim(avLoadingIndicatorView);
-                        avLoadingIndicatorView.setVisibility(View.GONE);
+
                         if (tableList.size() == 1 || tableList.size() == 0) {
                             ln_Number_Device.setVisibility(View.GONE);
                         } else {
@@ -434,8 +433,9 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
 
                     } else {
                         txtNoDevice.setVisibility(View.VISIBLE);
-
                     }
+                    stopAnim(avLoadingIndicatorView);
+                    avLoadingIndicatorView.setVisibility(View.GONE);
 
                 }
 

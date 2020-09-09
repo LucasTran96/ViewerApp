@@ -13,7 +13,9 @@ package com.jexpa.secondclone.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Photo implements Parcelable {
+import java.io.Serializable;
+
+public class Photo implements Serializable {
 
     private int IsLoaded;
     private long rowIndex, ID;
@@ -125,35 +127,35 @@ public class Photo implements Parcelable {
         this.CDN_URL = CDN_URL;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+//        @Override
+//        public Photo createFromParcel(Parcel in) {
+//            return new Photo(in);
+//        }
+//
+//        @Override
+//        public Photo[] newArray(int size) {
+//            return new Photo[size];
+//        }
+//    };
 
-    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-        @Override
-        public Photo createFromParcel(Parcel in) {
-            return new Photo(in);
-        }
-
-        @Override
-        public Photo[] newArray(int size) {
-            return new Photo[size];
-        }
-    };
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(rowIndex);
-        parcel.writeLong(ID);
-        parcel.writeInt(IsLoaded);
-        parcel.writeString(device_ID);
-        parcel.writeString(client_Captured_Date);
-        parcel.writeString(caption);
-        parcel.writeString(file_Name);
-        parcel.writeString(ext);
-        parcel.writeString(media_URL);
-        parcel.writeString(created_Date);
-        parcel.writeString(CDN_URL);
-    }
+//    @Override
+//    public void writeToParcel(Parcel parcel, int i) {
+//        parcel.writeLong(rowIndex);
+//        parcel.writeLong(ID);
+//        parcel.writeInt(IsLoaded);
+//        parcel.writeString(device_ID);
+//        parcel.writeString(client_Captured_Date);
+//        parcel.writeString(caption);
+//        parcel.writeString(file_Name);
+//        parcel.writeString(ext);
+//        parcel.writeString(media_URL);
+//        parcel.writeString(created_Date);
+//        parcel.writeString(CDN_URL);
+//    }
 }

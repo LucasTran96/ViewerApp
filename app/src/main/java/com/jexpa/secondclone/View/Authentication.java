@@ -73,10 +73,15 @@ public class Authentication extends AppCompatActivity {
         setContentView(R.layout.activity_authentication);
         checkFileDistributingExist(getApplicationContext());
         loadLocale();
-        if (ActivityCompat.checkSelfPermission(Authentication.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 12;
-            ActivityCompat.requestPermissions(Authentication.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
+        if(Build.VERSION.SDK_INT >= 23)
+        {
+            if (ActivityCompat.checkSelfPermission(Authentication.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                int EXTERNAL_STORAGE_PERMISSION_CONSTANT = 12;
+                ActivityCompat.requestPermissions(Authentication.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CONSTANT);
+            }
         }
+
+
         setID();
         setEvent();
         databaseUser = new DatabaseUser(this);
@@ -197,7 +202,6 @@ public class Authentication extends AppCompatActivity {
             String value = "<RequestParams  Password=\"" + pw + "\" Email=\"" + email + "\"/>";
             String function = "AuthenticateWithoutDevice";
             return APIURL.POST(value, function);
-            //return POST(urls[0]);
         }
 
         @Override

@@ -38,6 +38,7 @@ import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_IMAGE;
+import static com.jexpa.secondclone.Adapter.AdapterPhotoHistory.photoList;
 
 public class PhotoHistoryDetail extends AppCompatActivity {
 
@@ -64,7 +65,8 @@ public class PhotoHistoryDetail extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         databasePhotos = new DatabasePhotos(this);
-        data = getIntent().getParcelableArrayListExtra("data");
+        //data = getIntent().getParcelableArrayListExtra("dataPhoto");
+        data = photoList;
         position = getIntent().getIntExtra("position", 0);
         setTitle("");
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), data);

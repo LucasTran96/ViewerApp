@@ -41,7 +41,7 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter {
 
     public static SparseBooleanArray itemStateArrayPhoto = new SparseBooleanArray();
     private PhotoHistory photoHistory;
-    private static List<Photo> photoList;
+    public  static List<Photo> photoList;
 
     public AdapterPhotoHistory(Activity context, List<Photo> photoList) {
         AdapterPhotoHistory.photoList = photoList;
@@ -151,7 +151,6 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter {
             } else if (adapterPosition != RecyclerView.NO_POSITION) {
                 MyApplication.getInstance().trackEvent("PhotoHistory", "View Photo detail ", "View PhotoHistory");
                 Intent intent = new Intent(photoHistory, PhotoHistoryDetail.class);
-                intent.putParcelableArrayListExtra("data", (ArrayList<? extends Parcelable>) photoList);
                 intent.putExtra("position", adapterPosition);
                 photoHistory.startActivity(intent);
             }
