@@ -151,7 +151,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
         wc_History_Alert = findViewById(R.id.wc_History_Alert);
         wc_History_Clipboard = findViewById(R.id.wc_History_Clipboard);
         wc_History_Calendar = findViewById(R.id.wc_History_Calendar);
-
         setPackageID();
         txt_NamePhone.setText(table.getDevice_Name());
         txt_PhoneStyle.setText(table.getOS_Device());
@@ -164,6 +163,44 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             img_Phone_Type.setImageResource(R.drawable.phone_android);
         }
         setSpinner();
+    }
+
+    /**
+     * setClickableItems This is the method that, without the internet, the features are not enabled or disabled.
+     */
+    private void setClickableItems(boolean setClickable)
+    {
+        txt_Access_Code.setEnabled(setClickable);
+        txt_Last_Sync.setEnabled(setClickable);
+        spn_Transfer_multimedia_data.setEnabled(setClickable);
+        ln_AccessCode.setEnabled(setClickable);
+        spn_Distance_Filter.setEnabled(setClickable);
+        spn_GPS_Interval.setEnabled(setClickable);
+        swp_Dashboard.setEnabled(setClickable);
+        btn_Save_Sync.setEnabled(setClickable);
+        wc_History_Location.setEnabled(setClickable);
+        wc_Save_Battery.setEnabled(setClickable);
+        wc_History_SMS.setEnabled(setClickable);
+        wc_History_Call.setEnabled(setClickable);
+        wc_History_URL.setEnabled(setClickable);
+        wc_History_Contact.setEnabled(setClickable);
+        wc_History_Photo.setEnabled(setClickable);
+        wc_History_Application.setEnabled(setClickable);
+        wc_History_Phone_Call.setEnabled(setClickable);
+        wc_History_WhatsApp.setEnabled(setClickable);
+        wc_History_Viber.setEnabled(setClickable);
+        wc_History_Facebook.setEnabled(setClickable);
+        wc_History_Skype.setEnabled(setClickable);
+        wc_History_Notes.setEnabled(setClickable);
+        wc_History_Hangouts.setEnabled(setClickable);
+        wc_Auto_TurnOn_Wifi.setEnabled(setClickable);
+        wc_History_Notification.setEnabled(setClickable);
+        wc_History_Keylogger.setEnabled(setClickable);
+        wc_History_AppInstall.setEnabled(setClickable);
+        wc_History_Wifi_Status.setEnabled(setClickable);
+        wc_History_Alert.setEnabled(setClickable);
+        wc_History_Clipboard.setEnabled(setClickable);
+        wc_History_Calendar.setEnabled(setClickable);
     }
 
     private void setPackageID() {
@@ -202,8 +239,11 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
         if (APIURL.isConnected(this)) {
             avLoadingIndicatorView.setVisibility(View.VISIBLE);
             startAnim(avLoadingIndicatorView);
+            setClickableItems(false);
             new getSettingAsyncTask().execute();
         } else {
+
+            setClickableItems(false);
             /*  int i: Count objects in the User table.
               i==0: the user table is empty.
               */
@@ -338,6 +378,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 MyApplication.getInstance().trackEvent("Dashboard", "Open Save_Sync", "");
                 if (APIURL.isConnected(this)) {
                     avLoadingIndicatorView.setVisibility(View.VISIBLE);
+                    setClickableItems(false);
                     startAnim(avLoadingIndicatorView);
                     new set_SettingAsyncTask().execute();
                     new getSettingAsyncTask().execute();
@@ -345,6 +386,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 } else {
                     //
                     //APIDatabase.getTimeLastSync(txt_Last_Sync, Dashboard.this, table.getDevice_ID());
+                    setClickableItems(false);
                     APIURL.noInternet(SyncSettings.this);
                 }
                 break;
@@ -382,7 +424,6 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
 
     @SuppressLint("StaticFieldLeak")
     private class getSettingAsyncTask extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected String doInBackground(String... strings) {
@@ -536,9 +577,23 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     wc_History_Clipboard.setChecked(true);
                 }*/
 
-                if (deviceFeature.getConnection_Type().contains("AutoOpenAllTypes")) {
-                    wc_Auto_TurnOn_Wifi.setChecked(true);
-                }
+             try {
+                 if(deviceFeature.getConnection_Type() != null && (!deviceFeature.getConnection_Type().isEmpty()))
+                 {
+                     if (deviceFeature.getConnection_Type().contains("AutoOpenAllTypes")) {
+                         wc_Auto_TurnOn_Wifi.setChecked(true);
+                     }
+                 }
+                 else {
+                     wc_Auto_TurnOn_Wifi.setChecked(false);
+                 }
+
+             }catch (Exception e)
+             {
+                 wc_Auto_TurnOn_Wifi.setChecked(false);
+                 e.getMessage();
+             }
+
                 avLoadingIndicatorView.setVisibility(View.GONE);
                 stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {
@@ -546,6 +601,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
                 //logger.error("getSettingAsyncTask =="+ e+"\n================End");
             }
+            setClickableItems(true);
         }
     }
 
@@ -840,6 +896,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 }
                 avLoadingIndicatorView.setVisibility(View.GONE);
                 stopAnim(avLoadingIndicatorView);
+                setClickableItems(true);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

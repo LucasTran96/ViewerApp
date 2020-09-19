@@ -156,7 +156,7 @@ public class HistoryLocation extends AppCompatActivity {
                 {
                     initScrollListener();
                 }
-                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL)+"");
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL + table.getDevice_ID())+"");
                 txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
         }
@@ -187,7 +187,7 @@ public class HistoryLocation extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(APIURL.bodyLogin.getData());
                 JSONArray jsonArray = jsonObj.getJSONArray("GPS");
                 JSONArray GPSJsonPaging = jsonObj.getJSONArray("Paging");
-                setToTalLog(GPSJsonPaging, GPS_TOTAL, getApplicationContext());
+                setToTalLog(GPSJsonPaging, GPS_TOTAL + table.getDevice_ID(), getApplicationContext());
 
                 if (jsonArray.length() != 0)
                 {
@@ -212,6 +212,7 @@ public class HistoryLocation extends AppCompatActivity {
                     mData.addAll(insertIndex, mDataTamp);
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                     Log.d("CallHistory"," checkLoadMore Contact = "+ true);
+                    progressBar_Locations.setVisibility(View.GONE);
                 }
                 else {
                     lnl_Total.setVisibility(View.VISIBLE);
@@ -234,7 +235,7 @@ public class HistoryLocation extends AppCompatActivity {
                     txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));
                     txt_Total_Data.setText("0");
                 }else {
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL)+"");
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), GPS_TOTAL + table.getDevice_ID())+"");
                     txt_No_Data_Location.setText("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_LOCATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
                 stopAnim(aviLocation);
@@ -283,7 +284,7 @@ public class HistoryLocation extends AppCompatActivity {
                     if(isConnected(getApplicationContext()))
                     {
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), GPS_TOTAL);
+                        long totalContact = getSharedPreferLong(getApplicationContext(), GPS_TOTAL + table.getDevice_ID());
                         new LocationAsyncTask(currentSize+1).execute();
 
                         if((mData.size()+1) >= totalContact)
@@ -291,7 +292,7 @@ public class HistoryLocation extends AppCompatActivity {
                             endLoading = true;
                         }
                         isLoading = false;
-                        progressBar_Locations.setVisibility(View.GONE);
+
                     }
                     else {
                         List<GPS> mDataCall = databaseGetLocation.getAll_LocationID(table.getDevice_ID(),currentSize);
@@ -307,7 +308,7 @@ public class HistoryLocation extends AppCompatActivity {
                         progressBar_Locations.setVisibility(View.GONE);
                     }
                 }
-            }, 2000);
+            }, 100);
 
         }catch (Exception e)
         {

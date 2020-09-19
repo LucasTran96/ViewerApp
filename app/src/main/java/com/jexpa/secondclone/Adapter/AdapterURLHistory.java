@@ -23,17 +23,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.jexpa.secondclone.Model.URL;
 import com.jexpa.secondclone.R;
 import com.jexpa.secondclone.View.MyApplication;
 import com.jexpa.secondclone.View.URLHistory;
 
 import java.util.ArrayList;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.jexpa.secondclone.API.APIDatabase.checkValueStringT;
 import static com.jexpa.secondclone.API.APIDatabase.getTimeItem;
 import static com.jexpa.secondclone.API.APIMethod.formatURL;
 import static com.jexpa.secondclone.API.APIMethod.setDateForArrayList;
+import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT_MMM;
 
 public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.ViewHolder> {
@@ -45,7 +52,7 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
 
         TextView txt_Date_URL_History, txt_name_URL_History, txt_Text_URL, txt_Date_URL;
         View mView;
-        ImageView img_URL_History;
+        ImageView img_URL_History_NoInternet, img_URL_Background_History_Internet, img_URL_History_Internet;
         LinearLayout card_view_URL, lnl_URL_Selected;
 
         ViewHolder(View v) {
@@ -53,9 +60,11 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
 
             txt_Date_URL_History = v.findViewById(R.id.txt_Date_URL_History);
             txt_name_URL_History = v.findViewById(R.id.txt_name_URL_History);
-            txt_Text_URL = v.findViewById(R.id.img_Text_URL);
+            txt_Text_URL = v.findViewById(R.id.img_Text_URL_NoInternet);
             txt_Date_URL = v.findViewById(R.id.txt_Date_URL);
-            img_URL_History = v.findViewById(R.id.img_URL_History);
+            img_URL_History_NoInternet = v.findViewById(R.id.img_URL_History_NoInternet);
+            img_URL_Background_History_Internet = v.findViewById(R.id.img_URL_Background_History_Internet);
+            img_URL_History_Internet = v.findViewById(R.id.img_URL_History_Internet);
             card_view_URL = v.findViewById(R.id.card_view_URL);
             lnl_URL_Selected = v.findViewById(R.id.lnl_URL_Selected);
             mView = v;
@@ -129,7 +138,11 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
             String domain = formatURL(url.getURL_Link());
             Log.d("domain","domain = "+domain);
             holder.txt_name_URL_History.setText(domain);
-            //holder.txt_Date_URL_History.setText(formatDate(url.getClient_URL_Time(), DEFAULT_TIME_FORMAT_AM));
+
+
+
+            //https://superuser.com/favicon.ico
+
             String checkSTR = url.getURL_Link().replace("http://", "").replace("https://","");
             if(checkSTR.contains("/"))
             {
@@ -139,7 +152,14 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
                 holder.txt_Date_URL_History.setText(checkSTR);
             }
 
-            String textIcon = (url.getURL_Link().length()>0) ? url.getURL_Link().charAt(0)+"" : "";
+            String textIcon = (url.getURL_Link().length()>0) ? url.getURL_Link().replace(" ","").charAt(0) +"" : "a";
+            Log.d("checktextIcon", " url.getURL_Link().length() = " + url.getURL_Link().length() +" url.getURL_Link() = " + url.getURL_Link().trim() + " textIcon = " + textIcon);
+
+            if(getSpecialCharacterCount(textIcon))
+            {
+                textIcon = (url.getURL_Link().length()>1) ? url.getURL_Link().replace(" ","").charAt(1) +"" : "a";
+            }
+            //Log.d("checktextIcon", " url.getURL_Link().length() = " + url.getURL_Link().length() +" url.getURL_Link() = " + url.getURL_Link().trim() + " textIcon = " + textIcon);
             holder.txt_Text_URL.setText(textIcon.toUpperCase());
 
             if (URLHistory.isInActionMode) {
@@ -148,18 +168,24 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
                     // background_url_custom
                     holder.txt_Text_URL.setVisibility(View.GONE);
                     holder.lnl_URL_Selected.setBackground(mActivity.getResources().getDrawable(R.drawable.background_url_custorm));
-                    holder.img_URL_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.selected_icon));
+                    holder.img_URL_History_Internet.setVisibility(View.GONE);
+                    holder.img_URL_Background_History_Internet.setVisibility(View.GONE);
+                    holder.img_URL_History_NoInternet.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.selected_icon));
                 }
                 else {
                     holder.lnl_URL_Selected.setBackground(null);
                     holder.txt_Text_URL.setVisibility(View.VISIBLE);
-                    holder.img_URL_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.url_background_icon));
+                    holder.img_URL_History_NoInternet.setVisibility(View.VISIBLE);
+                    holder.img_URL_History_NoInternet.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.url_background_icon));
+                    getGlideImage(holder.img_URL_History_Internet, holder.img_URL_Background_History_Internet, domain);
                 }
             }
             else {
                 holder.lnl_URL_Selected.setBackground(null);
                 holder.txt_Text_URL.setVisibility(View.VISIBLE);
-                holder.img_URL_History.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.url_background_icon));
+                holder.img_URL_History_NoInternet.setVisibility(View.VISIBLE);
+                holder.img_URL_History_NoInternet.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.url_background_icon));
+                getGlideImage(holder.img_URL_History_Internet, holder.img_URL_Background_History_Internet, domain);
             }
 
             if(position > 0)
@@ -169,6 +195,49 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
                 holder.txt_Date_URL.setText(time_URL);
                 holder.txt_Date_URL.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    private void getGlideImage(ImageView imageView, ImageView imageViewBackground, String doMain)
+    {
+        // https://www.google.com/s2/favicons?sz=64&domain_url=download.copy9.com
+        // "https://"+doMain+"/favicon.ico"
+        if (isConnected(mActivity))
+        {
+            imageView.setVisibility(View.VISIBLE);
+            imageViewBackground.setVisibility(View.VISIBLE);
+            Glide.with(mActivity)
+                    .load("https://www.google.com/s2/favicons?sz=64&domain_url="+doMain) //Edit
+                    .placeholder(R.drawable.url_background_icon_load)
+                    .error(R.drawable.url_background_icon)
+                    .into(imageView);
+        }
+        else {
+            imageView.setVisibility(View.GONE);
+            imageViewBackground.setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
+     * getSpecialCharacterCount: This is a method that checks whether the character is a special character or not.
+     * @param s
+     */
+    private boolean getSpecialCharacterCount(String s)
+    {
+        Pattern p = Pattern.compile("[^A-Za-z0-9]");
+        Matcher m = p.matcher(s);
+        // boolean b = m.matches();
+        boolean b = m.find();
+        if (b)
+        {
+            Log.d("zSpecial", "There is a special character in my string ");
+            return true;
+        }
+        else
+        {
+            Log.d("zSpecial", "There is no special char.");
+            return false;
         }
     }
 

@@ -19,6 +19,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
             txt_PhoneNumber_Call_Detail_History, txt_MakeCall_Call_Detail_History,
             txt_SendMessages_Call_Detail_History,txt_ShareCallContact;
     ImageView img_Make_Call;
+    private Toolbar toolbar;
     boolean testCall = false;
     private static final int EXTERNAL_STORAGE_PERMISSION_CALL_PHONE = 10;
     private Call call;
@@ -50,8 +53,9 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_call_history_detail);
         // activity swipe back
         Slidr.attach(this);
-        setID();
+
         call = (Call) getIntent().getSerializableExtra("Call_Detail");
+        setID();
         if (ActivityCompat.checkSelfPermission(CallHistoryDetail.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(CallHistoryDetail.this, new String[]{Manifest.permission.CALL_PHONE}, EXTERNAL_STORAGE_PERMISSION_CALL_PHONE);
         } else {
@@ -79,7 +83,7 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
             {
                 txt_TimeCall_Call_Detail_History.setText( "00:00");
             }else {
-                txt_TimeCall_Call_Detail_History.setText(call.getDuration() + " s");
+                txt_TimeCall_Call_Detail_History.setText(call.getDuration() + "s");
             }
 
             if (call.getDirection() == 1) {
@@ -98,6 +102,15 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
     }
 
     private void setID() {
+
+        toolbar = findViewById(R.id.toolbar_Call_Detail);
+        toolbar.setTitle(call.getContact_Name());
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         // txt_ShareCallContact
         txt_ShareCallContact = findViewById(R.id.txt_ShareCallContact);
         txt_Name_User_Call_Detail_History = findViewById(R.id.txt_Name_User_Call_Detail_History);
@@ -170,5 +183,16 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
                 break;
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+
+            super.onBackPressed();
+
+        }
+        return true;
     }
 }

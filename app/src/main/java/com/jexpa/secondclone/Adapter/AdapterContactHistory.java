@@ -76,14 +76,22 @@ import java.util.ArrayList;
                 Contact contact = contactListFiltered.get(position);
                 ((ContactHistory) mActivity).prepareSelection(contact,position);
                 notifyItemChanged(getAdapterPosition());
-            } else if (position != RecyclerView.NO_POSITION) {
-                Contact contact = contactListFiltered.get(position);
-                MyApplication.getInstance().trackEvent("ContactHistory", "View contact detail: " + contact.getContact_Name(), "" + contact.getContact_Name());
-                // Path through new activity.
-                Intent intent = new Intent(mActivity, ContactHistoryDetail.class);
-                intent.putExtra("contact_Detail", contact);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mActivity.startActivity(intent);
+            } else if (position != RecyclerView.NO_POSITION)
+            {
+                try {
+                    Contact contact = contactListFiltered.get(position);
+                    MyApplication.getInstance().trackEvent("ContactHistory", "View contact detail: " + contact.getContact_Name(), "" + contact.getContact_Name());
+                    // Path through new activity.
+                    Intent intent = new Intent(mActivity, ContactHistoryDetail.class);
+                    intent.putExtra("contact_Detail", contact);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mActivity.startActivity(intent);
+                }
+                catch (Exception e)
+                {
+                    e.getMessage();
+                }
+
             }
         }
     }

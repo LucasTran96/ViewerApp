@@ -37,7 +37,7 @@
                 android:textSize="15sp"
                 android:gravity="center_horizontal"
                 android:paddingTop="5dp"
-                android:minWidth="110dp"
+                android:minWidth="210dp"
                 android:paddingBottom="5dp"
                 android:layout_centerHorizontal="true"
                 android:textColor="#252424"

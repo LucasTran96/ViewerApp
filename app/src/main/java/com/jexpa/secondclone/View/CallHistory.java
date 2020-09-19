@@ -162,7 +162,7 @@ public class CallHistory extends AppCompatActivity {
                 {
                     initScrollListener();
                 }
-                txt_Total_Data_Call.setText(getSharedPreferLong(getApplicationContext(), CALL_TOTAL)+"");
+                txt_Total_Data_Call.setText(getSharedPreferLong(getApplicationContext(), CALL_TOTAL + table.getDevice_ID())+"");
                 txt_No_Data_Call.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
         }
@@ -206,7 +206,7 @@ public class CallHistory extends AppCompatActivity {
                     if(isConnected(getApplicationContext()))
                     {
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), CALL_TOTAL);
+                        long totalContact = getSharedPreferLong(getApplicationContext(), CALL_TOTAL + table.getDevice_ID());
                         new getCallAsyncTask(currentSize+1).execute();
 
                         if((mData.size()+1) >= totalContact)
@@ -216,7 +216,7 @@ public class CallHistory extends AppCompatActivity {
                         //mAdapter.notifyDataSetChanged();
                         //progressBar_Locations.setVisibility(View.GONE);
                         isLoading = false;
-                        progressBar_Call.setVisibility(View.GONE);
+
                     }
                     else {
                         List<Call> mDataCall = database_call.getAll_Call_ID_History(table.getDevice_ID(),currentSize);
@@ -234,7 +234,7 @@ public class CallHistory extends AppCompatActivity {
                         progressBar_Call.setVisibility(View.GONE);
                     }
                 }
-            }, 500);
+            }, 100);
 
         }catch (Exception e)
         {
@@ -268,7 +268,7 @@ public class CallHistory extends AppCompatActivity {
                     JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                     JSONArray GPSJson = jsonObj.getJSONArray("Table");
                     JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
-                    setToTalLog(GPSJsonTable1, CALL_TOTAL, getApplicationContext());
+                    setToTalLog(GPSJsonTable1, CALL_TOTAL  + table.getDevice_ID(), getApplicationContext());
 
                     if (GPSJson.length() != 0)
                     {
@@ -297,8 +297,8 @@ public class CallHistory extends AppCompatActivity {
                         mData.addAll(insertIndex, mDataTamp);
                         Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                         mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
-
                         Log.d("CallHistory"," checkLoadMore Contact = "+ true);
+                        progressBar_Call.setVisibility(View.GONE);
                     }
                     else {
                         Log.d("CallHistory"," checkLoadMore Contact = "+ false);
@@ -323,7 +323,7 @@ public class CallHistory extends AppCompatActivity {
                     }
                     else {
                         txt_No_Data_Call.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CALL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                        txt_Total_Data_Call.setText(getSharedPreferLong(getApplicationContext(), CALL_TOTAL)+"");
+                        txt_Total_Data_Call.setText(getSharedPreferLong(getApplicationContext(), CALL_TOTAL  + table.getDevice_ID())+"");
                     }
 
                     stopAnim(avLoadingIndicatorView);

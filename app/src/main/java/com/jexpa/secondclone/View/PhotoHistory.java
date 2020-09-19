@@ -12,6 +12,7 @@ package com.jexpa.secondclone.View;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -83,7 +84,7 @@ import static com.jexpa.secondclone.API.Global.time_Refresh_Device;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHOTO;
 import static com.jexpa.secondclone.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 
-public class PhotoHistory extends AppCompatActivity implements View.OnLongClickListener {
+public class PhotoHistory extends AppCompatActivity {
 
     private Toolbar toolbar;
     private RecyclerView mRecyclerView;
@@ -143,7 +144,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         progressBar_Photo.setVisibility(View.GONE);
         //txt_No_Data_Photo.setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.rcl_Photo_History);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         getPhotoHistoryInfo();
@@ -161,7 +162,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
     public void saveImage(final String name, String CDN_URL, String Media_URL, final int value,
                           final String deviceID, final long photoID) {
 
-        Picasso.with(PhotoHistory.this).load(CDN_URL + Media_URL + "/thumb/l" + "/" + name)
+        Picasso.with(PhotoHistory.this).load(CDN_URL + Media_URL + "/thumb/l/" + name)
                 .into(new Target() {
                           @Override
                           public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -178,6 +179,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                                   out.close();
                                   databasePhotos.update_Photos_History(value, deviceID, photoID);
 
+                                  //Toast.makeText(getApplicationContext(), getResources().getString(R.string.Image_Downloaded), Toast.LENGTH_SHORT).show();
                               } catch (Exception e) {
                                   MyApplication.getInstance().trackException(e);
                               }
@@ -185,6 +187,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                           @Override
                           public void onBitmapFailed(Drawable errorDrawable) {
                               Log.i("BitmapFailed", name);
+//                              Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.Image_Download_Failed), name ) , Toast.LENGTH_SHORT).show();
                           }
                           @Override
                           public void onPrepareLoad(Drawable placeHolderDrawable) {
@@ -231,7 +234,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                     if(isConnected(getApplicationContext()))
                     {
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL);
+                        long totalContact = getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL + table.getDevice_ID());
                         new getPhotoAsyncTask(currentSize+1).execute();
                         Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
                         if((mData.size()+1) >= totalContact)
@@ -240,10 +243,10 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                         }
 
                         isLoading = false;
-                        progressBar_Photo.setVisibility(View.GONE);
+
                     }
                     else {
-                        List<Photo> mDataCall = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize);
+                        List<Photo> mDataCall = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize,false);
                         // Here is the total item value contact of device current has on Cpanel
                         int insertIndex = mData.size();
                         mData.addAll(insertIndex,mDataCall);
@@ -257,7 +260,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                         progressBar_Photo.setVisibility(View.GONE);
                     }
                 }
-            }, 500);
+            }, 100);
 
         }catch (Exception e)
         {
@@ -287,11 +290,11 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 //getThread(APIMethod.progressDialog);
             } else {
                 mData.clear();
-                mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0);
+                mData = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),0, true);
                 mAdapter = new AdapterPhotoHistory(this, mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
-                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL)+"");
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL + table.getDevice_ID())+"");
                 txt_No_Data_Photo.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 if(mData.size()>= NumberLoad)
                 {
@@ -306,21 +309,22 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
      * When the user long press item will setLogo(null), isInActionMode = true, change menu to menu_action_mode.
      * Refresh AdapterPhotoHistory().
      */
-    @Override
-    public boolean onLongClick(View view) {
-
-        toolbar.getMenu().clear();
-        toolbar.setTitle(" \t" + "0" + " item selected");
-        isInActionMode = true;
-        toolbar.setLogo(null);
-        toolbar.inflateMenu(R.menu.menu_action_mode);
-        mAdapter.notifyDataSetChanged();
-        if (getSupportActionBar() != null) {
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onLongClick(View view) {
+//
+//        toolbar.getMenu().clear();
+//        toolbar.setTitle(" \t" + "0" + " item selected");
+//        isInActionMode = true;
+//        toolbar.setLogo(null);
+//        toolbar.inflateMenu(R.menu.menu_action_download);
+//        mAdapter.notifyDataSetChanged();
+//        if (getSupportActionBar() != null) {
+//
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
+//
+//        return true;
+//    }
 
     /**
      * getPhotoAsyncTask()
@@ -362,7 +366,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 JSONObject jsonObjListImg = jsonObj.getJSONObject("ListImg");
                 String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
                 JSONArray GPSJson = jsonObjListImg.getJSONArray("DataList");
-                setToTalLog(jsonObjListImg, PHOTO_TOTAL, getApplicationContext());
+                setToTalLog(jsonObjListImg, PHOTO_TOTAL  + table.getDevice_ID(), getApplicationContext());
 
                 if (GPSJson.length() != 0)
                 {
@@ -392,7 +396,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                 }
 
                 Log.d("PhotoHistory"," CurrentSize PhotoHistory = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
-                List<Photo> mDataTamp = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize);
+                List<Photo> mDataTamp = databasePhotos.getAll_Photo_ID_History(table.getDevice_ID(),currentSize, false);
 
                 if(checkLoadMore)
                 {
@@ -400,6 +404,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                     mData.addAll(insertIndex, mDataTamp);
                     Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                     mAdapter.notifyItemRangeInserted(insertIndex,mDataTamp.size() );
+                    progressBar_Photo.setVisibility(View.GONE);
                 }
                 else
                 {
@@ -422,35 +427,8 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
                     txt_Total_Data.setText("0");
                 }
                 else {
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL)+"");
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHOTO_TOTAL  + table.getDevice_ID())+"");
                     txt_No_Data_Photo.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHOTO, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                    if (checkPermissions) {
-
-                        if (mData.size() != 0) {
-                            for (int i = 0; i < mData.size(); i++) {
-                                fileName = mData.get(i).getFile_Name();
-                                CDN_URL = mData.get(i).getCDN_URL();
-                                Media_URL = mData.get(i).getMedia_URL();
-                                Device_ID = mData.get(i).getDevice_ID();
-                                ID = mData.get(i).getID();
-
-                                if (mData.get(i).getIsLoaded() == 0) {
-
-                                    try {
-                                        File myDir = new File(File_PATH_SAVE_IMAGE);
-                                        if (!myDir.exists()) {
-                                            myDir.mkdirs();
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        e.getMessage();
-                                    }
-                                    saveImage(fileName, CDN_URL, Media_URL, 1, Device_ID, ID);
-                                }
-                            }
-                        }
-                    }
                 }
                 aviPhoto.setVisibility(View.GONE);
                 stopAnim(aviPhoto);
@@ -483,25 +461,47 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_action_edit, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         return true;
     }
 
-    public void prepareSelection(int position) {
-        if (!selectionList.contains(mData.get(position))) {
-            selectionList.add(mData.get(position));
-            counter = counter + 1;
-            updateCounter(counter);
-
-        } else {
-            selectionList.remove(mData.get(position));
-            counter = counter - 1;
-            updateCounter(counter);
+    public void prepareToolbar(int position) {
+        // prepare action mode
+        toolbar.getMenu().clear();
+        //toolbar.inflateMenu(R.menu.menu_action_mode);
+        toolbar.inflateMenu(R.menu.menu_action_download);
+        isInActionMode = true;
+        mAdapter.notifyDataSetChanged();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
         }
+        prepareSelection(position);
     }
 
-    public void updateCounter(int counter) {
+    public void prepareSelection(int position) {
+//        if (!selectionList.contains(mData.get(position))) {
+//            selectionList.add(mData.get(position));
+//            counter = counter + 1;
+//            updateCounter(counter);
+//
+//        } else {
+//            selectionList.remove(mData.get(position));
+//            counter = counter - 1;
+//            updateCounter(counter);
+//        }
+        if (!selectionList.contains(mData.get(position))) {
+            selectionList.add(mData.get(position));
+        } else {
+
+            selectionList.remove(mData.get(position));
+        }
+        updateCounter();
+    }
+
+    public void updateCounter() {
+        int counter = selectionList.size();
         updateViewCounterAll(toolbar, counter);
     }
 
@@ -532,12 +532,50 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             }
         } else if (item.getItemId() == R.id.item_edit) {
             toolbar.getMenu().clear();
-            toolbar.inflateMenu(R.menu.menu_action_mode);
+            toolbar.inflateMenu(R.menu.menu_action_download);
             isInActionMode = true;
             mAdapter.notifyDataSetChanged();
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
+            }
+        }
+        else if (item.getItemId() == R.id.item_Download_selected_images) {
+
+            if (isConnected(PhotoHistory.this)) {
+                if (checkPermissions) {
+
+                    if (selectionList.size() != 0) {
+
+                        for (Photo photo : selectionList)
+                        {
+                            fileName = photo.getFile_Name();
+                            CDN_URL = photo.getCDN_URL();
+                            Media_URL = photo.getMedia_URL();
+                            Device_ID = photo.getDevice_ID();
+                            ID = photo.getID();
+
+                            if (photo.getIsLoaded() == 0) {
+
+                                try {
+                                    File myDir = new File(File_PATH_SAVE_IMAGE);
+                                    if (!myDir.exists()) {
+                                        myDir.mkdirs();
+                                    }
+                                } catch (Exception e) {
+                                    e.getMessage();
+                                }
+                                saveImage(fileName, CDN_URL, Media_URL, 1, Device_ID, ID);
+                                }
+                        }
+                        Toast.makeText(this, getResources().getString(R.string.Image_Downloading), Toast.LENGTH_SHORT).show();
+
+                    }
+                    clearActionMode();
+                }
+            } else {
+                //Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
+                clearActionMode();
             }
         }
         return true;
@@ -625,7 +663,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
         if(isInActionMode)
         {
             toolbar.getMenu().clear();
-            toolbar.inflateMenu(R.menu.menu_action_edit);
+            toolbar.inflateMenu(R.menu.menu_main);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(null);
@@ -634,7 +672,7 @@ public class PhotoHistory extends AppCompatActivity implements View.OnLongClickL
             selectionList.clear();
             isInActionMode = false;
             counter = 0;
-            AdapterPhotoHistory.itemStateArrayPhoto = new SparseBooleanArray();
+            //AdapterPhotoHistory.itemStateArrayPhoto = new SparseBooleanArray();
             mAdapter.notifyDataSetChanged(); // refresh AdapterPhotoHistory.
         }
     }

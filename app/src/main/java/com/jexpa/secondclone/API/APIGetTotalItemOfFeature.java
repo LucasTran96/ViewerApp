@@ -51,6 +51,7 @@ import static com.jexpa.secondclone.API.Global.GET_SMS_HISTORY;
 import static com.jexpa.secondclone.API.Global.GET_URL_HISTORY;
 import static com.jexpa.secondclone.API.Global.GPS_TOTAL;
 import static com.jexpa.secondclone.API.Global.HANGOUTS_TOTAL;
+import static com.jexpa.secondclone.API.Global.LENGHT;
 import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
 import static com.jexpa.secondclone.API.Global.PHONE_CALL_RECORDING_TOTAL;
@@ -74,7 +75,8 @@ import static com.jexpa.secondclone.View.SMSHistory.style;
 
 /**
  * Author: Lucaswalker@jexpa.com
- * Class: APIGetTotalItemOfFearture
+ * Class: APIGetTotalItemOfFearture This is a class that specializes in handling the total item
+ * of each feature currently on the server. (SMS, Call, Photos, Locations...)
  * History: 8/14/2020
  * Project: SecondClone
  */
@@ -110,10 +112,10 @@ public class APIGetTotalItemOfFeature {
             String value;
             if(functionName.equals("GetSMSByDateTime"))
             {
-                value = "<RequestParams Device_ID=\"" + deviceID + "\" Start=\"0\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" +  getDateNowInMaxDate() + "\" Type=\"" + smsType + "\" />";
+                value = "<RequestParams Device_ID=\"" + deviceID + "\" Start=\"0\" Length=\""+ LENGHT +"\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" +  getDateNowInMaxDate() + "\" Type=\"" + smsType + "\" />";
             }
             else {
-                value = "<RequestParams Device_ID=\"" + deviceID + "\" Start=\"0\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" +  getDateNowInMaxDate() + "\"  />";
+                value = "<RequestParams Device_ID=\"" + deviceID + "\" Start=\"0\" Length=\""+ LENGHT +"\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" +  getDateNowInMaxDate() + "\"  />";
             }
             String function = functionName;
             return APIURL.POST(value, function);
@@ -186,7 +188,7 @@ public class APIGetTotalItemOfFeature {
                 else {
                     if(style != null && !style.equals("50") && style.equals(smsType))
                     {
-                        setTotalLongForSMS(totalRow, style, context);
+                        setTotalLongForSMS(totalRow, style, context, deviceID);
                     }
                     setNewTotalItemOfFeature(functionName, totalRow, txt_total_number, smsType);
                 }
@@ -196,57 +198,63 @@ public class APIGetTotalItemOfFeature {
             }
         }
 
+        /**
+         * setNewTotalItemOfFeature this is the method that checks the value of totalRow
+         * has greater than the current saved value of each feature.
+         */
         @SuppressLint("SetTextI18n")
         private void setNewTotalItemOfFeature(String functionName, String totalRow, TextView txt_total_number)
         {
 
             if(functionName.equals(GET_CALL_HISTORY))
             {
-                setTotalNumberTextView(CALL_TOTAL, totalRow, false);
+                setTotalNumberTextView(CALL_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_CONTACT_HISTORY))
             {
 
-                setTotalNumberTextView(CONTACT_TOTAL, totalRow, false);
+                setTotalNumberTextView(CONTACT_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_URL_HISTORY))
             {
 
-                setTotalNumberTextView(URL_TOTAL, totalRow, false);
+                setTotalNumberTextView(URL_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_LOCATION_HISTORY))
             {
 
-                setTotalNumberTextView(GPS_TOTAL, totalRow, false);
+                setTotalNumberTextView(GPS_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_PHOTO_HISTORY))
             {
 
-                setTotalNumberTextView(PHOTO_TOTAL, totalRow, false);
+                setTotalNumberTextView(PHOTO_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_PHONE_CALL_RECORDING))
             {
 
-                setTotalNumberTextView(PHONE_CALL_RECORDING_TOTAL, totalRow, false);
+                setTotalNumberTextView(PHONE_CALL_RECORDING_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_AMBIENT_VOICE_RECORDING))
             {
 
-                setTotalNumberTextView(AMBIENT_RECORDING_TOTAL, totalRow, false);
+                setTotalNumberTextView(AMBIENT_RECORDING_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_APPLICATION_USAGE))
             {
 
-                setTotalNumberTextView(APP_USAGE_TOTAL, totalRow, false);
+                setTotalNumberTextView(APP_USAGE_TOTAL + deviceID, totalRow, false);
             }
             else if(functionName.equals(GET_NOTES_HISTORY))
             {
 
                 txt_total_number.setVisibility(View.GONE);
             }
-
         }
 
+        /**
+         * setNewTotalItemOfFeature This is the method of checking which feature is the total item in SMS: SMS, WhatsApp, Viber ...
+         */
         @SuppressLint("SetTextI18n")
         private void setNewTotalItemOfFeature(String functionName, String totalRow, TextView txt_total_number, String smsType)
         {
@@ -254,31 +262,34 @@ public class APIGetTotalItemOfFeature {
             {
                 if(smsType.equals(SMS_DEFAULT_TYPE))
                 {
-                    setTotalNumberTextView(SMS_TOTAL, totalRow, true);
+                    setTotalNumberTextView(SMS_TOTAL + deviceID, totalRow, true);
                 }
                 else if(smsType.equals(SMS_WHATSAPP_TYPE))
                 {
-                    setTotalNumberTextView(WHATSAPP_TOTAL, totalRow, true);
+                    setTotalNumberTextView(WHATSAPP_TOTAL + deviceID, totalRow, true);
                 }
                 else if(smsType.equals(SMS_VIBER_TYPE))
                 {
-                    setTotalNumberTextView(VIBER_TOTAL, totalRow, true);
+                    setTotalNumberTextView(VIBER_TOTAL + deviceID, totalRow, true);
                 }
                 else if(smsType.equals(SMS_FACEBOOK_TYPE))
                 {
-                    setTotalNumberTextView(FACEBOOK_TOTAL, totalRow, true);
+                    setTotalNumberTextView(FACEBOOK_TOTAL + deviceID, totalRow, true);
                 }
                 else if(smsType.equals(SMS_SKYPE_TYPE))
                 {
-                    setTotalNumberTextView(SKYPE_TOTAL, totalRow, true);
+                    setTotalNumberTextView(SKYPE_TOTAL + deviceID, totalRow, true);
                 }
                 else if(smsType.equals(SMS_HANGOUTS_TYPE))
                 {
-                    setTotalNumberTextView(HANGOUTS_TOTAL, totalRow, true);
+                    setTotalNumberTextView(HANGOUTS_TOTAL + deviceID, totalRow, true);
                 }
             }
         }
 
+        /**
+         * setTotalNumberTextView This is a method to assign a new value to textview to notify you of new data.
+         */
         @SuppressLint("SetTextI18n")
         private void setTotalNumberTextView(String FunctionName, String totalRow, boolean checkIfSMS)
         {

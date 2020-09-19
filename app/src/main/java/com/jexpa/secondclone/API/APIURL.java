@@ -14,6 +14,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +23,9 @@ import android.util.Log;
 import com.jexpa.secondclone.Model.Body;
 import com.jexpa.secondclone.Model.Data;
 import com.jexpa.secondclone.Model.Table;
+import com.jexpa.secondclone.Model.User;
 import com.jexpa.secondclone.R;
+import com.jexpa.secondclone.View.Authentication;
 import com.jexpa.secondclone.View.MyApplication;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -47,6 +51,7 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_PROTOCOL_LINK;
 import static com.jexpa.secondclone.API.Global.FUNCTION;
 import static com.jexpa.secondclone.API.Global.INPUTVALUE;
 import static com.jexpa.secondclone.API.Global.ISPUBLIC;
+import static com.jexpa.secondclone.API.Global.SETTINGS;
 import static com.jexpa.secondclone.API.Global.TOKENKEY;
 import static com.jexpa.secondclone.API.Global.VALUE_ACCEPT;
 import static com.jexpa.secondclone.API.Global.VALUE_CONTENT_TYPE;
@@ -54,9 +59,11 @@ import static com.jexpa.secondclone.API.Global.VALUE_ISPUBLIC;
 import static com.jexpa.secondclone.API.Global.VALUE_TOKENKEY;
 
 public class APIURL {
+
     public static Body bodyLogin = new Body();
     private static Data dataJson = new Data();
     public static Table table = new Table();
+
     /**
      * The POST method sends the protocol to the server sending and receiving data.
      * Method POST used by the classes such as:
@@ -96,7 +103,6 @@ public class APIURL {
             } else {
                 result = "Did not work!";
             }
-            Log.d("tsdds","result = "+result+ " function = "+ function);
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
@@ -123,15 +129,15 @@ public class APIURL {
         // Deserialize json into object fields
         try {
             /*
-    "Id": 40900,
-    "IsSuccess": 1,
-    "ResultId": 1,
-    "Data": {},
-    "Code": "S_GETAMBIENT_001",
-    "Description": "Get ambient has been successfully.",
-    "DateTimeFormatPattern": "yyyy-MM-dd HH:mm:ss",
-    "DebugInfo": null,
-    "FormatData": nul
+                "Id": 40900,
+                "IsSuccess": 1,
+                "ResultId": 1,
+                "Data": {},
+                "Code": "S_GETAMBIENT_001",
+                "Description": "Get ambient has been successfully.",
+                "DateTimeFormatPattern": "yyyy-MM-dd HH:mm:ss",
+                "DebugInfo": null,
+                "FormatData": nul
              */
             bodyLogin.setIsSuccess(jsonObject.getString("IsSuccess"));
             bodyLogin.setResultId(jsonObject.getString("ResultId"));
@@ -222,6 +228,10 @@ public class APIURL {
         }
     }
 
+    /**
+     * formatStringToDate Here is the method to convert a String date value to a DEFAULT_DATE_FORMAT "yyyy-MM-dd"
+     * @return "yyyy-MM-dd"
+     */
     public static Date formatStringToDate(String dateString)
     {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
@@ -238,19 +248,25 @@ public class APIURL {
     /**
      * The noInternet method is used to display the AlertDialog when no internet connection is available.
      */
-    public static void noInternet(Context context) {
+    public static void noInternet(Activity activity) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setCancelable(true);
-        builder.setMessage(MyApplication.getResourcses().getString(R.string.TurnOn));
-        builder.setPositiveButton(MyApplication.getResourcses().getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //
-                dialogInterface.dismiss();
-            }
-        });
-        builder.show();
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setCancelable(true);
+            builder.setMessage(MyApplication.getResourcses().getString(R.string.TurnOn));
+            builder.setPositiveButton(MyApplication.getResourcses().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
+        }
+       catch (Exception e)
+       {
+           e.getMessage();
+       }
     }
 
     /**
@@ -271,9 +287,11 @@ public class APIURL {
             }
         });
 
+
         builder.show();
 
     }
+
     public static void alertDialogAll(final Activity context, String message) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -292,4 +310,11 @@ public class APIURL {
     }
 
 
+    public static void clearSharedPreferences(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(SETTINGS,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
 }

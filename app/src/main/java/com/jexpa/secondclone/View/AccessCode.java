@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,12 +26,20 @@ import com.r0adkll.slidr.Slidr;
 public class AccessCode extends AppCompatActivity {
     private TextInputEditText edt_AccessCode;
     private String textCode;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_access_code);
         Slidr.attach(this);
+        toolbar = findViewById(R.id.toolbar_AccessCode);
+        toolbar.setTitle(R.string.AccessCode);
+        toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         edt_AccessCode = findViewById(R.id.edt_AccessCode);
         String accessCode = getIntent().getStringExtra("Access_Code");
         edt_AccessCode.setText(accessCode);
@@ -40,12 +50,7 @@ public class AccessCode extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 textCode = edt_AccessCode.getText().toString();
-                if (textCode.startsWith("#") && textCode.endsWith("*")) {
-                    finish();
-                } else {
-                    APIURL.alertDialog(AccessCode.this, "Note!", "The access code must start with # and end with *.");
-
-                }
+                checkOnBack();
             }
         });
     }
@@ -70,6 +75,21 @@ public class AccessCode extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         textCode = edt_AccessCode.getText().toString();
+        checkOnBack();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            checkOnBack();
+        }
+        return true;
+    }
+
+    private void checkOnBack()
+    {
+        textCode = edt_AccessCode.getText().toString();
         if (textCode.startsWith("#") && textCode.endsWith("*")) {
             finish();
             super.onBackPressed();
@@ -77,7 +97,6 @@ public class AccessCode extends AppCompatActivity {
             APIURL.alertDialog(AccessCode.this, "Note!", "The access code must start with # and end with *.");
         }
     }
-
     /*
       / ManagementDevice   /
      "CellularDataOffTitle"="Cellular Data is Turned Off";

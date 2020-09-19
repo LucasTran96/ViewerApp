@@ -182,7 +182,7 @@ public class SMSHistory extends AppCompatActivity {
                 adapter_SMS = new AdapterSMSHistory(this, list_SMS);
                 rcl_SMS.setAdapter(adapter_SMS);
                 adapter_SMS.notifyDataSetChanged();
-                txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext()));
+                txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext(),table.getDevice_ID()));
                 txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
         }
@@ -241,7 +241,7 @@ public class SMSHistory extends AppCompatActivity {
                     adapter_SMS = new AdapterSMSHistory(SMSHistory.this, list_SMS);
                     rcl_SMS.setAdapter(adapter_SMS);
                     adapter_SMS.notifyDataSetChanged();
-                    txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext()));
+                    txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext(), table.getDevice_ID()));
                     txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 } else {
                     txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));

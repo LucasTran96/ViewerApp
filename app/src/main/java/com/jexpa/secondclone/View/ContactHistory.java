@@ -109,7 +109,6 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         // show dialog Loading...
         getContactsInfo();
         swipeRefreshLayout();
-
     }
 
     private void setID()
@@ -165,7 +164,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 {
                     initScrollListener();
                 }
-                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL)+"");
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL + table.getDevice_ID())+"");
                 txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
         }
@@ -205,14 +204,13 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 @Override
                 public void run() {
 
-
                     currentSize =  mData.size();
 
                     if(isConnected(getApplicationContext()))
                     {
                         checkLoadMore = true;
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL);
+                        long totalContact = getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL+ table.getDevice_ID());
                         new contactAsyncTask(currentSize+1).execute();
                         if((mData.size()+1) >= totalContact)
                         {
@@ -221,7 +219,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         //mAdapter.notifyDataSetChanged();
                         //progressBar_Locations.setVisibility(View.GONE);
                         isLoading = false;
-                        progressBar_Contacts.setVisibility(View.GONE);
+
                     }
                     else {
                         List<Contact> mDataStamp = database_contact.getAll_Contact_ID_History(table.getDevice_ID(),currentSize);
@@ -239,7 +237,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         progressBar_Contacts.setVisibility(View.GONE);
                     }
                 }
-            }, 2000);
+            }, 100);
 
         }catch (Exception e)
         {
@@ -293,7 +291,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
-                setToTalLog(GPSJsonTable1, CONTACT_TOTAL, getApplicationContext());
+                setToTalLog(GPSJsonTable1, CONTACT_TOTAL + table.getDevice_ID(), getApplicationContext());
 
                 if (GPSJson.length() != 0) {
 
@@ -335,7 +333,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     }
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                     Log.d("ContactHistory"," checkLoadMore Contact = "+ true);
-
+                    progressBar_Contacts.setVisibility(View.GONE);
                 }
                 else {
                     lnl_Total.setVisibility(View.VISIBLE);
@@ -359,7 +357,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                     txt_Total_Data.setText("0");
                 }else {
                     txt_No_Data_Contact.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_CONTACT, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL)+"");
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), CONTACT_TOTAL + table.getDevice_ID())+"");
                 }
                 //getThread(APIMethod.progressDialog);
                 stopAnim(avLoadingIndicatorView);

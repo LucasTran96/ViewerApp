@@ -219,7 +219,7 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
                     isLoading = false;
                     progressBar_SMS.setVisibility(View.GONE);
                 }
-            }, 2000);
+            }, 100);
 
         }catch (Exception e)
         {

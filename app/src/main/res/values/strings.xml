@@ -4,13 +4,14 @@
     <string name="app_name" translatable="false">Viewer App</string>
 
     <string name="Register"><u>Sign Up</u></string>
-    <string name="SignIn">Log In</string>
+    <string name="SignIn">Sign In</string>
     <string name="Password">Password</string>
-    <string name="Email">Email address</string>
+    <string name="Email">User name</string>
     <string name="PasswordHint">Password</string>
     <string name="ConfirmTitle">Confirm Password</string>
     <string name="Confirm">Confirm</string>
     <string name="ok">OK</string>
+    <string tools:ignore="MissingTranslation" name="cancel">Cancel</string>
     <string name="ID">ID</string>
     <string name="AddDevice">Add Device</string>
     <string name="title_activity_map_location">Map</string>
@@ -53,6 +54,8 @@
     <string name="SendFeedBack">SEND FEEDBACK</string>
     <string name="LogViewer">Log viewer</string>
     <string name="AccessCode">Access Code</string>
+
+    <string name="Change_AccessCode" translatable="false">Change the access code</string>
     <string name="Note_AccessCode">Make a call with  this number to show/hide Icon of Application.</string>
     <string name="Note_Access">Note: the access code must start with # and end with *</string>
     <string name="Save">OK</string>
@@ -77,7 +80,8 @@
     <string name="ExpiryDate">Expiry date: </string>
     <string name="DeviceList">Device List</string>
     <string name="YouHaveLinkedDevice" tools:ignore="MissingTranslation">You have %1$d device(s) linked to this account.</string>
-    <string name="LogOut">Log Out</string>
+    <string name="LogOut">Sign Out</string>
+    <string tools:ignore="MissingTranslation" name="SignOut">Do you want to Sign out of this account?</string>
     <string name="AboutUs"><u>About</u></string>
     <string name="ForgetPassword"><u>Forget Password ?</u></string>
     <string name="Language"><u>Language ?</u></string>
@@ -91,6 +95,9 @@
     <string name="Close" translatable="false">Close</string>
     <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
     <string name="TurnOn">Internet no connect!</string>
+    <string name="Image_Downloading" translatable="false">The image is downloading.</string>
+    <string name="Image_Download_Failed" translatable="false">Image %s cannot be downloaded!</string>
+    <string name="Image_Downloaded" translatable="false">All images have been downloaded.</string>
     <string name="Renew"><u>Renew</u></string>
     <string name="NoDevice">No account does not have any devices linked.</string>
     <string name="addedOn">Added on</string>

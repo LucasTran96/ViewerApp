@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jexpa.secondclone.Model.Photo;
@@ -35,17 +37,21 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.jexpa.secondclone.API.APIURL.isConnected;
 import static com.jexpa.secondclone.API.Global.File_PATH_SAVE_IMAGE;
+import static com.jexpa.secondclone.View.PhotoHistory.isInActionMode;
+import static com.jexpa.secondclone.View.PhotoHistory.selectionList;
 
 
-public class AdapterPhotoHistory extends RecyclerView.Adapter {
+public class AdapterPhotoHistory extends RecyclerView.Adapter<AdapterPhotoHistory.ViewHolder> {
 
-    public static SparseBooleanArray itemStateArrayPhoto = new SparseBooleanArray();
+    //public static SparseBooleanArray itemStateArrayPhoto = new SparseBooleanArray();
     private PhotoHistory photoHistory;
     public  static List<Photo> photoList;
+    private Activity mActivity;
 
     public AdapterPhotoHistory(Activity context, List<Photo> photoList) {
         AdapterPhotoHistory.photoList = photoList;
         photoHistory = (PhotoHistory) context;
+        mActivity =context;
     }
 
     @Override
@@ -55,105 +61,140 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterPhotoHistory.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view;
         view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_rcv_photo_history, parent, false);
-        return new PhotoHolder(view, photoHistory);
+        return new ViewHolder(view, photoHistory);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Photo photo = photoList.get(position);
         if(photo != null)
         {
-            ((PhotoHolder) holder).bind(photo, position);
-        }
+            //((PhotoHolder) holder).bind(photo, position);
+            String filepath = File_PATH_SAVE_IMAGE;
+            if (isConnected(photoHistory)) {
+                if (photoList.get(position).getIsLoaded() == 1)
+                {
+                    // Picasso.with(photoHistory).load(new File(filepath, photo.getFile_Name())).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(img_photo_History);
+                    Glide.with(photoHistory)
+                            .load(new File(filepath, photo.getFile_Name())) //Edit
+                            .placeholder(R.drawable.spinner)
+                            .error(R.drawable.no_image)
+                            .into(holder.img_photo_History);
+                    holder.img_photo_isSave.setVisibility(View.VISIBLE);
+                }
+                else {
 
+                    Glide.with(photoHistory)
+                            .load(photo.getCDN_URL() + photo.getMedia_URL() + "/thumb/l" + "/" + photo.getFile_Name()) //Edit
+                            .placeholder(R.drawable.spinner)
+                            .error(R.drawable.no_image)
+                            .into(holder.img_photo_History);
+                    // .thumbnail(0.5f).override(200, 200)
+                    // .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
+                    holder.img_photo_isSave.setVisibility(View.GONE);
+                }
+            } else {
+
+                //Picasso.with(photoHistory).load(new File(filepath, photo.getFile_Name())).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(img_photo_History);
+                Glide.with(photoHistory)
+                        .load(new File(filepath, photo.getFile_Name())) //Edit
+                        .placeholder(R.drawable.spinner)
+                        .error(R.drawable.no_image)
+                        .into(holder.img_photo_History);
+                holder.img_photo_isSave.setVisibility(View.VISIBLE);
+            }
+
+            //            if (!isInActionMode) {
+            //
+            //                checkBox_photo.setVisibility(View.GONE);
+            //
+            //            } else {
+            //                checkBox_photo.setVisibility(View.VISIBLE);
+            //            }
+
+            //            if (!itemStateArrayPhoto.get(position, false)) {
+            //                checkBox_photo.setChecked(false);
+            //                view_Show.setVisibility(View.GONE);
+            //            } else {
+            //                checkBox_photo.setChecked(true);
+            //                view_Show.setVisibility(View.VISIBLE);
+            //            }
+            if (com.jexpa.secondclone.View.PhotoHistory.isInActionMode)
+            {
+                //holder.checkBox_photo.setVisibility(View.VISIBLE);
+                if (com.jexpa.secondclone.View.PhotoHistory.selectionList.contains(photoList.get(position))) {
+                    holder.checkBox_photo.setChecked(true);
+                    //holder.view_Show.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.checkBox_photo.setChecked(false);
+                    //holder.view_Show.setVisibility(View.GONE);
+                }
+            }
+            else {
+
+                holder.checkBox_photo.setChecked(false);
+                //holder.view_Show.setVisibility(View.GONE);
+                holder.checkBox_photo.setVisibility(View.GONE);
+            }
+        }
     }
 
-    private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         CheckBox checkBox_photo;
-        View mmView, view_Show;
-        ImageView img_photo_History;
+        View mmView;//view_Show
+        ImageView img_photo_History, img_photo_isSave;
         FrameLayout ln_Photo;
         PhotoHistory photoHistorySmall;
 
-        PhotoHolder(View itemView, PhotoHistory photoHistory) {
+        ViewHolder(View itemView, PhotoHistory photoHistory) {
 
             super(itemView);
             this.setIsRecyclable(false);
             this.photoHistorySmall = photoHistory;
             ln_Photo = itemView.findViewById(R.id.ln_Photo);
             img_photo_History = itemView.findViewById(R.id.img_photo_History);
+            img_photo_isSave = itemView.findViewById(R.id.img_photo_isSave);
             checkBox_photo = itemView.findViewById(R.id.cb_Check_PhotoListDelete);
-            checkBox_photo.setEnabled(false);
+            checkBox_photo.setEnabled(true);
             mmView = itemView;
-            view_Show = itemView.findViewById(R.id.view_Show);
-            view_Show.setVisibility(View.GONE);
-            ln_Photo.setOnLongClickListener(photoHistory);
-            ln_Photo.setOnClickListener(this);
-
+            //view_Show = itemView.findViewById(R.id.view_Show);
+            //view_Show.setVisibility(View.GONE);
+            //ln_Photo.setOnLongClickListener(photoHistory);
+            mmView.setOnClickListener(this);
+            mmView.setOnLongClickListener(this);
         }
 
-        @SuppressLint("ResourceAsColor")
-        void bind(Photo photo, int position) {
-            String filepath = File_PATH_SAVE_IMAGE;
-            if (isConnected(photoHistory)) {
-                if (photoList.get(position).getIsLoaded() == 1) {
-                    Picasso.with(photoHistory).load(new File(filepath, photo.getFile_Name())).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(img_photo_History);
-
-                } else {
-                    Glide.with(photoHistory).load(photo.getCDN_URL() + photo.getMedia_URL() + "/thumb/l" + "/" + photo.getFile_Name())
-                            .thumbnail(0.5f).override(200, 200).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.spinner).error(R.drawable.no_image)
-                            .into(img_photo_History);
-                }
-            } else {
-
-                Picasso.with(photoHistory).load(new File(filepath, photo.getFile_Name())).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(img_photo_History);
-            }
-
-            if (!PhotoHistory.isInActionMode) {
-
-                checkBox_photo.setVisibility(View.GONE);
-
-            } else {
-                checkBox_photo.setVisibility(View.VISIBLE);
-            }
-
-            if (!itemStateArrayPhoto.get(position, false)) {
-                checkBox_photo.setChecked(false);
-                view_Show.setVisibility(View.GONE);
-            } else {
-                checkBox_photo.setChecked(true);
-                view_Show.setVisibility(View.VISIBLE);
-            }
-        }
 
         @Override
         public void onClick(View view) {
 
             int adapterPosition = getAdapterPosition();
-            if (PhotoHistory.isInActionMode) {
-                photoHistory.prepareSelection(getAdapterPosition());
+            if (com.jexpa.secondclone.View.PhotoHistory.isInActionMode)
+            {
+                ((com.jexpa.secondclone.View.PhotoHistory)mActivity).prepareSelection(getAdapterPosition());
+                notifyItemChanged(adapterPosition);
+                Toast.makeText(photoHistorySmall, "Position = "+ adapterPosition, Toast.LENGTH_SHORT).show();
 
-                if (!itemStateArrayPhoto.get(adapterPosition, false)) {
-                    checkBox_photo.setChecked(true);
-                    view_Show.setVisibility(View.VISIBLE);
-                    itemStateArrayPhoto.put(adapterPosition, true);
-                } else {
-                    checkBox_photo.setChecked(false);
-                    view_Show.setVisibility(View.GONE);
-                    itemStateArrayPhoto.put(adapterPosition, false);
-                }
             } else if (adapterPosition != RecyclerView.NO_POSITION) {
+                Photo photo = photoList.get(adapterPosition);
                 MyApplication.getInstance().trackEvent("PhotoHistory", "View Photo detail ", "View PhotoHistory");
                 Intent intent = new Intent(photoHistory, PhotoHistoryDetail.class);
                 intent.putExtra("position", adapterPosition);
                 photoHistory.startActivity(intent);
             }
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            ((com.jexpa.secondclone.View.PhotoHistory)mActivity).prepareToolbar(getAdapterPosition());
+            return true;
         }
     }
 

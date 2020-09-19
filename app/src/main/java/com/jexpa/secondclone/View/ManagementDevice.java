@@ -14,7 +14,9 @@ package com.jexpa.secondclone.View;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -24,6 +26,7 @@ import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +64,7 @@ import static com.jexpa.secondclone.API.APIDatabase.getThread;
 import static com.jexpa.secondclone.API.APIMethod.startAnim;
 import static com.jexpa.secondclone.API.APIMethod.stopAnim;
 import static com.jexpa.secondclone.API.APIMethod.subDate;
+import static com.jexpa.secondclone.API.APIURL.clearSharedPreferences;
 import static com.jexpa.secondclone.API.APIURL.deviceObject;
 import static com.jexpa.secondclone.API.APIURL.bodyLogin;
 import static com.jexpa.secondclone.API.APIURL.fromJson;
@@ -253,7 +257,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         TextView txt_nameAPP_Management = findViewById(R.id.txt_nameAPP_Management);
         ImageView img_Logo_Management = findViewById(R.id.img_Logo_Management);
         TextView txt_Copyright_launch = findViewById(R.id.txt_Copyright_launch);
-        Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Management);
+        // Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.icon_cp9_app).into(img_Logo_Management);
         txt_version_name.setText(" " + DEFAULT_VERSION_NAME);
         txt_nameAPP_Management.setText(DEFAULT_PRODUCT_NAME);
         txt_Copyright_launch.setText(DEFAULT_COPYRIGHT);
@@ -282,13 +286,9 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
 
         if (i == R.id.btnLogOut) {
 //            this.deleteDatabase(DATABASE_NAME);//
-            databaseUser.updateUser(new User(1, "123", "123"));
-//            File fileNamePathDelete = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + DEFAULT_PRODUCT_NAME);
-//            deleteRecursive(fileNamePathDelete);
-//            fileNamePathDelete.delete();
-            Intent intent = new Intent(getApplicationContext(), Authentication.class);
-            startActivity(intent);
-            finish();
+            clearSharedPreferences(getApplicationContext());//"Sign out"
+            alertDialogTwo(ManagementDevice.this, getApplicationContext().getResources().getString(R.string.SignOut));
+
         } else if (i == R.id.ln_Renew) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(startOpenWebPage(DEFAULT_LINK_RENEW)));
@@ -300,6 +300,39 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    /**
+     * The alertDialog method is used to show sample AlertDialog has 2 parameter values ​​for other classes to reuse
+     */
+    private void alertDialogTwo(Activity activity, String message) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(false);
+        builder.setTitle("");
+        builder.setMessage(message);
+        builder.setPositiveButton(MyApplication.getResourcses().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //
+                databaseUser.updateUser(new User(1, "123", "123"));
+                Intent intent = new Intent(getApplicationContext(), Authentication.class);
+                startActivity(intent);
+                finish();
+                //context.finish();
+            }
+        });
+        builder.setNegativeButton(MyApplication.getResourcses().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //
+                dialogInterface.dismiss();
+                //context.finish();
+            }
+        });
+
+        builder.show();
+
     }
 
     public void deleteRecursive(File fileOrDirectory) {
@@ -463,4 +496,5 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         MyApplication.getInstance().trackScreenView("ManagementDevice Screen");
         super.onResume();
     }
+
 }

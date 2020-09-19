@@ -61,12 +61,13 @@ public class LaunchScreen extends AppCompatActivity {
         //The method of checking the file distributing.xml exists or not.
         checkFileDistributingExist(getApplicationContext());
 
-        ImageView img_Logo_Launch = findViewById(R.id.img_Logo_Launch);
+        //ImageView img_Logo_Launch = findViewById(R.id.img_Logo_Launch);
         TextView txt_AppName_Launch = findViewById(R.id.txt_AppName_Launch);
         TextView txt_VersionName_Launch = findViewById(R.id.txt_VersionName_Launch);
-        Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Launch);
+        //Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Launch);
         txt_AppName_Launch.setText(DEFAULT_PRODUCT_NAME);
         txt_VersionName_Launch.setText(DEFAULT_VERSION_NAME);
+        Log.d("vsn", DEFAULT_VERSION_NAME);
         // mLog = Log4jHelper.getLogger("LaunchScreen.class");
         int i = databaseUser.getNotesCount();
         Log.d("data_User", i+"");

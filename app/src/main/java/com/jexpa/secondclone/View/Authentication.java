@@ -101,7 +101,8 @@ public class Authentication extends AppCompatActivity {
         img_HidePassword = findViewById(R.id.img_HidePassword);
         txt_AppName_Authentication.setText(DEFAULT_PRODUCT_NAME);
         txt_AppVersion_Authentication.setText(DEFAULT_VERSION_NAME);
-        Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Authentication);
+
+        //Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.icon_cp9_app).into(img_Logo_Authentication);
     }
 
     private void setEvent() {
@@ -221,7 +222,7 @@ public class Authentication extends AppCompatActivity {
                     edt_Password.setText("");
                     APIDatabase.getToast(Authentication.this, bodyLogin.getDescription());
                 }
-                stopAnim(avLoadingIndicatorView);
+
             } catch (Exception e) {
                 edt_Password.setText("");
                 MyApplication.getInstance().trackException(e);
@@ -229,6 +230,8 @@ public class Authentication extends AppCompatActivity {
                 Toast.makeText(Authentication.this, "Has an error with the link protocol", Toast.LENGTH_SHORT).show();
                 e.getMessage();
             }
+            stopAnim(avLoadingIndicatorView);
+            avLoadingIndicatorView.setVisibility(View.GONE);
         }
     }
 

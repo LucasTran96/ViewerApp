@@ -21,6 +21,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.jexpa.secondclone.API.APIMethod;
@@ -182,10 +185,24 @@ public class PhotoHistoryDetail extends AppCompatActivity {
 
             if (isConnected(getContext())) {
                 //Glide.with(getActivity()).load(url).thumbnail(0.1f).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
-                Picasso.with(getActivity()).load(url).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
+                //Picasso.with(getActivity()).load(url).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
+                Glide.with(getActivity())
+                        .load(url) //Edit
+                        .placeholder(R.drawable.spinner_small_snall)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.drawable.no_image)
+                        .into(imageView);
 
             } else {
-                Picasso.with(getContext()).load(new File(File_PATH_SAVE_IMAGE, name)).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
+                Glide.with(getActivity())
+                        .load(new File(File_PATH_SAVE_IMAGE, name)) //Edit
+                        .placeholder(R.drawable.spinner_small_snall)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.drawable.no_image)
+                        .into(imageView);
+                //Picasso.with(getContext()).load(new File(File_PATH_SAVE_IMAGE, name)).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
             }
             final boolean[] count = {false};
             imageView.setOnPhotoTapListener(new OnPhotoTapListener() {

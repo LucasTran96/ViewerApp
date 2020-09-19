@@ -69,6 +69,7 @@ import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT;
 import static com.jexpa.secondclone.API.Global.DEFAULT_DATE_FORMAT_MMM;
 import static com.jexpa.secondclone.API.Global.FACEBOOK_TOTAL;
 import static com.jexpa.secondclone.API.Global.HANGOUTS_TOTAL;
+import static com.jexpa.secondclone.API.Global.LENGHT;
 import static com.jexpa.secondclone.API.Global.LIMIT_REFRESH;
 import static com.jexpa.secondclone.API.Global.MIN_TIME;
 import static com.jexpa.secondclone.API.Global.NumberLoad;
@@ -152,7 +153,11 @@ public class APIMethod {
         }
     }
 
-    // format URL
+    /**
+     * formatURL format the URL if there is "http: //" or "https: //" then remove it.
+     * @param str
+     * @return url removed "http: //" or "https: //"
+     */
     public static String formatURL(String str) {
         try {
             if (!(str.startsWith("http://") || str.startsWith("https://"))) {
@@ -177,13 +182,11 @@ public class APIMethod {
                     }else {
                         host = checkSTR;
                     }
-
                 }catch (Exception e)
                 {
                     host = checkSTR;
                     e.getMessage();
                 }
-
             }
             return host.trim();
         } catch (Throwable th) {
@@ -235,7 +238,6 @@ public class APIMethod {
 
     }
 
-
     /**
      * setToTalLog JSONArray is the method to get the total number of items in a feature called from the server.
      * @return
@@ -253,26 +255,26 @@ public class APIMethod {
     /**
      * setTotalLongForSMS This is a method that supports saving the total number of records for each feature such as SMS, WhatsApp, Skype ...
      */
-    public static void setTotalLongForSMS(String totalRow, String style,Context context)
+    public static void setTotalLongForSMS(String totalRow, String style, Context context, String deviceID)
     {
         switch (style) {
             case SMS_DEFAULT_TYPE:
-                setToTalLog(totalRow, SMS_TOTAL, context);
+                setToTalLog(totalRow, SMS_TOTAL + deviceID, context);
                 break;
             case SMS_WHATSAPP_TYPE:
-                setToTalLog(totalRow, WHATSAPP_TOTAL, context);
+                setToTalLog(totalRow, WHATSAPP_TOTAL + deviceID, context);
                 break;
             case SMS_VIBER_TYPE:
-                setToTalLog(totalRow, VIBER_TOTAL, context);
+                setToTalLog(totalRow, VIBER_TOTAL + deviceID, context);
                 break;
             case SMS_FACEBOOK_TYPE:
-                setToTalLog(totalRow, FACEBOOK_TOTAL, context);
+                setToTalLog(totalRow, FACEBOOK_TOTAL + deviceID, context);
                 break;
             case SMS_SKYPE_TYPE:
-                setToTalLog(totalRow, SKYPE_TOTAL, context);
+                setToTalLog(totalRow, SKYPE_TOTAL + deviceID, context);
                 break;
             case SMS_HANGOUTS_TYPE:
-                setToTalLog(totalRow, HANGOUTS_TOTAL, context);
+                setToTalLog(totalRow, HANGOUTS_TOTAL + deviceID, context);
                 break;
         }
     }
@@ -280,27 +282,27 @@ public class APIMethod {
     /**
      * getTotalLongForSMS This is a method that supports get the total number of records for each feature such as SMS, WhatsApp, Skype ...
      */
-    public static String getTotalLongForSMS(String style,Context context)
+    public static String getTotalLongForSMS(String style,Context context, String deviceID)
     {
         long sms_Total = 1;
         switch (style) {
             case SMS_DEFAULT_TYPE:
-                sms_Total = getSharedPreferLong(context, SMS_TOTAL);
+                sms_Total = getSharedPreferLong(context, SMS_TOTAL + deviceID);
                 break;
             case SMS_WHATSAPP_TYPE:
-                sms_Total = getSharedPreferLong(context, WHATSAPP_TOTAL);
+                sms_Total = getSharedPreferLong(context, WHATSAPP_TOTAL + deviceID);
                 break;
             case SMS_VIBER_TYPE:
-                sms_Total = getSharedPreferLong(context, VIBER_TOTAL);
+                sms_Total = getSharedPreferLong(context, VIBER_TOTAL + deviceID);
                 break;
             case SMS_FACEBOOK_TYPE:
-                sms_Total = getSharedPreferLong(context, FACEBOOK_TOTAL);
+                sms_Total = getSharedPreferLong(context, FACEBOOK_TOTAL + deviceID);
                 break;
             case SMS_SKYPE_TYPE:
-                sms_Total = getSharedPreferLong(context, SKYPE_TOTAL);
+                sms_Total = getSharedPreferLong(context, SKYPE_TOTAL + deviceID);
                 break;
             case SMS_HANGOUTS_TYPE:
-                sms_Total = getSharedPreferLong(context, HANGOUTS_TOTAL);
+                sms_Total = getSharedPreferLong(context, HANGOUTS_TOTAL + deviceID);
                 break;
         }
         return String.valueOf(sms_Total);
@@ -355,6 +357,9 @@ public class APIMethod {
     }
 
 
+    /**
+     * setSharedPreferLong This is the method to set a Long value from the given name
+     */
     public static void setSharedPreferLong(Context context,String name, long value)
     {
         SharedPreferences.Editor editor = context.getSharedPreferences(SETTINGS, MODE_PRIVATE).edit();
@@ -362,12 +367,18 @@ public class APIMethod {
         editor.commit();
     }
 
+    /**
+     * getSharedPreferLong is the method to get the value stored in SharedPrefer by the given name with type Long.
+     */
     public static long getSharedPreferLong(Context context,String name)
     {
         SharedPreferences preferences = context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
         return preferences.getLong(name, 0);
     }
 
+    /**
+     * getSharedPreferString is the method to get the value stored in SharedPrefer by the given name with type String.
+     */
     public static String getSharedPreferString(Context context,String name)
     {
         SharedPreferences preferences = context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
@@ -411,16 +422,16 @@ public class APIMethod {
         return timeOld;
     }
 
-    /*
-        startAnim this is the method for showing progress bar custom.
+    /**
+     *  startAnim this is the method for showing progress bar custom.
      */
     public static void startAnim(AVLoadingIndicatorView avLoadingIndicatorView){
         avLoadingIndicatorView.show();
         // or avi.smoothToShow();
     }
 
-    /*
-        stopAnim this is the method for hide progress bar custom.
+    /**
+     *  stopAnim this is the method for hide progress bar custom.
      */
     public static void stopAnim(AVLoadingIndicatorView avLoadingIndicatorView){
         try {
@@ -461,25 +472,29 @@ public class APIMethod {
 
         finalTimerString = finalTimerString + minutes + ":" + secondsString;
 
-        //      return  String.format("%02d Min, %02d Sec",
-        //                TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-        //                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-        //                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
-
-        // return timer string
         return finalTimerString;
     }
 
+
+    /**
+     * GetJsonFeature is a method of creating available values to send to the server and receive data.
+     * @param table to get Device_ID.
+     * @param startIndex You want to get data from what position in the database of that feature.
+     * @param functionName: is the feature name you want to get data about such as SMS, Calls, Locations.
+     */
     public static String GetJsonFeature(Table table, long startIndex, String functionName)
     {
         Log.d("ContactId", table.getDevice_ID() + "");
         // max_Date is get all the location from the min_date to the max_Date days
         String max_Date = getDateNowInMaxDate();
         Log.d("totalRow", max_Date + "");
-        String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\""+startIndex+"\" Length=\"100\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" + max_Date + "\" />";
+        String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Start=\""+startIndex+"\" Length=\""+ LENGHT +"\" Min_Date=\"" + MIN_TIME + "\" Max_Date=\"" + max_Date + "\" />";
         return APIURL.POST(value, functionName);
     }
 
+    /**
+     * updateViewCounterAll This is a shared method with classes to update the number of items selected to delete.
+     */
     public static void updateViewCounterAll(Toolbar toolbar, int counter)
     {
         if (counter == 0) {

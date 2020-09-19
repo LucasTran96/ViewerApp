@@ -9,7 +9,7 @@
     tools:context=".View.LaunchScreen">
     <ImageView
         android:layout_width="250dp"
-        android:src="@drawable/logosecondclone"
+        android:src="@drawable/icon_cp9_app"
         android:id="@+id/img_Logo_Launch"
         android:layout_marginTop="100dp"
         android:layout_gravity="center_horizontal"

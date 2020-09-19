@@ -33,10 +33,10 @@
         android:name=".View.MyApplication"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/iconappsecondclone"
+        android:icon="@mipmap/ic_launcher_cp9"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/iconappsecondclone_round"
+        android:roundIcon="@mipmap/ic_launcher_cp9_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,InnerclassSeparator">

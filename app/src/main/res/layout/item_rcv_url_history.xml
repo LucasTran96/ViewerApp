@@ -37,18 +37,30 @@
                     android:layout_width="40dp"
                     android:src="@drawable/url_background_icon"
                     android:layout_gravity="center_vertical"
-                    android:id="@+id/img_URL_History"
+                    android:id="@+id/img_URL_History_NoInternet"
                     android:layout_height="40dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="T"
-                    android:id="@+id/img_Text_URL"
+                    android:id="@+id/img_Text_URL_NoInternet"
                     android:textColor="#fff"
                     android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:textStyle="normal"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_height="wrap_content"/>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:src="@drawable/url_background_icon_internet"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/img_URL_Background_History_Internet"
+                    android:layout_height="40dp" />
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:id="@+id/img_URL_History_Internet"
+                    android:layout_height="15dp" />
+
             </FrameLayout>
 
             <LinearLayout

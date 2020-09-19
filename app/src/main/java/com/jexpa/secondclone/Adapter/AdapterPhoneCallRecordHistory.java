@@ -42,6 +42,7 @@ import com.jexpa.secondclone.View.PhoneCallRecordHistory;
 import com.wang.avi.AVLoadingIndicatorView;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -200,37 +201,43 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
     }
 
     private void playAudio() {
-        MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
-        mediaPlayerStart = true;
-        String fileName =  "/" + phoneCallRecorded.getAudioName();
-        Log.d("AmbientMediaLink",fileName);
-        mp = MediaPlayer.create(mActivity, Uri.parse(File_PATH_SAVE_PHONE_CALL_RECORD + fileName));
-        mp.setLooping(true);
-        mp.seekTo(0);
-        mp.setVolume(0.5f, 0.5f);
-        totalTime = mp.getDuration();
-        mp.start();
-        imageViewPlay.setImageResource(R.drawable.icons_pause);
-        seekBarPlay.setMax(totalTime);
-        seekBarPlay.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (fromUser) {
-                            mp.seekTo(progress);
-                            seekBarPlay.setProgress(progress);
+        try {
+            MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
+            mediaPlayerStart = true;
+            String fileName =  "/" + phoneCallRecorded.getAudioName();
+            Log.d("AmbientMediaLink",fileName + " urlAudio = " + urlAudio);
+            mp = MediaPlayer.create(mActivity, Uri.parse(File_PATH_SAVE_PHONE_CALL_RECORD + fileName));
+            mp.setLooping(true);
+            mp.seekTo(0);
+            mp.setVolume(0.5f, 0.5f);
+            totalTime = mp.getDuration();
+            mp.start();
+            imageViewPlay.setImageResource(R.drawable.icons_pause);
+            seekBarPlay.setMax(totalTime);
+            seekBarPlay.setOnSeekBarChangeListener(
+                    new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            if (fromUser) {
+                                mp.seekTo(progress);
+                                seekBarPlay.setProgress(progress);
+                            }
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
                         }
                     }
+            );
+        }catch (Exception e)
+        {
+            e.getMessage();
+        }
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
-                }
-        );
 
         new Thread(new Runnable() {
             @Override
@@ -262,6 +269,18 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
                 }
             }
         });
+    }
+
+    private static void killMediaPlayer() {
+        if (mp != null) {
+            try {
+                mp.reset();
+                mp.release();
+                mp = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @SuppressLint("HandlerLeak")

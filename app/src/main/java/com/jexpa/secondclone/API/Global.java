@@ -5,6 +5,8 @@
   Created Date: 2018-06-05
   Description: Class Global is use to declare constant variables for other classes to call and use
   History:2018-10-08
+          2020-08-10
+          2020-09-12
   Copyright © 2018 Jexpa LLC. All rights reserved.
  */
 
@@ -29,14 +31,13 @@ public class Global {
     /**
      * MyDatabase
      */
-
     public static final String TAG = "SQLite";
+    // Model version
     public static String MODEL = "Android  " + android.os.Build.VERSION.RELEASE;
 
     /**
      * Default date format.
      */
-
     static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String DEFAULT_DATE_FORMAT_MMM = "MMM dd, yyyy";
@@ -51,7 +52,6 @@ public class Global {
     /**
      * Time Refresh List.
      */
-
     public static final long LIMIT_REFRESH = 5000;
     public static long time_Refresh_Device = 534112;
     public static long time_Refresh_Setting = 534000;
@@ -112,30 +112,29 @@ public class Global {
      * Name Intent GPS Interval.
      * Name Intent Access Code.
      */
-
     public static final int REQUEST_CODE_GPS_ACCESS_CODE = 2;
 
     /**
      * Event onBack exit App.
      */
-
     public static int ON_BACK = 1;
-    public static int NumberLoad = 30;
+    public static final int NumberLoad = 30;
+    public static final int LENGHT = 50;
 
     /**
      * Distributing
      */
-
-    public static String DEFAULT_PROTOCOL_LINK = "http://monitor-protocol-a.secondclone.com/api/apiv2";
-    public static String DEFAULT_LINK_FORGETPASSWORD = "http://my.secondclone.us/Account/ForgotPassword";
-    public static String DEFAULT_LINK_ABOUTUS = "http://secondclone.us/about-us/";
-    public static String DEFAULT_LINK_REGISTER = "http://my.secondclone.us/Account/SignUp";
-    public static String DEFAULT_LINK_RENEW = "http://my.secondclone.us/Prices";
+    public static String DEFAULT_PROTOCOL_LINK = "http://monitor-protocol-a.copy9.com/api/apiv2";
+    public static String DEFAULT_LINK_FORGETPASSWORD = "http://my.copy9.com/Account/ForgotPassword";
+    public static String DEFAULT_LINK_ABOUTUS = "http://copy9.com/about-us/";
+    public static String DEFAULT_LINK_REGISTER = "http://my.copy9.us/Account/SignUp";
+    public static String DEFAULT_LINK_RENEW = "http://my.copy9.com/Prices";
     public static String DEFAULT_PRODUCT_NAME = "ViewerApp";
-    public static String DEFAULT_VERSION_NAME = "1.01.16";
-    public static String DEFAULT_COPYRIGHT = "Copyright © 2010-2020 SecondClone. All rights reserved";
-    public static String DEFAULT_LOGO_IMAGE_PATH = "http://my.secondclone.us/favicon.ico";
+    public static String DEFAULT_VERSION_NAME = "0.8.15.0";
+    public static String DEFAULT_COPYRIGHT = "Copyright © 2010-2020 Copy9 LLC. All rights reserved";
+    public static String DEFAULT_LOGO_IMAGE_PATH = "https://my.copy9.com/favicon.ico";
     public static final String File_PATH_SAVE_PHONE_CALL_RECORD = Environment.getExternalStorageDirectory() + "/" + DEFAULT_PRODUCT_NAME;
     public static final String File_PATH_SAVE_IMAGE = Environment.getExternalStorageDirectory() + "/" + DEFAULT_PRODUCT_NAME + "/Picture";
+
 
 }

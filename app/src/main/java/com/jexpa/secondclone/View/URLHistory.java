@@ -162,7 +162,7 @@ public class URLHistory extends AppCompatActivity {
                 mAdapter = new AdapterURLHistory(this, (ArrayList<URL>) mData);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
-                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), URL_TOTAL)+"");
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), URL_TOTAL + table.getDevice_ID())+"");
                 txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
         }
@@ -190,7 +190,7 @@ public class URLHistory extends AppCompatActivity {
                 deviceObject(s);
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("DataList");
-                setToTalLog(jsonObj, URL_TOTAL, getApplicationContext());
+                setToTalLog(jsonObj, URL_TOTAL + table.getDevice_ID(), getApplicationContext());
 
                 if (GPSJson.length() != 0)
                 {
@@ -214,6 +214,7 @@ public class URLHistory extends AppCompatActivity {
                     int insertIndex = mData.size();
                     mData.addAll(insertIndex, mDataTamp);
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
+                    progressBar_URL.setVisibility(View.GONE);
                 }
                 else {
                     lnl_Total.setVisibility(View.VISIBLE);
@@ -235,7 +236,7 @@ public class URLHistory extends AppCompatActivity {
                     txt_Total_Data.setText("0");
                 }
                 else {
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), URL_TOTAL)+"");
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), URL_TOTAL + table.getDevice_ID())+"");
                     txt_No_Data_URL.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_URL, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
                 stopAnim(aviURL);
@@ -321,7 +322,7 @@ public class URLHistory extends AppCompatActivity {
                     if(isConnected(getApplicationContext()))
                     {
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), URL_TOTAL);
+                        long totalContact = getSharedPreferLong(getApplicationContext(), URL_TOTAL + table.getDevice_ID());
                         new getURLAsyncTask(currentSize+1).execute();
                         if((mData.size()+1) >= totalContact)
                         {
@@ -330,7 +331,7 @@ public class URLHistory extends AppCompatActivity {
                         //mAdapter.notifyDataSetChanged();
                         //progressBar_Locations.setVisibility(View.GONE);
                         isLoading = false;
-                        progressBar_URL.setVisibility(View.GONE);
+
                     }
                     else {
                         List<URL> mDataCall = database_url.getAll_URL_ID_History(table.getDevice_ID(),currentSize);
@@ -348,7 +349,7 @@ public class URLHistory extends AppCompatActivity {
                         progressBar_URL.setVisibility(View.GONE);
                     }
                 }
-            }, 1000);
+            }, 100);
 
         }catch (Exception e)
         {
@@ -521,7 +522,7 @@ public class URLHistory extends AppCompatActivity {
                     }
                 } else {
                     swp_URL.setRefreshing(false);
-                    noInternet(getApplicationContext());
+                    noInternet(URLHistory.this);
                 }
             }
         });

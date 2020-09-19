@@ -168,32 +168,45 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
             startAnim(avLoadingIndicatorView);
             new getPhoneCallRecordAsyncTask(0).execute();
         } else {
+
             lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
-            int i = databasePhoneCallRecord.getPhoneCallRecordCount(table.getDevice_ID());
-            if (i == 0) {
-                txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData));
-                txt_Total_Data.setText("0");
-            } else {
-                mData.clear();
-                mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
-                mAdapter = new AdapterPhoneCallRecordHistory(this, mData);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                if(mData.size() >= NumberLoad)
-                {
-                    initScrollListener();
+            int i;
+            if(functionName.equals("GetPhoneRecording"))
+            {
+                i = databasePhoneCallRecord.getPhoneCallRecordCount(table.getDevice_ID());
+                if (i == 0) {
+                    txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
                 }
-                if(functionName.equals("GetPhoneRecording"))
-                {
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHONE_CALL_RECORDING_TOTAL)+"");
-                }else
-                {
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), AMBIENT_RECORDING_TOTAL)+"");
+                else {
+                    mData.clear();
+                    mData = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),0);
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHONE_CALL_RECORDING_TOTAL  + table.getDevice_ID())+"");
+                    txt_No_Data_PhoneCallRecord.setText("Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
                 }
-
-                txt_No_Data_PhoneCallRecord.setText("Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
             }
+            else {
+                i = databaseAmbientRecord.getPhoneCallRecordCount(table.getDevice_ID());
+                if (i == 0) {
+                    txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData));
+                    txt_Total_Data.setText("0");
+                }else {
+                    mData.clear();
+                    mData = databaseAmbientRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),currentSize);
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), AMBIENT_RECORDING_TOTAL  + table.getDevice_ID())+"");
+                    txt_No_Data_PhoneCallRecord.setText("Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_PHONE_CALL_RECORDING, TABLE_LAST_UPDATE, table.getDevice_ID()),null));
+                }
+            }
+            mAdapter = new AdapterPhoneCallRecordHistory(this, mData);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+            if(mData.size() >= NumberLoad)
+            {
+                initScrollListener();
+            }
+
+
         }
     }
 
@@ -245,7 +258,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                             endLoading = true;
                         }
                         isLoading = false;
-                        progressBar_PhoneCall.setVisibility(View.GONE);
+
                     }
                     else {
                         List<AudioGroup> mDataStamp = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),currentSize);
@@ -264,7 +277,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                     }
 
                 }
-            }, 2000);
+            }, 100);
 
         }catch (Exception e)
         {
@@ -306,7 +319,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                      String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
                      JSONArray GPSJson = jsonObjData.getJSONArray("Table");
                      JSONArray GPSJsonTable1 = jsonObjData.getJSONArray("Table1");
-                     setToTalLog(GPSJsonTable1, PHONE_CALL_RECORDING_TOTAL, getApplicationContext());
+                     setToTalLog(GPSJsonTable1, PHONE_CALL_RECORDING_TOTAL  + table.getDevice_ID(), getApplicationContext());
 
                      if (GPSJson.length() != 0) {
 
@@ -324,7 +337,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                      }
                      Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                      mDataTamp = databasePhoneCallRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),currentSize);
-                     txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHONE_CALL_RECORDING_TOTAL)+"");
+                     txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), PHONE_CALL_RECORDING_TOTAL  + table.getDevice_ID())+"");
                  }
                  else {
 
@@ -344,7 +357,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                          String totalRows = jsonObj.getString("TotalRows");
                          if(totalRows != null)
                          {
-                             setSharedPreferLong(getApplicationContext(),AMBIENT_RECORDING_TOTAL,Long.parseLong(totalRows));
+                             setSharedPreferLong(getApplicationContext(), AMBIENT_RECORDING_TOTAL  + table.getDevice_ID(),Long.parseLong(totalRows));
                          }
                      } catch (JSONException e) {
                          e.printStackTrace();
@@ -368,7 +381,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
                      Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                      mDataTamp = databaseAmbientRecord.getAll_PhoneCallRecord_ID_History(table.getDevice_ID(),currentSize);
-                     txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), AMBIENT_RECORDING_TOTAL)+"");
+                     txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), AMBIENT_RECORDING_TOTAL  + table.getDevice_ID())+"");
                  }
 
                 if(checkLoadMore)
@@ -384,6 +397,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                     Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                     Log.d("CallHistory"," checkLoadMore Contact = "+ true);
+                    progressBar_PhoneCall.setVisibility(View.GONE);
                 }
                 else {
                     lnl_Total.setVisibility(View.VISIBLE);

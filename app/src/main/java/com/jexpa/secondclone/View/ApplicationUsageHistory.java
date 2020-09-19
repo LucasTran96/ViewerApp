@@ -159,7 +159,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 txt_No_Data_App.setText(MyApplication.getResourcses().getString(R.string.TurnOn));
-                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL)+"");
+                txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL + table.getDevice_ID())+"");
             }
         }
     }
@@ -238,7 +238,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                     if(isConnected(getApplicationContext()))
                     {
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL);
+                        long totalContact = getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL + table.getDevice_ID());
                         new getAppAsyncTask(currentSize+1).execute();
                         Log.d("dđsd", "mData.size() = "+ mData.size() + " ==== "+ totalContact);
                         if((mData.size()+1) >= totalContact)
@@ -248,7 +248,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                         //mAdapter.notifyDataSetChanged();
                         //progressBar_Locations.setVisibility(View.GONE);
                         isLoading = false;
-                        progressBar_AppUsage.setVisibility(View.GONE);
+
                     }
                     else {
                         List<ApplicationUsage> mDataCall = database_application_usage.getAll_Application_ID_History(table.getDevice_ID(),currentSize);
@@ -266,7 +266,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                         progressBar_AppUsage.setVisibility(View.GONE);
                     }
                 }
-            }, 1000);
+            }, 100);
 
         }catch (Exception e)
         {
@@ -300,7 +300,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
-                setToTalLog(GPSJsonTable1, APP_USAGE_TOTAL, getApplicationContext());
+                setToTalLog(GPSJsonTable1, APP_USAGE_TOTAL + table.getDevice_ID(), getApplicationContext());
 
                 if (GPSJson.length() != 0) {
 
@@ -328,6 +328,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                     mData.addAll(insertIndex, mDataTamp);
                     Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
+                    progressBar_AppUsage.setVisibility(View.GONE);
                 }
                 else {
 
@@ -352,7 +353,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                     String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_APPLICATION, TABLE_LAST_UPDATE, table.getDevice_ID());
                     Log.d("min_time1", min_Time1 + "");
                     txt_No_Data_App.setText(("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_APPLICATION, TABLE_LAST_UPDATE, table.getDevice_ID()),null)));
-                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL)+"");
+                    txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_USAGE_TOTAL + table.getDevice_ID())+"");
                 }
                 stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {

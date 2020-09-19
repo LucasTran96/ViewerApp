@@ -91,7 +91,9 @@ public class APIDatabase {
         return contentValues1;
     }
 
-    // The method compares two String values​when converting the Date type.
+    /**
+     * The method compares two String values​when converting the Date type.
+     */
     private static String formatStringDate(String d1, String d2) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(Global.DEFAULT_DATE_FORMAT);
         String result = "";
@@ -111,18 +113,27 @@ public class APIDatabase {
         return result;
     }
 
-    // Format date conversion method.
+    /**
+     * Format date conversion method.
+     * @param date is the type of date you put in.
+     * @param endDateFormat is the type of date you want to receive back.
+     * @return endDateFormat
+     */
     public static String formatDate(String date, String endDateFormat) throws ParseException {
         @SuppressLint("SimpleDateFormat") Date initDate = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT).parse(date);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(endDateFormat);
         return formatter.format(initDate);
     }
-    // Format date conversion method.
+
+    /**
+     * Format date conversion method.
+     * @param date is a String date value you entered
+     * @return date_Format is a date type of DEFAULT_DATETIME_FORMAT_AM
+     */
     public static String getFormatDateAM(String date)
     {
         String date_Format = APIDatabase.checkValueStringT(date);
         try {
-            Log.d("getFormatDateAM", date + "");
             date_Format = formatDate(date_Format,DEFAULT_DATETIME_FORMAT_AM);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -131,6 +142,10 @@ public class APIDatabase {
         return date_Format;
     }
 
+    /**
+     * getThread is a generic method to dismiss progressDialog
+     * @param progressDialog This is progressDialog there is no need to dismiss
+     */
     public static void getThread(final ProgressDialog progressDialog) {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -143,13 +158,15 @@ public class APIDatabase {
                     {
                         progressDialog.dismiss();
                     }
-
                 }
             }
         });
         thread.start();
     }
 
+    /**
+     * get Toast is the method of displaying Toast messages to the end user.
+     */
     public static void getToast(Context context, String text) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
@@ -224,6 +241,10 @@ public class APIDatabase {
             e.printStackTrace();
         }
     }
+
+    /**
+     * getTimeItem The method of checking whether a date is today or yesterday or earlier.
+     */
     public static String getTimeItem(String timeModified, String typeFormatDate)
     {
 
@@ -300,6 +321,9 @@ public class APIDatabase {
     }
 
 
+    /**
+     * formatDateE is the method that converts the default date type to a style "yyyy-MM-dd hh:mm aa"
+     */
     private static String formatDateE(String date, String dateType)
     {
         String timeDefault;
@@ -319,14 +343,17 @@ public class APIDatabase {
         return timeDefault;
     }
 
+    /**
+     * time_SMS_Format "Today "+ "HH:mm:ss"
+     */
     public static String time_SMS_Format(String time) {
         String time_One = time;
-        String tgkt = APIURL.getTimeNow();
+        String time_End = APIURL.getTimeNow();
         try {
             String time3 = formatDate(time_One, DEFAULT_TIME_FORMAT);
             time_One = formatDate(time_One, DEFAULT_DATETIME_FORMAT);
-            tgkt = formatDate(tgkt, DEFAULT_DATETIME_FORMAT);
-            String time1 = formatStringDate(time_One, tgkt);
+            time_End = formatDate(time_End, DEFAULT_DATETIME_FORMAT);
+            String time1 = formatStringDate(time_One, time_End);
             switch (time1) {
                 case "Equals":
                     time_One = "Today "+time3;
@@ -342,16 +369,9 @@ public class APIDatabase {
         return time_One;
     }
 
-    public static String[] checkValueT(String value) {
-        String time[];
-        if (value.indexOf("T") == 1) {
-            time = value.split("T");
-        } else {
-            time = value.split(" ");
-        }
-        return time;
-    }
-
+    /**
+     * checkValueStringT If there is a T-type date, then remove the letter T.
+     */
     public static String checkValueStringT(String value) {
         String time;
         if (value.indexOf("T") == 1) {
@@ -360,7 +380,5 @@ public class APIDatabase {
             time = value.replace(" ", " ");
         }
         return time;
-
-
     }
 }

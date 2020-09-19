@@ -86,7 +86,7 @@ public class DatabasePhotos {
         }
     }
 
-    public List<Photo> getAll_Photo_ID_History(String deviceID, int offSet) {
+    public List<Photo> getAll_Photo_ID_History(String deviceID, int offSet, boolean checkIsSaved) {
 
         Log.i(TAG, "DatabasePhotos.getAll_Photo... " + TABLE_PHOTO_HISTORY);
 
@@ -102,27 +102,54 @@ public class DatabasePhotos {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHOTO)).equals(deviceID)) {
 
-                    Photo photo = new Photo();
-                    photo.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_PHOTO)));
-                    photo.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PHOTO)));
-                    photo.setIsLoaded(cursor.getInt(cursor.getColumnIndex(COLUMN_ISLOADED_PHOTO)));
-                    photo.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHOTO)));
-                    photo.setClient_Captured_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CAPTURED_DATE_PHOTO)));
-                    photo.setCaption(cursor.getString(cursor.getColumnIndex(COLUMN_CAPTION_PHOTO)));
-                    photo.setFile_Name(cursor.getString(cursor.getColumnIndex(COLUMN_FILE_NAME_PHOTO)));
-                    photo.setExt(cursor.getString(cursor.getColumnIndex(COLUMN_EXT_PHOTO)));
-                    photo.setMedia_URL(cursor.getString(cursor.getColumnIndex(COLUMN_MEDIA_URL_PHOTO)));
-                    photo.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_PHOTO)));
-                    photo.setCDN_URL(cursor.getString(cursor.getColumnIndex(COLUMN_CDN_URL_PHOTO)));
-                    // photo.setCheckDate(cursor.getString(cursor.getColumnIndex(COLUMN_DATE_CHECK)));
-                    // Add in List.
-                    photos_List.add(photo);
+                    if(checkGetPhotoToApp(checkIsSaved, cursor.getInt(cursor.getColumnIndex(COLUMN_ISLOADED_PHOTO))))
+                    {
+                        Photo photo = new Photo();
+                        photo.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_PHOTO)));
+                        photo.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PHOTO)));
+                        photo.setIsLoaded(cursor.getInt(cursor.getColumnIndex(COLUMN_ISLOADED_PHOTO)));
+                        photo.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHOTO)));
+                        photo.setClient_Captured_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CAPTURED_DATE_PHOTO)));
+                        photo.setCaption(cursor.getString(cursor.getColumnIndex(COLUMN_CAPTION_PHOTO)));
+                        photo.setFile_Name(cursor.getString(cursor.getColumnIndex(COLUMN_FILE_NAME_PHOTO)));
+                        photo.setExt(cursor.getString(cursor.getColumnIndex(COLUMN_EXT_PHOTO)));
+                        photo.setMedia_URL(cursor.getString(cursor.getColumnIndex(COLUMN_MEDIA_URL_PHOTO)));
+                        photo.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_PHOTO)));
+                        photo.setCDN_URL(cursor.getString(cursor.getColumnIndex(COLUMN_CDN_URL_PHOTO)));
+                        // photo.setCheckDate(cursor.getString(cursor.getColumnIndex(COLUMN_DATE_CHECK)));
+                        // Add in List.
+                        photos_List.add(photo);
+                    }
+
                 }
             } while (cursor.moveToNext());
         }
         // return note list
         database.close();
         return photos_List;
+    }
+
+    /**
+     * checkGetPhotoToApp: This is the method of checking whether to get this image from SQlite or not.
+     */
+    private boolean checkGetPhotoToApp(boolean checkIsSaved, int isLoaded)
+    {
+        boolean checkAddPhoto;
+        if(checkIsSaved)
+        {
+            if(isLoaded == 1)
+            {
+                checkAddPhoto = true;
+            }
+            else
+            {
+                checkAddPhoto = false;
+            }
+        }
+        else {
+            checkAddPhoto = true;
+        }
+        return checkAddPhoto;
     }
 
     public void update_Photos_History(int value, String nameDeviceID, long photoID) {

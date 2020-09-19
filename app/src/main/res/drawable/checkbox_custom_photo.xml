@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/outlinecheck"
+    <item android:drawable="@drawable/ic_checked_vector"
         android:state_checked="true">
     </item>
-    <item android:drawable="@drawable/circle_outline"
+    <item android:drawable="@drawable/ic_circle_outline_white"
         >
     </item>
 </selector>

@@ -102,6 +102,12 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
         ApplicationUsage application_usage = listData.get(position);
         holder.card_view_Application.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
         String time_Location;
+        if(setIconApp(listData.get(position).getApp_ID()) == null)
+        {
+            holder.img_icon_AppUsage.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.android_icon));
+        }else {
+            holder.img_icon_AppUsage.setImageDrawable(setIconApp(listData.get(position).getApp_ID()));
+        }
         //setIconApp(holder.img_icon_AppUsage, application_usage.getApp_ID());
         time_Location = application_usage.getClient_App_Time().replace("T", " ");
         holder.txt_name_App_History.setText(application_usage.getApp_Name());
@@ -128,17 +134,18 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
         }
     }
 
-    private void setIconApp(ImageView imageView, String packageName)
+    private Drawable setIconApp( String packageName)
     {
         try
         {
             Drawable drawable = mActivity.getPackageManager()
                     .getApplicationIcon(packageName);
-            imageView.setImageDrawable(drawable);
+           return drawable;
         }
         catch (PackageManager.NameNotFoundException e)
         {
             e.printStackTrace();
+            return null;
         }
     }
 
