@@ -95,7 +95,8 @@
     <string name="Close" translatable="false">Close</string>
     <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
     <string name="TurnOn">Internet no connect!</string>
-    <string name="Image_Downloading" translatable="false">The image is downloading.</string>
+    <string name="Maximum_Download" tools:ignore="MissingTranslation">The app can only load up to 5 images at a time.</string>
+    <string name="Image_Downloading" translatable="false">The image is saved.</string>
     <string name="Image_Download_Failed" translatable="false">Image %s cannot be downloaded!</string>
     <string name="Image_Downloaded" translatable="false">All images have been downloaded.</string>
     <string name="Renew"><u>Renew</u></string>

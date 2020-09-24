@@ -26,7 +26,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="2dp"
             android:background="#fff"/>
         <FrameLayout
             android:layout_width="match_parent"
@@ -89,7 +89,6 @@
                     android:layout_width="match_parent"
                     android:background="#fff"
                     android:id="@+id/rcl_Call_History"
-                    android:layout_marginTop="4dp"
                     android:layout_above="@+id/lnl_Total"
                     android:layout_height="match_parent">
                 </android.support.v7.widget.RecyclerView>

@@ -32,11 +32,13 @@
 
     </LinearLayout>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold|italic"
         android:id="@+id/txt_VersionName_Launch"
         android:textColor="#fff"
+        android:gravity="center_horizontal"
+
         android:layout_gravity="center_horizontal"
         />
 

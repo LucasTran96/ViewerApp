@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.jexpa.secondclone">
+    package="com.jexpa.cp9">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -28,9 +28,9 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!-- Change the app icon and label here! @drawable/iconappsecondclone -->
+    <!-- Change the app icon and label here! @drawable/iconappcp9 -->
     <application
-        android:name=".View.MyApplication"
+        android:name="com.jexpa.cp9.View.MyApplication"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_cp9"
@@ -41,7 +41,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,InnerclassSeparator">
         <activity
-            android:name=".View.LaunchScreen"
+            android:name="com.jexpa.cp9.View.LaunchScreen"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
@@ -52,22 +52,22 @@
         </activity>
 
         <activity
-            android:name=".View.SyncSettings"
+            android:name="com.jexpa.cp9.View.SyncSettings"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.ManagementDevice"
+            android:name="com.jexpa.cp9.View.ManagementDevice"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.Authentication"
+            android:name="com.jexpa.cp9.View.Authentication"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.AccessCode"
+            android:name="com.jexpa.cp9.View.AccessCode"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
@@ -84,81 +84,81 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".View.MapLocation"
+            android:name="com.jexpa.cp9.View.MapLocation"
             android:label="@string/title_activity_map_location"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.HistoryLocation"
+            android:name="com.jexpa.cp9.View.HistoryLocation"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.SMSHistory"
+            android:name="com.jexpa.cp9.View.SMSHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.SMSHistoryDetail"
+            android:name="com.jexpa.cp9.View.SMSHistoryDetail"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
 
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.DashBoard"
+            android:name="com.jexpa.cp9.View.DashBoard"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.CallHistory"
+            android:name="com.jexpa.cp9.View.CallHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.CallHistoryDetail"
+            android:name="com.jexpa.cp9.View.CallHistoryDetail"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.ContactHistory"
+            android:name="com.jexpa.cp9.View.ContactHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.ContactHistoryDetail"
+            android:name="com.jexpa.cp9.View.ContactHistoryDetail"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.URLHistory"
+            android:name="com.jexpa.cp9.View.URLHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.NotesHistory"
+            android:name="com.jexpa.cp9.View.NotesHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.NotesHistoryDetail"
+            android:name="com.jexpa.cp9.View.NotesHistoryDetail"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.ApplicationUsageHistory"
+            android:name="com.jexpa.cp9.View.ApplicationUsageHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.PhotoHistory"
+            android:name="com.jexpa.cp9.View.PhotoHistory"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator"/>
         <activity
-            android:name=".View.PhotoHistoryDetail"
+            android:name="com.jexpa.cp9.View.PhotoHistoryDetail"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".View.PhoneCallRecordHistory"
+            android:name="com.jexpa.cp9.View.PhoneCallRecordHistory"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator" />

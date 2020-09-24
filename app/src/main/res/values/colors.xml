@@ -32,6 +32,7 @@
     <color name="borderMap">#873eeb</color>
     <color name="black">#000</color>
 
+    <color name="stranparent">#00000000</color>
     <integer-array name="androidcolors">
         <item>@color/blue</item>
         <item>@color/purple</item>

@@ -12,30 +12,25 @@ android:layout_height="100dp">
         android:layout_gravity="center_horizontal|center_vertical"
         android:src="@drawable/spinner"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitXY"/>
 
-<!--    <View-->
-<!--        android:id="@+id/view_Show"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:background="#82413838"-->
-<!--        android:adjustViewBounds="true"-->
-<!--        />-->
-    <CheckBox
-        android:layout_marginTop="6dp"
+    <ImageView
+        android:id="@+id/img_photo_Selected"
         android:layout_width="25dp"
         android:layout_height="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
         android:clickable="false"
-        android:id="@+id/cb_Check_PhotoListDelete"
-        android:button="@drawable/checkbox_custom_photo"
-        android:layout_marginLeft="6dp"
-        />
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"/>
+
 
     <ImageView
         android:id="@+id/img_photo_isSave"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:clickable="false"
+        android:background="@android:color/transparent"
         android:layout_gravity="bottom|right"
         android:src="@drawable/ic_download"
         android:adjustViewBounds="true"

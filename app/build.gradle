@@ -3,12 +3,12 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.jexpa.secondclone"
+        applicationId "com.jexpa.cp9"
         minSdkVersion 19
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 2
-        versionName "0.8.15.0"
+        versionName "0.8.22.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
@@ -16,7 +16,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,7 +27,6 @@ android {
         exclude 'META-INF/NOTICE.txt'
         //  you should
         exclude 'META-INF/DEPENDENCIES'
-
     }
 }
 

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- "SecondClone" ==> This is the default name of the application you can replace it at will.-->
+    <!-- "CP9" ==> This is the default name of the application you can replace it at will.-->
     <string name = "PRODUCT_NAME" tools:ignore="MissingTranslation" translatable="false">Viewer App</string>
 
     <!--NOTE: how to change application LABEL-->
     /* app_name: Please open the strings.xml to change app_name. */
 
     <!-- "1.01.11" ==> This is the version that is used to display the activity of the application you can replace it as desired.-->
-    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">0.8.15.0</string>
+    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">0.8.22.0</string>
 
     <!--NOTE: how to change default version of the application -->
     <!--1.Go to build.gradle(Module: app)  in Android/Gradle Scripts/build.gradle(Module: app)-->
@@ -23,13 +23,13 @@
     <!--Copyright © 2010-2020 Copy9. All rights reserved.-->
     <string name = "COPYRIGHT" tools:ignore="MissingTranslation,TypographyDashes" translatable="false">Copyright © 2020 Copy9 | Powered by COPY9</string>
 
-    <!--"http://my.secondclone.com/favicon.ico" ==> This is the default icon used for Class: ManagementDevice, Authentication, LaunchScreen.-->
+    <!--"http://my.cp9.com/favicon.ico" ==> This is the default icon used for Class: ManagementDevice, Authentication, LaunchScreen.-->
     <!--This is the default icon link you can change with the icon you need to use.-->
     <!--https://my.copy9.com/banner_Copy9.png-->
-    <!--https://my.secondclone.com/favicon.ico-->
+    <!--https://my.cp9.com/favicon.ico-->
     <string name = "LOGO_IMAGE_PATH" tools:ignore="MissingTranslation,ReferenceType" translatable="false">https://my.copy9.com/banner_Copy9.png</string>
 
-    <!--http://monitor-protocol-a.secondclone.com--> <!--http://protocol-viewer-a.copy9.com-->
+    <!--http://monitor-protocol-a.cp9.com--> <!--http://protocol-viewer-a.copy9.com-->
     <!--This is the default protocol link you can change by the protocol you need to use.-->
     <string name = "DEFAULT_LINK_PROTOCOL_URL" tools:ignore="MissingTranslation" translatable="false">http://protocol-viewer-a.copy9.com</string>
 
@@ -37,7 +37,7 @@
     <string name = "LINK_FORGET_PASSWORD" tools:ignore="MissingTranslation" translatable="false">https://my.copy9.com/Account/ForgotPassword</string>
 
     <!--This is the default ABOUT US you can change by the ABOUT US you need to use.-->
-    <!--https://www.secondclone.com/about-us/-->
+    <!--https://www.cp9.com/about-us/-->
     <!--https://www.copy9.com/about-us/-->
     <string name = "LINK_ABOUT_US" tools:ignore="MissingTranslation" translatable="false">https://www.copy9.com/about-us/</string>
 
@@ -61,11 +61,10 @@
     <!--3.In the tag, look for android:icon tag.-->
     <!--4.Copy and paste your icon in drawable folder(available in res folder of your project).-->
     <!--5.Set the value of android:icon tag as-->
-            <!--android:icon="@drawable/iconappsecondclone"-->
+            <!--android:icon="@drawable/iconappcp9"-->
                         <!--Rename to-->
             <!--android:icon="@drawable/Name your icon"-->
     <!--You are done. Save the changes and test.-->
-
 
     <!--COMPANY & PRODUCT Jexpa-->
     <!--Centered System LLC-->
@@ -75,7 +74,7 @@
 
     <!--EMAILING-->
     <!--support@copy9.com-->
-    <!--support@secondclone.com-->
+    <!--support@cp9.com-->
     <string name="EMAIL_SUPPORT" tools:ignore="MissingTranslation" translatable="false">support@copy9.com</string>
     <string name="EMAIL_SUPPORT_TITLE" tools:ignore="MissingTranslation" translatable="false">Copy9 Team</string>
 
