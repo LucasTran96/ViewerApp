@@ -115,6 +115,7 @@ public class CallHistory extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         getCallHistoryInfo();
+        Log.d("Test", "Tesst App");
         // adapter
         mAdapter = new AdapterCallHistory(this, (ArrayList<Call>) mData);
         mRecyclerView.setAdapter(mAdapter);
