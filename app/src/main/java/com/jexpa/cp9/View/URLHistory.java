@@ -111,6 +111,7 @@ public class URLHistory extends AppCompatActivity {
     }
 
     private void setID() {
+        Log.d("ettt","sddsdssd");
         toolbar = findViewById(R.id.toolbar_URL);
         toolbar.setTitle(MyApplication.getResourcses().getString(R.string.URL_HISTORY));
         toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
