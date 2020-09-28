@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Random;
 import static com.jexpa.cp9.API.APIDatabase.getTimeItem;
 import static com.jexpa.cp9.API.APIMethod.GetJsonFeature;
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.cp9.API.APIMethod.setToTalLog;
@@ -443,8 +444,12 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             if (isConnected(ContactHistory.this)) {
                 //                ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 //getProgressDialogDelete();
-                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
-                new clear_Contact().execute();
+//                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
+//                new clear_Contact().execute();
+
+                alertDialogDeleteItems(ContactHistory.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new clear_Contact());
 
             } else {
                 Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();

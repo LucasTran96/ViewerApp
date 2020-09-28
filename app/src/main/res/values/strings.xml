@@ -11,6 +11,8 @@
     <string name="ConfirmTitle">Confirm Password</string>
     <string name="Confirm">Confirm</string>
     <string name="ok">OK</string>
+    <string tools:ignore="MissingTranslation" name="question_Select">Do you want to delete the selected items?</string>
+
     <string tools:ignore="MissingTranslation" name="cancel">Cancel</string>
     <string name="ID">ID</string>
     <string name="AddDevice">Add Device</string>

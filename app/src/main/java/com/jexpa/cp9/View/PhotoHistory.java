@@ -70,6 +70,7 @@ import java.util.Random;
 
 import static com.jexpa.cp9.API.APIDatabase.getTimeItem;
 import static com.jexpa.cp9.API.APIMethod.GetJsonFeature;
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.cp9.API.APIMethod.setToTalLog;
@@ -473,8 +474,12 @@ public class PhotoHistory extends AppCompatActivity {
                 if (selectionList.size() == 0) {
                     clearActionMode(true);
                 } else {
-                    getProgressDialog("Deleting....",this);
-                    new clear_PhotoAsyncTask().execute();
+//                    getProgressDialog("Deleting....",this);
+//                    new clear_PhotoAsyncTask().execute();
+
+                    alertDialogDeleteItems(PhotoHistory.this,
+                            getApplicationContext().getResources().getString(R.string.question_Select),
+                            new clear_PhotoAsyncTask());
                 }
             } else {
                 Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();

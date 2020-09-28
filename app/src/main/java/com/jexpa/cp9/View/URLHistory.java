@@ -51,6 +51,7 @@ import java.util.List;
 
 import static com.jexpa.cp9.API.APIDatabase.getTimeItem;
 import static com.jexpa.cp9.API.APIMethod.GetJsonFeature;
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.cp9.API.APIMethod.setToTalLog;
@@ -369,8 +370,12 @@ public class URLHistory extends AppCompatActivity {
             if (isConnected(URLHistory.this)) {
                 // ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 //getProgressDialogDelete();
-                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
-                new clear_Location().execute();
+//                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
+//                new clear_Location().execute();
+
+                alertDialogDeleteItems(URLHistory.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new clear_Location());
             } else {
                 Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
                 clearActionMode();

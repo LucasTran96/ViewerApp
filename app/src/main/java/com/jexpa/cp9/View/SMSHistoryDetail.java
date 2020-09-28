@@ -37,6 +37,8 @@ import com.r0adkll.slidr.Slidr;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.updateViewCounterAll;
 import static com.jexpa.cp9.API.Global.NumberLoad;
@@ -249,8 +251,12 @@ public class SMSHistoryDetail extends AppCompatActivity implements View.OnLongCl
 
         if (item.getItemId() == R.id.item_delete) {
             if (APIURL.isConnected(SMSHistoryDetail.this)) {
-                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
-                new clear_SMS().execute();
+//                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
+//                new clear_SMS().execute();
+
+                alertDialogDeleteItems(SMSHistoryDetail.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new  clear_SMS());
             }
             else {
                 // If there is no internet we do not let users delete SMS :)

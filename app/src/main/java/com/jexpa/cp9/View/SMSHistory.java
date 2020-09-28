@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import static com.jexpa.cp9.API.APIDatabase.getTimeItem;
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.getTotalLongForSMS;
 import static com.jexpa.cp9.API.APIMethod.startAnim;
@@ -298,8 +299,12 @@ public class SMSHistory extends AppCompatActivity {
         if (item.getItemId() == R.id.item_delete)
         {
             if (APIURL.isConnected(SMSHistory.this)) {
-                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
-                new clear_SMS().execute();
+//                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
+//                new clear_SMS().execute();
+
+                alertDialogDeleteItems(SMSHistory.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new clear_SMS());
 
             } else {
                 Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();

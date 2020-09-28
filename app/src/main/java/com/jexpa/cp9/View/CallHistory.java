@@ -50,6 +50,7 @@ import java.util.List;
 
 import static com.jexpa.cp9.API.APIDatabase.getTimeItem;
 import static com.jexpa.cp9.API.APIMethod.GetJsonFeature;
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.cp9.API.APIMethod.setToTalLog;
@@ -381,11 +382,11 @@ public class CallHistory extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_delete) {
             if (isConnected(CallHistory.this)) {
-                // ((AdapterHistoryLocation) mAdapter).removeData(selectionList);
                 // getProgressDialogDelete();
-                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",this);
-                new ClearMultiCall().execute();
-
+                //boolean checkDelete = alertDialogDeleteItems(CallHistory.this, getApplicationContext().getResources().getString(R.string.question_Select));//question_Select
+                alertDialogDeleteItems(CallHistory.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new ClearMultiCall());
             } else {
                 Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
                 clearActionMode();

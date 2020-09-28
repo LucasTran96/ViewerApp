@@ -10,12 +10,16 @@
 package com.jexpa.cp9.API;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +27,10 @@ import android.widget.TextView;
 
 import com.jexpa.cp9.Model.AmbientRecord;
 import com.jexpa.cp9.Model.Table;
+import com.jexpa.cp9.Model.User;
+import com.jexpa.cp9.R;
+import com.jexpa.cp9.View.Authentication;
+import com.jexpa.cp9.View.MyApplication;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -488,5 +496,41 @@ public class APIMethod {
         sendIntent.setType("text/plain");
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         context.startActivity(shareIntent);
+    }
+
+    /**
+     * The alertDialogDeleteItems method used to display the AlertDialog pattern has two parameter values ​​for the other classes to reuse for the purpose of re-authenticating the user wants to delete or not?
+     */
+    public static void alertDialogDeleteItems(final Activity activity, String message, final AsyncTask<String, Void, String> task) {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(false);
+        builder.setTitle("");
+        builder.setMessage(message);
+        builder.setPositiveButton(MyApplication.getResourcses().getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+
+                    getProgressDialog(MyApplication.getResourcses().getString(R.string.delete)+"...",activity);
+                    task.execute();
+                }catch (Exception e)
+                {
+                    e.getMessage();
+                }
+            }
+        });
+        builder.setNegativeButton(MyApplication.getResourcses().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //
+                dialogInterface.dismiss();
+                //context.finish();
+            }
+        });
+
+        builder.show();
+
     }
 }

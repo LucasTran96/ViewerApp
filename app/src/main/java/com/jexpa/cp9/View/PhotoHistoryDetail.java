@@ -36,6 +36,8 @@ import com.jexpa.cp9.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIURL.bodyLogin;
 import static com.jexpa.cp9.API.APIURL.deviceObject;
@@ -105,8 +107,12 @@ public class PhotoHistoryDetail extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.item_delete) {
             if (isConnected(PhotoHistoryDetail.this)) {
-                getProgressDialog(getString(R.string.Loading)+"...",this);
-                new clear_PhotoAsyncTask().execute();
+
+                alertDialogDeleteItems(PhotoHistoryDetail.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new clear_PhotoAsyncTask());
+//                getProgressDialog(getString(R.string.Loading)+"...",this);
+//                new clear_PhotoAsyncTask().execute();
             } else {
                 Toast.makeText(this, getResources().getString(R.string.TurnOn), Toast.LENGTH_SHORT).show();
             }

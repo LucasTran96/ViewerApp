@@ -60,6 +60,7 @@ import java.util.List;
 
 import static com.jexpa.cp9.API.APIDatabase.getTimeItem;
 import static com.jexpa.cp9.API.APIMethod.GetJsonFeature;
+import static com.jexpa.cp9.API.APIMethod.alertDialogDeleteItems;
 import static com.jexpa.cp9.API.APIMethod.getProgressDialog;
 import static com.jexpa.cp9.API.APIMethod.getSharedPreferLong;
 import static com.jexpa.cp9.API.APIMethod.setSharedPreferLong;
@@ -498,8 +499,11 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         {
             if (isConnected(PhoneCallRecordHistory.this)) {
 
-                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete),this);
-                new clear_PhoneCallRecordAsyncTask().execute();
+                alertDialogDeleteItems(PhoneCallRecordHistory.this,
+                        getApplicationContext().getResources().getString(R.string.question_Select),
+                        new clear_PhoneCallRecordAsyncTask());
+//                getProgressDialog(MyApplication.getResourcses().getString(R.string.delete),this);
+//                new clear_PhoneCallRecordAsyncTask().execute();
 
             } else {
 
