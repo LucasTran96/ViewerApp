@@ -145,12 +145,11 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar_PhoneCallRecord);
 
-        if(functionName.equals(GET_AMBIENT_VOICE_RECORDING))
-            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.AMBIENT_RECORDING));
-        else
+        if(functionName.equals("GetPhoneRecording"))
             toolbar.setTitle(MyApplication.getResourcses().getString(R.string.PHONE_CALL_RECORDING));
+        else
+            toolbar.setTitle(MyApplication.getResourcses().getString(R.string.AMBIENT_RECORDING));
 
-        toolbar.setTitle(MyApplication.getResourcses().getString(R.string.PHONE_CALL_RECORDING));
         toolbar.setBackgroundResource(R.drawable.custom_bg_shopp);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {

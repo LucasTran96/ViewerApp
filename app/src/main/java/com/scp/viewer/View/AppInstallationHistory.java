@@ -63,6 +63,7 @@ import static com.scp.viewer.API.Global.APP_INSTALLATION_TOTAL;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_APP;
+import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_APP_INSTALL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_APPLICATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -473,7 +474,7 @@ public class AppInstallationHistory extends AppCompatActivity {
             Log.i("listID", listID.toString());
            /* String value = "<RequestParams Device_ID=\"" + table.getDevice_Identifier() + "\" List_ID=\"" + listID + "\" />";
             String function = POST_CLEAR_MULTI_APP;*/
-            return PostJsonClearDataToServer(table.getDevice_Identifier(), listID, POST_CLEAR_MULTI_APP);
+            return PostJsonClearDataToServer(table.getDevice_Identifier(), listID, POST_CLEAR_MULTI_APP_INSTALL);
         }
 
         @Override

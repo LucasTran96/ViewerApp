@@ -29,7 +29,9 @@ import com.scp.viewer.View.ApplicationUsageHistory;
 import com.scp.viewer.View.MyApplication;
 import java.util.ArrayList;
 
-public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterApplicationHistory.ViewHolder> {
+import static com.scp.viewer.Adapter.AdapterAppInstallationHistory.setIconApp;
+
+public class AdapterApplicationUsageHistory extends RecyclerView.Adapter<AdapterApplicationUsageHistory.ViewHolder> {
 
     private Activity mActivity;
     private static ArrayList<ApplicationUsage> listData;
@@ -77,15 +79,15 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
         }
     }
 
-    public AdapterApplicationHistory(Activity activity, ArrayList<ApplicationUsage> myDataSet) {
+    public AdapterApplicationUsageHistory(Activity activity, ArrayList<ApplicationUsage> myDataSet) {
         mActivity = activity;
         listData = myDataSet;
     }
 
     @NonNull
     @Override
-    public AdapterApplicationHistory.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                                   int viewType) {
+    public AdapterApplicationUsageHistory.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                        int viewType) {
         View v;
         v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_rcv_application_history, parent, false);
@@ -97,11 +99,11 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
         ApplicationUsage application_usage = listData.get(position);
         holder.card_view_Application.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
         String time_Location;
-        if(setIconApp(listData.get(position).getApp_ID()) == null)
+        if(setIconApp(listData.get(position).getApp_ID(), mActivity) == null)
         {
             holder.img_icon_AppUsage.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.android_icon));
         }else {
-            holder.img_icon_AppUsage.setImageDrawable(setIconApp(listData.get(position).getApp_ID()));
+            holder.img_icon_AppUsage.setImageDrawable(setIconApp(listData.get(position).getApp_ID(), mActivity));
         }
         //setIconApp(holder.img_icon_AppUsage, application_usage.getApp_ID());
         time_Location = application_usage.getClient_App_Time().replace("T", " ");
@@ -129,7 +131,7 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
         }
     }
 
-    private Drawable setIconApp( String packageName)
+   /* private Drawable setIconApp( String packageName)
     {
         try
         {
@@ -142,7 +144,7 @@ public class AdapterApplicationHistory extends RecyclerView.Adapter<AdapterAppli
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
     @Override
     public int getItemCount() {

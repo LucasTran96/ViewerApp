@@ -33,7 +33,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.API.APIMethod;
-import com.scp.viewer.Adapter.AdapterApplicationHistory;
+import com.scp.viewer.Adapter.AdapterApplicationUsageHistory;
 import com.scp.viewer.Database.DatabaseApplicationUsage;
 import com.scp.viewer.Database.DatabaseLastUpdate;
 import com.scp.viewer.Model.ApplicationUsage;
@@ -152,7 +152,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
             } else {
                 mData.clear();
                 mData = database_application_usage.getAll_Application_ID_History(table.getID(),0);
-                mAdapter = new AdapterApplicationHistory(this, (ArrayList<ApplicationUsage>) mData);
+                mAdapter = new AdapterApplicationUsageHistory(this, (ArrayList<ApplicationUsage>) mData);
                 if(mData.size() >= NumberLoad)
                 {
                     initScrollListener();
@@ -342,7 +342,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                     {
                         initScrollListener();
                     }
-                    mAdapter = new AdapterApplicationHistory(ApplicationUsageHistory.this, (ArrayList<ApplicationUsage>) mData);
+                    mAdapter = new AdapterApplicationUsageHistory(ApplicationUsageHistory.this, (ArrayList<ApplicationUsage>) mData);
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
                 }
@@ -484,7 +484,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
             deviceObject(s);
 
             if (bodyLogin.getResultId().equals("1") && bodyLogin.getIsSuccess().equals("1")) {
-                ((AdapterApplicationHistory) mAdapter).removeData(selectionList);
+                ((AdapterApplicationUsageHistory) mAdapter).removeData(selectionList);
                 clearDataSQLite(selectionList);
                 clearActionMode();
             } else {

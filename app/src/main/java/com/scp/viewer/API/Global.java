@@ -85,6 +85,8 @@ public class Global {
     public static final String POST_CLEAR_MULTI_URL = "ClearMultiURL";
     public static final String POST_CLEAR_MULTI_PHOTO = "ClearMultiPhoto";
 
+    public static final String POST_CLEAR_MULTI_APP_INSTALL = "ClearMultiAppInstallation"; //2021-07-12
+
 
     /**
      * SharedPreferences
