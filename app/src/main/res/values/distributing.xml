@@ -8,7 +8,7 @@
     /* app_name: Please open the strings.xml to change app_name. */
 
     <!-- "1.01.11" ==> This is the version that is used to display the activity of the application you can replace it as desired.-->
-    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">0.8.22.0</string>
+    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">2.01.22.0</string>
 
     <!--NOTE: how to change default version of the application -->
     <!--1.Go to build.gradle(Module: app)  in Android/Gradle Scripts/build.gradle(Module: app)-->
@@ -20,32 +20,29 @@
     <!--versionName "Number version of you"-->
 
     <!--This is the default copyright you can change it under the copyright you need to use.-->
-    <!--Copyright © 2010-2020 Copy9. All rights reserved.-->
-    <string name = "COPYRIGHT" tools:ignore="MissingTranslation,TypographyDashes" translatable="false">Copyright © 2020 Copy9 | Powered by COPY9</string>
+    <string name = "COPYRIGHT" tools:ignore="MissingTranslation,TypographyDashes" translatable="false">Copyright 2012-2021 © SecondClone. All Rights Reserved.</string>
 
-    <!--"http://my.cp9.com/favicon.ico" ==> This is the default icon used for Class: ManagementDevice, Authentication, LaunchScreen.-->
+    <!--"http://my.scp.com/favicon.ico" ==> This is the default icon used for Class: ManagementDevice, Authentication, LaunchScreen.-->
     <!--This is the default icon link you can change with the icon you need to use.-->
-    <!--https://my.copy9.com/banner_Copy9.png-->
-    <!--https://my.cp9.com/favicon.ico-->
-    <string name = "LOGO_IMAGE_PATH" tools:ignore="MissingTranslation,ReferenceType" translatable="false">https://my.copy9.com/banner_Copy9.png</string>
+    <string name = "LOGO_IMAGE_PATH" tools:ignore="MissingTranslation,ReferenceType" translatable="false">http://my.secondclone.com/favicon.ico</string>
 
-    <!--http://monitor-protocol-a.cp9.com--> <!--http://protocol-viewer-a.copy9.com-->
+    <!--http://monitor-protocol-a.scp.com--> <!--http://protocol-viewer-a.scp.com  https://protocol-viewer-a.secondclone.com--> <!--http://protocol-viewer-a.copy9.com-->
     <!--This is the default protocol link you can change by the protocol you need to use.-->
-    <string name = "DEFAULT_LINK_PROTOCOL_URL" tools:ignore="MissingTranslation" translatable="false">http://protocol-viewer-a.copy9.com</string>
+    <string name = "DEFAULT_LINK_PROTOCOL_URL" tools:ignore="MissingTranslation" translatable="false">http://protocol-viewer-a.secondclone.com</string>
 
     <!--This is the default FORGET PASSWORD you can change by the FORGET PASSWORD you need to use.-->
-    <string name = "LINK_FORGET_PASSWORD" tools:ignore="MissingTranslation" translatable="false">https://my.copy9.com/Account/ForgotPassword</string>
+    <string name = "LINK_FORGET_PASSWORD" tools:ignore="MissingTranslation" translatable="false">https://my.secondclone.com/Account/ForgotPassword</string>
 
     <!--This is the default ABOUT US you can change by the ABOUT US you need to use.-->
-    <!--https://www.cp9.com/about-us/-->
-    <!--https://www.copy9.com/about-us/-->
-    <string name = "LINK_ABOUT_US" tools:ignore="MissingTranslation" translatable="false">https://www.copy9.com/about-us/</string>
+    <!--https://www.scp.com/about-us/-->
+    <!--https://www.scp.com/about-us/-->
+    <string name = "LINK_ABOUT_US" tools:ignore="MissingTranslation" translatable="false">https://www.secondclone.com/about-us/</string>
 
     <!--This is the default Renew you can change by the Renew you need to use.-->
-    <string name = "LINK_RENEW" tools:ignore="MissingTranslation" translatable="false">https://my.copy9.com/Prices</string>
+    <string name = "LINK_RENEW" tools:ignore="MissingTranslation" translatable="false">https://my.secondclone.com/Prices</string>
 
     <!--This is the default link Register you can change by the link Register you need to use.-->
-    <string name = "LINK_REGISTER" tools:ignore="MissingTranslation" translatable="false">https://my.copy9.com/Account/SignUp</string>
+    <string name = "LINK_REGISTER" tools:ignore="MissingTranslation" translatable="false">https://my.secondclone.com/Account/SignUp</string>
 
     <!--NOTE: how to change trackingId of Google Analytics -->
     <!--1.Go to app_tracker in app/res/xml/app_tracker.xml-->
@@ -61,28 +58,25 @@
     <!--3.In the tag, look for android:icon tag.-->
     <!--4.Copy and paste your icon in drawable folder(available in res folder of your project).-->
     <!--5.Set the value of android:icon tag as-->
-            <!--android:icon="@drawable/iconappcp9"-->
+            <!--android:icon="@drawable/iconappscp"-->
                         <!--Rename to-->
             <!--android:icon="@drawable/Name your icon"-->
     <!--You are done. Save the changes and test.-->
 
-    <!--COMPANY & PRODUCT Jexpa-->
-    <!--Centered System LLC-->
-    <string name="COMPANY_NAME" tools:ignore="MissingTranslation" translatable="false">Copy9 LLC</string>
-    <string name="PRODUCT_NAME_ALIAS" tools:ignore="MissingTranslation" translatable="false">Copy9</string>
-    <string name="PRODUCT_PREFIX_NAME" tools:ignore="MissingTranslation" translatable="false">CP9</string>
+    <!--COMPANY & PRODUCT -->
+    <string name="COMPANY_NAME" tools:ignore="MissingTranslation" translatable="false">SecondClone LLC</string>
+    <string name="PRODUCT_NAME_ALIAS" tools:ignore="MissingTranslation" translatable="false">SecondClone</string>
+    <string name="PRODUCT_PREFIX_NAME" tools:ignore="MissingTranslation" translatable="false">SCP</string>
 
     <!--EMAILING-->
-    <!--support@copy9.com-->
-    <!--support@cp9.com-->
-    <string name="EMAIL_SUPPORT" tools:ignore="MissingTranslation" translatable="false">support@copy9.com</string>
-    <string name="EMAIL_SUPPORT_TITLE" tools:ignore="MissingTranslation" translatable="false">Copy9 Team</string>
+    <string name="EMAIL_SUPPORT" tools:ignore="MissingTranslation" translatable="false">support@secondclone.com</string>
+    <string name="EMAIL_SUPPORT_TITLE" tools:ignore="MissingTranslation" translatable="false">SecondClone Team</string>
 
 
     <!--LINKS & WEBSITE-->
     <!---->
-    <string name="WEBSITE_ANDROID_DOWNLOAD" tools:ignore="MissingTranslation" translatable="false">http://d.copy9.com</string>
-    <string name="WEBSITE_PROTOCOL" tools:ignore="MissingTranslation" translatable="false">monitor-protocol-a.copy9.com</string>
-    <string name="LINK_WEBSITE" tools:ignore="MissingTranslation" translatable="false">https://copy9.com</string>
+    <string name="WEBSITE_ANDROID_DOWNLOAD" tools:ignore="MissingTranslation" translatable="false">https://android.secondclone.com/</string>
+    <string name="WEBSITE_PROTOCOL" tools:ignore="MissingTranslation" translatable="false">protocol-viewer-a.secondclone.com</string>
+    <string name="LINK_WEBSITE" tools:ignore="MissingTranslation" translatable="false">https://secondclone.com/</string>
 
 </resources>

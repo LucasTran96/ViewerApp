@@ -1,24 +1,24 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
     defaultConfig {
-        applicationId "com.jexpa.cp9"
+        applicationId "com.scp.viewer"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 29
         multiDexEnabled true
-        versionCode 2
-        versionName "0.8.22.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 4
+        versionName "1.1.25.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
         variant.resValue "string", "versionName", variant.versionName
     }
     buildTypes {
         release {
-            minifyEnabled true
-            useProguard true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //minifyEnabled true
+//            useProguard true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     packagingOptions {
@@ -32,31 +32,34 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'io.paperdb:paperdb:2.6'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:support-vector-drawable:27.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
 
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
     //implementation 'testfairy:testfairy-android-sdk:1.+@aar'
     // RecyclerView
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
     //implementation 'testfairy:testfairy-android-sdk:1.+@aar'
 
     // CardView
-    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
 
     // volley http library
     //noinspection OutdatedLibrary
     implementation 'com.android.volley:volley:1.0.0'
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    /*implementation 'com.github.bumptech.glide:glide:3.7.0'*/
     // glide image library
     implementation 'com.github.bumptech.glide:glide:3.6.1'
     // The library supports thumbnails view
@@ -77,13 +80,11 @@ dependencies {
 
     // google Analytics
     implementation 'com.google.android.gms:play-services-analytics:16.0.5'
-
-    // log4j use write Log
-    implementation group: 'de.mindpipe.android', name: 'android-logging-log4j', version: '1.0.3'
-    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
-
+//    // log4j use write Log
+//    implementation group: 'de.mindpipe.android', name: 'android-logging-log4j', version: '1.0.3'
+//    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
     implementation 'com.wang.avi:library:2.1.3'
-
     implementation 'com.r0adkll:slidableactivity:2.0.6'
+
 
 }

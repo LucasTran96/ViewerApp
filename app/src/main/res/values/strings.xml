@@ -6,14 +6,14 @@
     <string name="Register"><u>Sign Up</u></string>
     <string name="SignIn">Sign In</string>
     <string name="Password">Password</string>
-    <string name="Email">User name</string>
+    <string name="Email">Username</string>
     <string name="PasswordHint">Password</string>
     <string name="ConfirmTitle">Confirm Password</string>
     <string name="Confirm">Confirm</string>
     <string name="ok">OK</string>
-    <string tools:ignore="MissingTranslation" name="question_Select">Do you want to delete the selected items?</string>
+    <string name="question_Select" tools:ignore="MissingTranslation" translatable="false">Do you want to delete the selected items?</string>
 
-    <string tools:ignore="MissingTranslation" name="cancel">Cancel</string>
+    <string name="cancel" tools:ignore="MissingTranslation" translatable="false">Cancel</string>
     <string name="ID">ID</string>
     <string name="AddDevice">Add Device</string>
     <string name="title_activity_map_location">Map</string>
@@ -27,7 +27,9 @@
     <string name="CONTACT_DETAIL_HISTORY" translatable="false">Contact Details</string>
     <string name="PHOTO_HISTORY">Photos</string>
     <string name="APPLICATION_USAGE">App Activity</string>
+    <string name="APPLICATION_INSTALL" translatable="false">App Installed</string>
     <string name="PHONE_CALL_RECORDING">Call Recording</string>
+    <string name="AMBIENT_RECORDING" translatable="false">Ambient Recording</string>
     <string name="WHATSAPP_HISTORY">WhatsApp</string>
     <string name="VIBER_HISTORY">Viber</string>
     <string name="FACEBOOK_HISTORY">Messenger</string>
@@ -83,7 +85,7 @@
     <string name="DeviceList">Device List</string>
     <string name="YouHaveLinkedDevice" tools:ignore="MissingTranslation">You have %1$d device(s) linked to this account.</string>
     <string name="LogOut">Sign Out</string>
-    <string tools:ignore="MissingTranslation" name="SignOut">Do you want to Sign out of this account?</string>
+    <string name="SignOut" tools:ignore="MissingTranslation" translatable="false">Do you want to Sign out of this account?</string>
     <string name="AboutUs"><u>About</u></string>
     <string name="ForgetPassword"><u>Forget Password ?</u></string>
     <string name="Language"><u>Language ?</u></string>
@@ -97,7 +99,7 @@
     <string name="Close" translatable="false">Close</string>
     <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
     <string name="TurnOn">Internet no connect!</string>
-    <string name="Maximum_Download" tools:ignore="MissingTranslation">The app can only load up to 5 images at a time.</string>
+    <string name="Maximum_Download" tools:ignore="MissingTranslation" translatable="false">The app can only load up to 5 images at a time.</string>
     <string name="Image_Downloading" translatable="false">The image is saved.</string>
     <string name="Image_Download_Failed" translatable="false">Image %s cannot be downloaded!</string>
     <string name="Image_Downloaded" translatable="false">All images have been downloaded.</string>
@@ -106,10 +108,10 @@
     <string name="addedOn">Added on</string>
     <string name="gps_status" translatable="false">GPS Status</string>
     <string name="delete">Deleting</string>
-    <string name="Transfer_multimedia_data" tools:ignore="MissingTranslation" translatable="false">Transfer multimedia data:</string>
-    <string name="Force_opening_internet" tools:ignore="MissingTranslation" translatable="false">Force opening internet connection</string>
-    <string name="Auto_Turn_ON_Wifi" tools:ignore="MissingTranslation" translatable="false">Auto Turn ON Wifi/Edge/3G...If Needs</string>
-    <string name="sync_Data_Every" tools:ignore="MissingTranslation" translatable="false">Sync data every</string>
+    <string name="Transfer_multimedia_data" translatable="false" tools:ignore="MissingTranslation">Transfer multimedia data:</string>
+    <string name="Force_opening_internet" translatable="false" tools:ignore="MissingTranslation">Force opening internet connection</string>
+    <string name="Auto_Turn_ON_Wifi" translatable="false" tools:ignore="MissingTranslation">Auto Turn ON Wifi/Edge/3G...If Needs</string>
+    <string name="sync_Data_Every" translatable="false" tools:ignore="MissingTranslation">Sync data every</string>
     <string name="sync_Distance_Filter" translatable="false">Distance Filter</string>
     <string name="auto_turn_on_wifi" translatable="false">Auto Turn ON Wifi If Needs</string>
     <string name="force_opening_internet" translatable="false">Force opening internet connection:</string>
@@ -119,5 +121,6 @@
     <string name="normal" translatable="false">Normal</string>
     <string name="terrain" translatable="false">Terrain</string>
     <string name="satellite" translatable="false">Satellite</string>
+    <string name="title_activity_maps_activityqw" translatable="false">Map</string>
 
 </resources>

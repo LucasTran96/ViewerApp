@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:background="#f4f4f6"
         android:layout_height="match_parent">
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:background="@color/colorAccent"
             android:id="@+id/toolbar_SMS_Detail"
@@ -26,14 +26,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:background="#fff"
                 android:id="@+id/rcl__SMS_Detail"
                 android:scrollbars="vertical"
                 android:paddingBottom="15dp"
                 android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <ProgressBar
                 android:layout_width="wrap_content"
