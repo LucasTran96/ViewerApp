@@ -28,14 +28,19 @@ import com.scp.viewer.Model.Table;
 import com.scp.viewer.R;
 import com.scp.viewer.View.AppInstallationHistory;
 import com.scp.viewer.View.ApplicationUsageHistory;
+import com.scp.viewer.View.CalendarHistory;
 import com.scp.viewer.View.CallHistory;
+import com.scp.viewer.View.ClipboardHistory;
 import com.scp.viewer.View.ContactHistory;
 import com.scp.viewer.View.HistoryLocation;
+import com.scp.viewer.View.NetworkHistory;
 import com.scp.viewer.View.NotesHistory;
 import com.scp.viewer.View.PhoneCallRecordHistory;
 import com.scp.viewer.View.PhotoHistory;
 import com.scp.viewer.View.SMSHistory;
 import com.scp.viewer.View.URLHistory;
+import com.scp.viewer.View.YouTubeHistory;
+
 import java.util.ArrayList;
 
 import static com.scp.viewer.API.APIURL.isConnected;
@@ -50,7 +55,10 @@ import static com.scp.viewer.API.Global.SMS_LINE_TYPE;
 import static com.scp.viewer.API.Global.SMS_SKYPE_TYPE;
 import static com.scp.viewer.API.Global.SMS_VIBER_TYPE;
 import static com.scp.viewer.API.Global.SMS_WHATSAPP_TYPE;
+import static com.scp.viewer.Database.Entity.CalendarEntity.TABLE_CALENDAR_HISTORY;
+import static com.scp.viewer.Database.Entity.ClipboardEntity.TABLE_CLIPBOARD_HISTORY;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_BBM;
+import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CLIPBOARD;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_FACEBOOK;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_HANGOUTS;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_KIK;
@@ -59,6 +67,7 @@ import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_SMS;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_VIBER;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_WHATSAPP;
+import static com.scp.viewer.Database.Entity.NetworkEntity.TABLE_NETWORK_HISTORY;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_BBM;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_FACEBOOK;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_HANGOUTS;
@@ -68,6 +77,7 @@ import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_SKYPE;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_SMS;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_VIBER;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_WHATSAPP;
+import static com.scp.viewer.Database.Entity.YouTubeEntity.TABLE_YOUTUBE_HISTORY;
 
 public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeatureDashboard.ViewHolder> {
     private ArrayList<Feature> featureList;
@@ -220,6 +230,23 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
                     {
                         setIntentForMessage(context,table, TABLE_GET_KIK,COLUMN_LAST_KIK, getSMSType(featureList.get(position).getFeatureName(),context));
                     }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.CLIPBOARD_HISTORY)))
+                    {
+                        setIntentDefault(context,table, TABLE_CLIPBOARD_HISTORY, ClipboardHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.CALENDAR_HISTORY)))
+                    {
+                        setIntentDefault(context,table, TABLE_CALENDAR_HISTORY, CalendarHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.NETWORK_HISTORY)))
+                    {
+                        setIntentDefault(context,table, TABLE_NETWORK_HISTORY, NetworkHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.YOUTUBE_HISTORY)))
+                    {
+                        setIntentDefault(context,table, TABLE_YOUTUBE_HISTORY, YouTubeHistory.class);
+                    }
+
                 }
             }
         }

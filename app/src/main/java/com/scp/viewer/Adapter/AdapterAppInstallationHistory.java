@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.Model.AppInstallation;
 import com.scp.viewer.Model.ApplicationUsage;
 import com.scp.viewer.R;
@@ -106,19 +107,18 @@ public class AdapterAppInstallationHistory extends RecyclerView.Adapter<AdapterA
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        AppInstallation application_usage = listData.get(position);
+        AppInstallation application_Install = listData.get(position);
         holder.card_view_Application.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
-        String time_Location;
+
         if(setIconApp(listData.get(position).getApp_ID(), mActivity) == null)
         {
             holder.img_icon_AppUsage.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.android_icon));
         }else {
             holder.img_icon_AppUsage.setImageDrawable(setIconApp(listData.get(position).getApp_ID(), mActivity));
         }
-        //setIconApp(holder.img_icon_AppUsage, application_usage.getApp_ID());
-        time_Location = application_usage.getClient_App_Time().replace("T", " ");
-        holder.txt_name_App_History.setText(application_usage.getApp_Name());
-        holder.txt_Date_App_History.setText(time_Location);
+
+        holder.txt_name_App_History.setText(application_Install.getApp_Name());
+        holder.txt_Date_App_History.setText(APIDatabase.getTimeItem(application_Install.getClient_App_Time(), null));
 
         if (AppInstallationHistory.isInActionMode)
         {

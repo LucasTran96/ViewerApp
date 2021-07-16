@@ -24,6 +24,9 @@ import static com.scp.viewer.API.Global.TAG;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.Database.DatabaseContact.checkItemExist;
 import static com.scp.viewer.Database.DatabaseHelper.getInstance;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_AUDIO_NAME_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_AUDIO_SIZE_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_CDN_URL_PHONECALLRECORD;
@@ -31,15 +34,12 @@ import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_CLIENT
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_CONTACT_NAME_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_CONTENT_TYPE_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_CREATED_DATE_PHONECALLRECORD;
-import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_DEVICE_ID_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_DIRECTION_TYPE_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_DURATION_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_EXT_PHONECALLRECORD;
-import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_ID_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_ISSAVED_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_MEDIA_URL_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_PHONE_NUMBER_PHONECALLRECORD;
-import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.COLUMN_ROWINDEX_PHONECALLRECORD;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.TABLE_PHONECALLRECORD_HISTORY;
 
 public class DatabasePhoneCallRecord {
@@ -56,8 +56,8 @@ public class DatabasePhoneCallRecord {
     public void createTable() {
 
         Log.i(TAG, "DatabasePhoneCallRecord.onCreate ... " + TABLE_PHONECALLRECORD_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_PHONECALLRECORD_HISTORY + "(" + COLUMN_ROWINDEX_PHONECALLRECORD + " LONG ," + COLUMN_ID_PHONECALLRECORD + " LONG,"
-                + COLUMN_ISSAVED_PHONECALLRECORD + " INTEGER," + COLUMN_DEVICE_ID_PHONECALLRECORD + " TEXT," + COLUMN_CLIENT_CAPTURED_DATE_PHONECALLRECORD + " TEXT," + COLUMN_AUDIO_NAME_PHONECALLRECORD + " TEXT,"
+        String scriptTable = " CREATE TABLE " + TABLE_PHONECALLRECORD_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_ISSAVED_PHONECALLRECORD + " INTEGER," + COLUMN_DEVICE_ID + " TEXT," + COLUMN_CLIENT_CAPTURED_DATE_PHONECALLRECORD + " TEXT," + COLUMN_AUDIO_NAME_PHONECALLRECORD + " TEXT,"
                 + COLUMN_CONTENT_TYPE_PHONECALLRECORD + " TEXT," + COLUMN_DURATION_PHONECALLRECORD + " INTEGER," + COLUMN_DIRECTION_TYPE_PHONECALLRECORD + " INTEGER," +
                 COLUMN_PHONE_NUMBER_PHONECALLRECORD + " TEXT," + COLUMN_CONTACT_NAME_PHONECALLRECORD + " TEXT," + COLUMN_AUDIO_SIZE_PHONECALLRECORD + " INTEGER," + COLUMN_EXT_PHONECALLRECORD + " TEXT," + COLUMN_MEDIA_URL_PHONECALLRECORD + " TEXT," +
                 COLUMN_CREATED_DATE_PHONECALLRECORD + " TEXT," + COLUMN_CDN_URL_PHONECALLRECORD + " TEXT" + ")";
@@ -88,7 +88,8 @@ public class DatabasePhoneCallRecord {
         Log.i("addPhoneCallRecord", "dataPhoneCallRecord add: " + phoneCallRecords.get(0).getID());
         try {
             for (int i = 0; i < phoneCallRecords.size(); i++) {
-                if(!checkItemExist(database.getWritableDatabase(),TABLE_PHONECALLRECORD_HISTORY, COLUMN_DEVICE_ID_PHONECALLRECORD,phoneCallRecords.get(i).getDevice_ID(), COLUMN_ID_PHONECALLRECORD, phoneCallRecords.get(i).getID()))
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_PHONECALLRECORD_HISTORY, COLUMN_DEVICE_ID,
+                        phoneCallRecords.get(i).getDevice_ID(), COLUMN_ID, phoneCallRecords.get(i).getID()))
                 {
                     ContentValues contentValues1 = API_Add_Database(phoneCallRecords.get(i),false);
                     // Insert a row of data into the table.
@@ -117,13 +118,13 @@ public class DatabasePhoneCallRecord {
 
                 AudioGroup audioGroup = new AudioGroup();
                 audioGroup.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_PHONECALLRECORD)));
-                audioGroup.setDeviceID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_PHONECALLRECORD)));
+                audioGroup.setDeviceID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                 audioGroup.setDuration(String.valueOf(cursor.getInt(cursor.getColumnIndex(COLUMN_DURATION_PHONECALLRECORD))));
                 audioGroup.setContactName(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_NAME_PHONECALLRECORD)));
                 audioGroup.setAudioName(cursor.getString(cursor.getColumnIndex(COLUMN_AUDIO_NAME_PHONECALLRECORD)));
                 audioGroup.setURL_Audio(cursor.getString(cursor.getColumnIndex(COLUMN_CDN_URL_PHONECALLRECORD)) + cursor.getString(cursor.getColumnIndex(COLUMN_MEDIA_URL_PHONECALLRECORD))+ "." + cursor.getString(cursor.getColumnIndex(COLUMN_EXT_PHONECALLRECORD)));
                 audioGroup.setIsSave(cursor.getInt(cursor.getColumnIndex(COLUMN_ISSAVED_PHONECALLRECORD)));
-                audioGroup.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PHONECALLRECORD)));
+                audioGroup.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
                 audioGroup.setIsAmbient(0);
                     // Add in List.
                 audioGroups.add(audioGroup);
@@ -142,7 +143,7 @@ public class DatabasePhoneCallRecord {
         Log.d("isLoading = ", COLUMN_ISSAVED_PHONECALLRECORD + "=" + value + "");
         ContentValues contentValues1 = new ContentValues();
         contentValues1.put(COLUMN_ISSAVED_PHONECALLRECORD, value);
-        database.getWritableDatabase().update(TABLE_PHONECALLRECORD_HISTORY, contentValues1, COLUMN_DEVICE_ID_PHONECALLRECORD + " = ?" + " AND " + COLUMN_ID_PHONECALLRECORD + "=?",
+        database.getWritableDatabase().update(TABLE_PHONECALLRECORD_HISTORY, contentValues1, COLUMN_DEVICE_ID + " = ?" + " AND " + COLUMN_ID + "=?",
                 new String[]{String.valueOf(nameDeviceID), String.valueOf(phoneCallRecordID)});
         // Close the database connection.
         database.close();
@@ -153,8 +154,8 @@ public class DatabasePhoneCallRecord {
 
         //String countQuery = "SELECT  * FROM " + TABLE_PHOTO_HISTORY;
 
-        Cursor cursor = database.getWritableDatabase().query(TABLE_PHONECALLRECORD_HISTORY, new String[]{COLUMN_DEVICE_ID_PHONECALLRECORD
-                }, COLUMN_DEVICE_ID_PHONECALLRECORD + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_PHONECALLRECORD_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -166,7 +167,7 @@ public class DatabasePhoneCallRecord {
     public void delete_PhoneCallRecord_History(AudioGroup phoneCallRecord) {
         Log.i("deletePhoneCallRecord", "DatabasePhoneCallRecord.deletePhoneCallRecord ... " + phoneCallRecord.getID() + "== " + phoneCallRecord.getAudioName());
 
-        database.getWritableDatabase().delete(TABLE_PHONECALLRECORD_HISTORY, COLUMN_ID_PHONECALLRECORD + " = ?",
+        database.getWritableDatabase().delete(TABLE_PHONECALLRECORD_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(phoneCallRecord.getID())});
         database.close();
     }
@@ -176,7 +177,7 @@ public class DatabasePhoneCallRecord {
         Log.i(TAG, "DatabasePhoneCallRecord.getAll_PhoneCallRecord... " + TABLE_PHONECALLRECORD_HISTORY);
         List<Long> phoneCallRecord_List = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_PHONECALLRECORD_HISTORY + " WHERE " + COLUMN_DEVICE_ID_PHONECALLRECORD + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
+        String selectQuery = "SELECT  * FROM " + TABLE_PHONECALLRECORD_HISTORY + " WHERE " + COLUMN_DEVICE_ID + " = '" + deviceID + "'";//+"' AND " +COLUMN_CLIENT_CAPTURED_DATE_PHOTO+" = '"+date+"'", String date
         //SQLiteDatabase database = this.getWritableDatabase();
         @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
 
@@ -184,7 +185,7 @@ public class DatabasePhoneCallRecord {
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CAPTURED_DATE_PHONECALLRECORD)).substring(0, 10).equals(date)) {
-                    phoneCallRecord_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_PHONECALLRECORD)));
+                    phoneCallRecord_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
                 }
                 // Add in List.
 

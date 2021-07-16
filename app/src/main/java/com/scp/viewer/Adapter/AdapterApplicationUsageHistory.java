@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.Model.ApplicationUsage;
 import com.scp.viewer.R;
 import com.scp.viewer.View.ApplicationUsageHistory;
@@ -108,7 +110,7 @@ public class AdapterApplicationUsageHistory extends RecyclerView.Adapter<Adapter
         //setIconApp(holder.img_icon_AppUsage, application_usage.getApp_ID());
         time_Location = application_usage.getClient_App_Time().replace("T", " ");
         holder.txt_name_App_History.setText(application_usage.getApp_Name());
-        holder.txt_Date_App_History.setText(time_Location);
+        holder.txt_Date_App_History.setText(APIDatabase.getTimeItem(time_Location, null));
 
         if(application_usage.getApp_Type() == 0)
         {
@@ -130,21 +132,6 @@ public class AdapterApplicationUsageHistory extends RecyclerView.Adapter<Adapter
             holder.card_view_Application.setCardBackgroundColor(mActivity.getResources().getColor(R.color.white));
         }
     }
-
-   /* private Drawable setIconApp( String packageName)
-    {
-        try
-        {
-            Drawable drawable = mActivity.getPackageManager()
-                    .getApplicationIcon(packageName);
-           return drawable;
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }*/
 
     @Override
     public int getItemCount() {

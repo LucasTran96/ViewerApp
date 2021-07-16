@@ -39,7 +39,7 @@ import static com.scp.viewer.Database.Entity.UserEntity.TABLE_USER_INFO;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
     public static final String DATABASE_NAME = "db_DViewerApp";
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 12; // last up date: 2021-07-15
 
     private static DatabaseHelper instance;
 

@@ -16,9 +16,9 @@ public class URLEntity {
      */
 
     public static final String TABLE_URL_HISTORY = "URLHistory";
-    public static final String COLUMN_ROWINDEX_URL = "Row_Index";
-    public static final String COLUMN_ID_URL = "ID";
-    public static final String COLUMN_DEVICE_ID_URL = "Device_ID";
+    //public static final String COLUMN_ROWINDEX_URL = "Row_Index";
+    //public static final String COLUMN_ID_URL = "ID";
+    //public static final String COLUMN_DEVICE_ID_URL = "Device_ID";
     public static final String COLUMN_CLIENT_URL_TIME = "Client_URL_Time";
     public static final String COLUMN_URL_LINK = "URL_Link";
     public static final String COLUMN_CREATED_DATE_URL = "Created_Date";

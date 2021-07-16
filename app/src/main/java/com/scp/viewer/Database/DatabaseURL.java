@@ -16,22 +16,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-
 import com.scp.viewer.Model.URL;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.scp.viewer.API.APIDatabase.API_Add_Database;
 import static com.scp.viewer.API.Global.TAG;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.Database.DatabaseContact.checkItemExist;
 import static com.scp.viewer.Database.DatabaseHelper.getInstance;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 import static com.scp.viewer.Database.Entity.URLEntity.COLUMN_CLIENT_URL_TIME;
 import static com.scp.viewer.Database.Entity.URLEntity.COLUMN_CREATED_DATE_URL;
-import static com.scp.viewer.Database.Entity.URLEntity.COLUMN_DEVICE_ID_URL;
-import static com.scp.viewer.Database.Entity.URLEntity.COLUMN_ID_URL;
-import static com.scp.viewer.Database.Entity.URLEntity.COLUMN_ROWINDEX_URL;
 import static com.scp.viewer.Database.Entity.URLEntity.COLUMN_URL_LINK;
 import static com.scp.viewer.Database.Entity.URLEntity.TABLE_URL_HISTORY;
 
@@ -48,8 +45,8 @@ public class DatabaseURL
     public void createTable() {
 
         Log.i(TAG, "DatabaseNotes.onCreate ... " + TABLE_URL_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_URL_HISTORY + "(" + COLUMN_ROWINDEX_URL + " LONG ," + COLUMN_ID_URL + " LONG,"
-                + COLUMN_DEVICE_ID_URL + " TEXT," + COLUMN_CLIENT_URL_TIME + " TEXT," + COLUMN_URL_LINK + " TEXT,"
+        String scriptTable = " CREATE TABLE " + TABLE_URL_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_DEVICE_ID + " TEXT," + COLUMN_CLIENT_URL_TIME + " TEXT," + COLUMN_URL_LINK + " TEXT,"
                 + COLUMN_CREATED_DATE_URL + " TEXT" + ")";
         database.getWritableDatabase().execSQL(scriptTable);
     }
@@ -61,7 +58,7 @@ public class DatabaseURL
         database.getWritableDatabase().beginTransaction();
         try {
             for (int i = 0; i < url.size(); i++) {
-                if(!checkItemExist(database.getWritableDatabase(),TABLE_URL_HISTORY,COLUMN_DEVICE_ID_URL,url.get(i).getDevice_ID(),COLUMN_ID_URL,url.get(i).getID()))
+                if(!checkItemExist(database.getWritableDatabase(),TABLE_URL_HISTORY,COLUMN_DEVICE_ID,url.get(i).getDevice_ID(),COLUMN_ID,url.get(i).getID()))
                 {
                     ContentValues contentValues1 = API_Add_Database(url.get(i),false);
                     // Insert a row of data into the table.
@@ -86,9 +83,9 @@ public class DatabaseURL
         if (cursor.moveToFirst()) {
             do {
                     URL url = new URL();
-                    url.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_URL)));
-                    url.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_URL)));
-                    url.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_URL)));
+                    url.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROW_INDEX)));
+                    url.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
+                    url.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                     url.setClient_URL_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_URL_TIME)));
                     url.setURL_Link(cursor.getString(cursor.getColumnIndex(COLUMN_URL_LINK)));
                     url.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_URL)));
@@ -104,8 +101,8 @@ public class DatabaseURL
         Log.i(TAG, "DatabaseURL.get_URLCount_DeviceID ... " + TABLE_URL_HISTORY);
 
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.getWritableDatabase().query(TABLE_URL_HISTORY, new String[]{COLUMN_DEVICE_ID_URL
-                }, COLUMN_DEVICE_ID_URL + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_URL_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -115,7 +112,7 @@ public class DatabaseURL
 
     public void delete_Contact_History(URL url) {
         Log.i(TAG, "DatabaseNotes.delete_Contact_History ... " + url.getID());
-        database.getWritableDatabase().delete(TABLE_URL_HISTORY, COLUMN_ID_URL + " = ?",
+        database.getWritableDatabase().delete(TABLE_URL_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(url.getID())});
         database.close();
     }

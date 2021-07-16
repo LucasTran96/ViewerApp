@@ -31,13 +31,14 @@ import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_APP_N
 import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_APP_TYPE_APPLICATION;
 import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_CLIENT_APPLICATION_TIME;
 import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_CREATED_DATE_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_DEVICE_ID_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_ID_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_ROWINDEX_APPLICATION;
 import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.TABLE_APPLICATION_HISTORY;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 
 public class DatabaseApplicationUsage
 {
+
     private Context context;
     private DatabaseHelper database;
     public DatabaseApplicationUsage(Context context) {
@@ -52,8 +53,8 @@ public class DatabaseApplicationUsage
 
 
         Log.i(Global.TAG, "DatabaseApplicationUsage.onCreate ... " + TABLE_APPLICATION_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_APPLICATION_HISTORY + "(" + COLUMN_ROWINDEX_APPLICATION + " LONG ," + COLUMN_ID_APPLICATION + " LONG,"
-                + COLUMN_DEVICE_ID_APPLICATION + " TEXT," + COLUMN_APP_TYPE_APPLICATION + " INTEGER,"
+        String scriptTable = " CREATE TABLE " + TABLE_APPLICATION_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_DEVICE_ID + " TEXT," + COLUMN_APP_TYPE_APPLICATION + " INTEGER,"
                 + COLUMN_APP_NAME_APPLICATION + " TEXT," + COLUMN_CLIENT_APPLICATION_TIME + " TEXT,"
                 + COLUMN_APP_ID_APPLICATION + " TEXT," +
                 COLUMN_CREATED_DATE_APPLICATION + " TEXT" + ")";
@@ -67,7 +68,7 @@ public class DatabaseApplicationUsage
 
         try {
             for (int i = 0; i < application_usage.size(); i++) {
-                if(!checkItemExist(database.getWritableDatabase(), TABLE_APPLICATION_HISTORY, COLUMN_DEVICE_ID_APPLICATION, application_usage.get(i).getDevice_ID(), COLUMN_ID_APPLICATION, application_usage.get(i).getID()))
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_APPLICATION_HISTORY, COLUMN_DEVICE_ID, application_usage.get(i).getDevice_ID(), COLUMN_ID, application_usage.get(i).getID()))
                 {
                     //  contentValues1 receives the value from the method API_Add_Database()
                     ContentValues contentValues1 = APIDatabase.API_Add_Database(application_usage.get(i),false);
@@ -97,9 +98,9 @@ public class DatabaseApplicationUsage
         if (cursor.moveToFirst()) {
             do {
                     ApplicationUsage application_usage = new ApplicationUsage();
-                    application_usage.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_APPLICATION)));
-                    application_usage.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_APPLICATION)));
-                    application_usage.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_APPLICATION)));
+                    application_usage.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROW_INDEX)));
+                    application_usage.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                    application_usage.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                     application_usage.setApp_Type(cursor.getInt(cursor.getColumnIndex(COLUMN_APP_TYPE_APPLICATION)));
                     application_usage.setApp_Name(cursor.getString(cursor.getColumnIndex(COLUMN_APP_NAME_APPLICATION)));
                     application_usage.setClient_App_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_APPLICATION_TIME)));
@@ -119,8 +120,8 @@ public class DatabaseApplicationUsage
         Log.i(Global.TAG, "DatabaseApplicationUsage.get_ApplicationCount_DeviceID ... " + TABLE_APPLICATION_HISTORY);
 
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.getWritableDatabase().query(TABLE_APPLICATION_HISTORY, new String[]{COLUMN_DEVICE_ID_APPLICATION
-                }, COLUMN_DEVICE_ID_APPLICATION + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_APPLICATION_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -131,7 +132,7 @@ public class DatabaseApplicationUsage
     public void delete_Application_History(ApplicationUsage application_usage) {
         Log.i(Global.TAG, "DatabaseApplicationUsage.delete_Application_History... " + application_usage.getID());
 
-        database.getWritableDatabase().delete(TABLE_APPLICATION_HISTORY, COLUMN_ID_APPLICATION + " = ?",
+        database.getWritableDatabase().delete(TABLE_APPLICATION_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(application_usage.getID())});
         database.close();
     }

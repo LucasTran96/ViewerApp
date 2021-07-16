@@ -15,9 +15,9 @@ public class ApplicationUsageEntity {
      * Table name: ApplicationUsageHistory
      */
     public static final String TABLE_APPLICATION_HISTORY = "ApplicationHistory";
-    public static final String COLUMN_ROWINDEX_APPLICATION = "Row_Index";
-    public static final String COLUMN_ID_APPLICATION = "ID";
-    public static final String COLUMN_DEVICE_ID_APPLICATION = "Device_ID";
+    //public static final String COLUMN_ROWINDEX_APPLICATION = "Row_Index";
+   // public static final String COLUMN_ID_APPLICATION = "ID";
+    //public static final String COLUMN_DEVICE_ID_APPLICATION = "Device_ID";
     public static final String COLUMN_APP_TYPE_APPLICATION = "App_Type";
     public static final String COLUMN_APP_NAME_APPLICATION = "App_Name";
     public static final String COLUMN_CLIENT_APPLICATION_TIME = "Client_App_Time";

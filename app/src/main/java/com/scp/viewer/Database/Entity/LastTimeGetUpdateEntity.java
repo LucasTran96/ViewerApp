@@ -39,4 +39,11 @@ public class LastTimeGetUpdateEntity {
     public static final String COLUMN_LAST_BBM = "Last_BBM";
     public static final String COLUMN_LAST_LINE = "Last_LINE";
     public static final String COLUMN_LAST_KIK = "Last_KIK";
+
+    // added 2021-07-15
+    public static final String COLUMN_LAST_APP_INSTALLATION = "Last_AppInstallation";
+    public static final String COLUMN_LAST_CLIPBOARD = "Last_Clipboard";
+    public static final String COLUMN_LAST_CALENDAR = "Last_Calendar";
+    public static final String COLUMN_LAST_NETWORK = "Last_Network";
+    public static final String COLUMN_LAST_YOUTUBE = "Last_YouTube";
 }

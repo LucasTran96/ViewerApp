@@ -43,13 +43,16 @@
     <string name="BBM_HISTORY">BBM</string>
     <string name="APP_INSTALL" translatable="false">App Installed</string>
     <string name="NOTIFICATION_HISTORY" translatable="false">Notification</string>
-    <string name="CALENDAR_HISTORY" translatable="false">Calendars</string>
-    <string name="WIFI_HISTORY" translatable="false">Wi-Fi Logger</string>
+    <string name="CALENDAR_HISTORY" translatable="false">Calendar diary</string>
+<!--    <string name="WIFI_HISTORY" translatable="false">Wi-Fi Logger</string>-->
     <string name="Alert_HISTORY" translatable="false">Alert</string>
-    <string name="CLIPBOARD_HISTORY" translatable="false">Clipboard</string>
+    <string name="CLIPBOARD_HISTORY" translatable="false">Clipboard History</string>
     <string name="LINE_HISTORY">LINE</string>
     <string name="KIK_HISTORY">KIK</string>
     <string name="INSTAGRAM_HISTORY" translatable="false">Instagram</string>
+    <string name="NETWORK_HISTORY" translatable="false">Wi-Fi Logger</string>
+
+    <string name="YOUTUBE_HISTORY" translatable="false">YouTube History</string>
 
     <string name="ContactInformation">Contact Information</string>
     <string name="Subject">Subject</string>
@@ -97,6 +100,8 @@
     <string name="JustAMoment">Just a moment</string>
     <string name="Open" translatable="false">Open</string>
     <string name="Close" translatable="false">Close</string>
+    <string name="Disconnect" translatable="false">Disconnect</string>
+    <string name="Connect" translatable="false">Connect</string>
     <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
     <string name="TurnOn">Internet no connect!</string>
     <string name="Maximum_Download" tools:ignore="MissingTranslation" translatable="false">The app can only load up to 5 images at a time.</string>

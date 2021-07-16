@@ -73,6 +73,11 @@ public class Global {
     public static final String GET_APPLICATION_USAGE = "GetApps";
     public static final String GET_APP_INSTALLATION_HISTORY = "GetAppsInstallation";
     public static final String GET_NOTES_HISTORY = "GetNotes";
+    public static final String GET_CLIPBOARD_HISTORY = "GetClipboard";
+
+    public static final String GET_CALENDAR_HISTORY = "GetCalendar";
+    public static final String GET_NETWORK_HISTORY = "GetNetwork";
+    public static final String GET_YOUTUBE_HISTORY = "GetYouTube";
 
     public static final String POST_CLEAR_MULTI_SMS = "DeleteMultiChatDataLog";
     public static final String POST_CLEAR_MULTI_PHONE_RECORDING = "ClearMultiPhoneRecording";
@@ -86,6 +91,10 @@ public class Global {
     public static final String POST_CLEAR_MULTI_PHOTO = "ClearMultiPhoto";
 
     public static final String POST_CLEAR_MULTI_APP_INSTALL = "ClearMultiAppInstallation"; //2021-07-12
+    public static final String POST_CLEAR_MULTI_CLIPBOARD = "ClearClipboard"; //2021-07-12
+    public static final String POST_CLEAR_MULTI_CALENDAR = "ClearCalendar"; //2021-07-15
+    public static final String POST_CLEAR_MULTI_NETWORK = "ClearNetwork"; //2021-07-12
+    public static final String POST_CLEAR_MULTI_YOUTUBE = "ClearYouTube"; //2021-07-19
 
 
     /**
@@ -108,6 +117,12 @@ public class Global {
     public static final String SKYPE_TOTAL = "Skype_Total";
     public static final String HANGOUTS_TOTAL = "Hangouts_Total";
     public static final String MAPTYPE = "maptype";
+
+    // 2021-07-15
+    public static final String CLIPBOARD_TOTAL = "Clipboard_Total";
+    public static final String CALENDAR_TOTAL = "Calendar_Total";
+    public static final String NETWORK_TOTAL = "Network_Total";
+    public static final String YOUTUBE_TOTAL = "YouTube_Total";
 
     /**
      * SMS type

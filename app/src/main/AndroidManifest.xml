@@ -165,6 +165,31 @@
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".View.ClipboardHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".View.CalendarHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".View.NetworkHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".View.YouTubeHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
         <!--
              Optionally, register AnalyticsReceiver and AnalyticsService to support background
              dispatching on non-Google Play devices

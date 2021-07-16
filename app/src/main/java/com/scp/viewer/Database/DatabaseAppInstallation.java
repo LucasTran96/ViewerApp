@@ -9,7 +9,7 @@
   Copyright © 2018 Jexpa LLC. All rights reserved.
  */
 
-package com.scp.viewer.Database.Entity;
+package com.scp.viewer.Database;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -35,19 +35,10 @@ import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_APP_PL
 import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_APP_SOURCE_APP_INSTALL;
 import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_CLIENT_APP_INSTALL;
 import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_CREATED_DATE_APP_INSTALL;
-import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_DEVICE_ID_APP_INSTALL;
-import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_ID_APP_INSTALL;
-import static com.scp.viewer.Database.Entity.AppInstallationEntity.COLUMN_ROW_INDEX_APP_INSTALL;
 import static com.scp.viewer.Database.Entity.AppInstallationEntity.TABLE_APP_INSTALLATION_HISTORY;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_APP_ID_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_APP_NAME_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_APP_TYPE_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_CLIENT_APPLICATION_TIME;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_CREATED_DATE_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_DEVICE_ID_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_ID_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.COLUMN_ROWINDEX_APPLICATION;
-import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.TABLE_APPLICATION_HISTORY;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 
 public class DatabaseAppInstallation
 {
@@ -64,8 +55,8 @@ public class DatabaseAppInstallation
     private void createTable() {
 
         Log.i(Global.TAG, "DatabaseApplicationUsage.onCreate ... " + TABLE_APP_INSTALLATION_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_APP_INSTALLATION_HISTORY + "(" + COLUMN_ROW_INDEX_APP_INSTALL + " LONG ," + COLUMN_ID_APP_INSTALL + " LONG,"
-                + COLUMN_DEVICE_ID_APP_INSTALL + " TEXT,"
+        String scriptTable = " CREATE TABLE " + TABLE_APP_INSTALLATION_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_DEVICE_ID + " TEXT,"
                 + COLUMN_APP_NAME_APP_INSTALL + " TEXT,"
                 + COLUMN_CLIENT_APP_INSTALL + " TEXT,"
                 + COLUMN_APP_ID_APP_INSTALL + " TEXT,"
@@ -82,7 +73,7 @@ public class DatabaseAppInstallation
 
         try {
             for (int i = 0; i < appInstallations.size(); i++) {
-                if(!checkItemExist(database.getWritableDatabase(), TABLE_APP_INSTALLATION_HISTORY, COLUMN_DEVICE_ID_APP_INSTALL, appInstallations.get(i).getDevice_ID(), COLUMN_ID_APP_INSTALL, appInstallations.get(i).getID()))
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_APP_INSTALLATION_HISTORY, COLUMN_DEVICE_ID, appInstallations.get(i).getDevice_ID(), COLUMN_ID, appInstallations.get(i).getID()))
                 {
                     //  contentValues1 receives the value from the method API_Add_Database()
                     ContentValues contentValues1 = APIDatabase.API_Add_Database(appInstallations.get(i),false);
@@ -112,9 +103,9 @@ public class DatabaseAppInstallation
         if (cursor.moveToFirst()) {
             do {
                     AppInstallation appInstallation = new AppInstallation();
-                    appInstallation.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROW_INDEX_APP_INSTALL)));
-                    appInstallation.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_APP_INSTALL)));
-                    appInstallation.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_APP_INSTALL)));
+                    appInstallation.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROW_INDEX)));
+                    appInstallation.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                    appInstallation.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                     appInstallation.setApp_Name(cursor.getString(cursor.getColumnIndex(COLUMN_APP_NAME_APP_INSTALL)));
                     appInstallation.setClient_App_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_APP_INSTALL)));
                     appInstallation.setApp_ID(cursor.getString(cursor.getColumnIndex(COLUMN_APP_ID_APP_INSTALL)));
@@ -135,8 +126,8 @@ public class DatabaseAppInstallation
         Log.i(Global.TAG, "DatabaseApplicationUsage.get_ApplicationCount_DeviceID ... " + TABLE_APP_INSTALLATION_HISTORY);
 
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.getWritableDatabase().query(TABLE_APP_INSTALLATION_HISTORY, new String[]{COLUMN_DEVICE_ID_APP_INSTALL
-                }, COLUMN_DEVICE_ID_APP_INSTALL + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_APP_INSTALLATION_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -147,7 +138,7 @@ public class DatabaseAppInstallation
     public void delete_Application_History(AppInstallation appInstallation) {
         Log.i(Global.TAG, "DatabaseApplicationUsage.delete_Application_History... " + appInstallation.getID());
 
-        database.getWritableDatabase().delete(TABLE_APP_INSTALLATION_HISTORY, COLUMN_ID_APPLICATION + " = ?",
+        database.getWritableDatabase().delete(TABLE_APP_INSTALLATION_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(appInstallation.getID())});
         database.close();
     }

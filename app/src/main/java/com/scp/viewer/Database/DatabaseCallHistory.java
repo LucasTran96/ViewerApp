@@ -26,16 +26,16 @@ import static com.scp.viewer.API.Global.TAG;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.Database.DatabaseContact.checkItemExist;
 import static com.scp.viewer.Database.DatabaseHelper.getInstance;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_CLIENT_CALL_TIME_CALL;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_CONTACT_NAME;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_CREATED_DATE;
-import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_DEVICE_ID_CALL;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_DIRECTION_CALL;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_DURATION_CALL;
-import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_ID_CALL;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_PHONE_NUMBER_CALL;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_PHONE_NUMBER_SIM_CALL;
-import static com.scp.viewer.Database.Entity.CallHistoryEntity.COLUMN_ROWINDEX_CALL;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
 
 public class DatabaseCallHistory {
@@ -51,8 +51,8 @@ public class DatabaseCallHistory {
     private void createTable() {
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_CALL_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_CALL_HISTORY + "(" + COLUMN_ROWINDEX_CALL + " LONG ," + COLUMN_ID_CALL + " LONG,"
-                + COLUMN_DEVICE_ID_CALL + " TEXT," + COLUMN_CLIENT_CALL_TIME_CALL + " TEXT," + COLUMN_PHONE_NUMBER_SIM_CALL + " TEXT,"
+        String scriptTable = " CREATE TABLE " + TABLE_CALL_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_DEVICE_ID + " TEXT," + COLUMN_CLIENT_CALL_TIME_CALL + " TEXT," + COLUMN_PHONE_NUMBER_SIM_CALL + " TEXT,"
                 + COLUMN_PHONE_NUMBER_CALL + " TEXT," + COLUMN_DIRECTION_CALL + " INTEGER," + COLUMN_DURATION_CALL + " INTEGER," +
                 COLUMN_CONTACT_NAME + " TEXT," + COLUMN_CREATED_DATE + " TEXT" + ")";
         database.getWritableDatabase().execSQL(scriptTable);
@@ -65,7 +65,7 @@ public class DatabaseCallHistory {
         try {
             for (int i = 0; i < call.size(); i++) {
 
-                if(!checkItemExist(database.getWritableDatabase(),TABLE_CALL_HISTORY,COLUMN_DEVICE_ID_CALL,call.get(i).getDevice_ID(),COLUMN_ID_CALL,call.get(i).getID()))
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_CALL_HISTORY, COLUMN_DEVICE_ID, call.get(i).getDevice_ID(), COLUMN_ID, call.get(i).getID()))
                 {
                     ContentValues contentValues1 = API_Add_Database(call.get(i), false);
                     // Insert a row of data into the table.
@@ -92,9 +92,9 @@ public class DatabaseCallHistory {
             do {
                 //if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CALL)).equals(deviceID)) {
                     Call call = new Call();
-                    call.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROWINDEX_CALL)));
-                    call.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_CALL)));
-                    call.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CALL)));
+                    call.setRowIndex(cursor.getInt(cursor.getColumnIndex(COLUMN_ROW_INDEX)));
+                    call.setID(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                    call.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                     call.setClient_Call_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CALL_TIME_CALL)));
                     call.setPhone_Number_SIM(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE_NUMBER_SIM_CALL)));
                     call.setPhone_Number(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE_NUMBER_CALL)));
@@ -120,7 +120,7 @@ public class DatabaseCallHistory {
 
         List<Integer> call_List = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_CALL_HISTORY + " WHERE " + COLUMN_DEVICE_ID_CALL + " = '" + deviceID + "' AND " + COLUMN_CLIENT_CALL_TIME_CALL + " BETWEEN " + "'" + dateStart + DEFAULT_TIME_START + "' AND " + "'" + dateStart + DEFAULT_TIME_END + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_CALL_HISTORY + " WHERE " + COLUMN_DEVICE_ID + " = '" + deviceID + "' AND " + COLUMN_CLIENT_CALL_TIME_CALL + " BETWEEN " + "'" + dateStart + DEFAULT_TIME_START + "' AND " + "'" + dateStart + DEFAULT_TIME_END + "'";
         // SQLiteDatabase database = this.getWritableDatabase();
 
         @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
@@ -128,7 +128,7 @@ public class DatabaseCallHistory {
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) // Add in List.
             do
-                call_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID_CALL))); while (cursor.moveToNext());
+                call_List.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID))); while (cursor.moveToNext());
         // return note list
         database.close();
         return call_List;
@@ -137,8 +137,8 @@ public class DatabaseCallHistory {
     public int getCallCount(String deviceID) {
         Log.i(TAG, "DatabaseCall.getCallCount ... " + TABLE_CALL_HISTORY);
 
-        Cursor cursor = database.getWritableDatabase().query(TABLE_CALL_HISTORY, new String[]{COLUMN_DEVICE_ID_CALL
-                }, COLUMN_DEVICE_ID_CALL + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_CALL_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -153,7 +153,7 @@ public class DatabaseCallHistory {
     public void delete_Call_History(Call call) {
         Log.i(TAG, "DatabaseCall.deleteLocation ... " + call.getDevice_ID());
 
-        database.getWritableDatabase().delete(TABLE_CALL_HISTORY, COLUMN_ID_CALL + " = ?",
+        database.getWritableDatabase().delete(TABLE_CALL_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(call.getID())});
         database.close();
     }

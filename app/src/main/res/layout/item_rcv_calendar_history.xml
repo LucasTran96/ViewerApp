@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view_Calendar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginTop="3dp"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="2dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:layout_width="45dp"
+            android:src="@drawable/calendar_icon"
+            android:layout_marginStart="5dp"
+            android:id="@+id/img_icon_Clipboard"
+            android:layout_height="45dp"/>
+   <!-- <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="Facebook:"
+            android:textColor="#3366ff"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            android:paddingBottom="1dp"
+            android:id="@+id/txt_From_App_History"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginTop="1dp"
+            android:paddingStart="10dp"
+            android:text="Đánh giá SIÊU PHẨM Galaxy Z Flip màn hình gập 40 TRIỆU giờ còn 9 triệu: TẠI SAO GIÁ RẺ NHƯ VẬY?"
+            android:textColor="#787575"
+            android:textSize="20sp"
+            android:paddingBottom="1dp"
+            android:id="@+id/txt_Content_Clipboard_History"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="5dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="Eat Lunch"
+                android:textColor="#000"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:paddingBottom="1dp"
+                android:id="@+id/txt_Calendar_Title"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text=""
+                android:visibility="gone"
+                android:textColor="#6E6C6C"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:paddingBottom="1dp"
+                android:id="@+id/txt_Location_Calendar"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="2021-07-06 15:06 AM"
+                    android:textSize="14sp"
+                    android:layout_gravity="right"
+                    android:textColor="#817E7E"
+                    android:id="@+id/txt_Date_Start"
+                    android:layout_height="wrap_content" />
+
+               <!-- <TextView
+                    android:layout_width="wrap_content"
+                    android:text="  -  "
+                    android:textSize="14sp"
+                    android:layout_gravity="right"
+                    android:textColor="#817E7E"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="2021-07-06 15:06 PM"
+                    android:textSize="14sp"
+                    android:layout_gravity="right"
+                    android:textColor="#817E7E"
+                    android:id="@+id/txt_Date_End"
+                    android:layout_height="wrap_content" />-->
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+
+
+      <!--  <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:gravity="right"
+                android:layout_marginStart="2dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="2021-07-06 15:06"
+                    android:textSize="17sp"
+                    android:textColor="#817E7E"
+                    android:id="@+id/txt_Date_Clipboard_History"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>-->
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

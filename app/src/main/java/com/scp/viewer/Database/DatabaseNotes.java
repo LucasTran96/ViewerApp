@@ -16,24 +16,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-
 import com.scp.viewer.Model.Notes;
 import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.API.Global;
-
 import java.util.ArrayList;
-
 import static com.scp.viewer.API.Global.TAG;
-
 import java.util.List;
-
 import static com.scp.viewer.Database.DatabaseHelper.getInstance;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 import static com.scp.viewer.Database.Entity.NotesEntity.COLUMN_CLIENT_NOTE_TIME;
 import static com.scp.viewer.Database.Entity.NotesEntity.COLUMN_CONTENT_NOTE;
 import static com.scp.viewer.Database.Entity.NotesEntity.COLUMN_CREATED_DATE_NOTE;
-import static com.scp.viewer.Database.Entity.NotesEntity.COLUMN_DEVICE_ID_NOTE;
-import static com.scp.viewer.Database.Entity.NotesEntity.COLUMN_ID_NOTE;
-import static com.scp.viewer.Database.Entity.NotesEntity.COLUMN_ROWINDEX_NOTE;
 import static com.scp.viewer.Database.Entity.NotesEntity.TABLE_NOTE_HISTORY;
 
 public class DatabaseNotes  {
@@ -48,8 +43,8 @@ public class DatabaseNotes  {
     public void createTable() {
 
         Log.i(Global.TAG, "DatabaseNotes.onCreate ... " + TABLE_NOTE_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_NOTE_HISTORY + "(" + COLUMN_ROWINDEX_NOTE + " LONG ," + COLUMN_ID_NOTE + " LONG,"
-                + COLUMN_DEVICE_ID_NOTE + " TEXT," + COLUMN_CLIENT_NOTE_TIME + " TEXT," + COLUMN_CONTENT_NOTE + " TEXT,"
+        String scriptTable = " CREATE TABLE " + TABLE_NOTE_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_DEVICE_ID + " TEXT," + COLUMN_CLIENT_NOTE_TIME + " TEXT," + COLUMN_CONTENT_NOTE + " TEXT,"
                 + COLUMN_CREATED_DATE_NOTE + " TEXT" + ")";
         database.getWritableDatabase().execSQL(scriptTable);
     }
@@ -89,13 +84,13 @@ public class DatabaseNotes  {
         // Browse on the cursor, and add it to the list.
         if (cursor.moveToFirst()) {
             do {
-                if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_NOTE)).equals(deviceID)) {
+                if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)).equals(deviceID)) {
 
 
                     Notes notes = new Notes();
-                    notes.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_NOTE)));
-                    notes.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_NOTE)));
-                    notes.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_NOTE)));
+                    notes.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROW_INDEX)));
+                    notes.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
+                    notes.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                     notes.setClient_Note_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_NOTE_TIME)));
                     notes.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT_NOTE)));
                     notes.setCreated_Date(cursor.getString(cursor.getColumnIndex(COLUMN_CREATED_DATE_NOTE)));
@@ -115,7 +110,7 @@ public class DatabaseNotes  {
         Log.i(TAG, "DatabaseLocation.getAll_Location_ID_History_Date... " + TABLE_NOTE_HISTORY);
         List<Long> location_List = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NOTE_HISTORY + " WHERE " + COLUMN_DEVICE_ID_NOTE + " = '" + deviceID + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTE_HISTORY + " WHERE " + COLUMN_DEVICE_ID + " = '" + deviceID + "'";
         //SQLiteDatabase database = this.getWritableDatabase();
 
         @SuppressLint("Recycle") Cursor cursor = database.getWritableDatabase().rawQuery(selectQuery, null);
@@ -124,7 +119,7 @@ public class DatabaseNotes  {
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_NOTE_TIME)).substring(0, 10).equals(date)) {
-                    location_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_NOTE)));
+                    location_List.add(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
                 }
                 // Add in List.
 
@@ -139,8 +134,8 @@ public class DatabaseNotes  {
         Log.i(Global.TAG, "DatabaseNotes.get_NotesCount_DeviceID ... " + TABLE_NOTE_HISTORY);
 
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.getWritableDatabase().query(TABLE_NOTE_HISTORY, new String[]{COLUMN_DEVICE_ID_NOTE
-                }, COLUMN_DEVICE_ID_NOTE + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_NOTE_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -151,7 +146,7 @@ public class DatabaseNotes  {
     public void delete_Contact_History(Notes notes) {
         Log.i(Global.TAG, "DatabaseNotes.delete_Contact_History ... " + notes.getID());
 
-        database.getWritableDatabase().delete(TABLE_NOTE_HISTORY, COLUMN_ID_NOTE + " = ?",
+        database.getWritableDatabase().delete(TABLE_NOTE_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(notes.getID())});
         database.close();
     }

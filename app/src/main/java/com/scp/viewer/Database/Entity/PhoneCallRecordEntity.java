@@ -11,9 +11,9 @@ package com.scp.viewer.Database.Entity;
 public class PhoneCallRecordEntity {
 
     public static final String TABLE_PHONECALLRECORD_HISTORY = "PhoneCallRecordHistory";
-    public static final String COLUMN_ROWINDEX_PHONECALLRECORD = "Row_Index";
-    public static final String COLUMN_ID_PHONECALLRECORD = "ID";
-    public static final String COLUMN_DEVICE_ID_PHONECALLRECORD = "Device_ID";
+    //public static final String COLUMN_ROWINDEX_PHONECALLRECORD = "Row_Index";
+    //public static final String COLUMN_ID_PHONECALLRECORD = "ID";
+    //public static final String COLUMN_DEVICE_ID_PHONECALLRECORD = "Device_ID";
     public static final String COLUMN_CLIENT_CAPTURED_DATE_PHONECALLRECORD = "Client_Recorded_Date";
     public static final String COLUMN_AUDIO_NAME_PHONECALLRECORD = "Audio_Name";
     public static final String COLUMN_CONTENT_TYPE_PHONECALLRECORD = "Content_Type";

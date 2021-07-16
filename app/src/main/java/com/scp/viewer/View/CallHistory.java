@@ -208,10 +208,10 @@ public class CallHistory extends AppCompatActivity {
                     if(isConnected(getApplicationContext()))
                     {
                         // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), CALL_TOTAL + table.getDevice_Identifier());
+                        long totalCall = getSharedPreferLong(getApplicationContext(), CALL_TOTAL + table.getDevice_Identifier());
                         new getCallAsyncTask(currentSize+1).execute();
 
-                        if((mData.size()+1) >= totalContact)
+                        if((mData.size()+1) >= totalCall)
                         {
                             endLoading = true;
                         }
@@ -298,8 +298,8 @@ public class CallHistory extends AppCompatActivity {
                        // mData.addAll(insertIndex, mDataTamp);
                         mData.addAll(insertIndex, mDataTamp);
                         Log.d("checkdata"," MData Call = "+ mDataTamp.size());
-                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
-                        Log.d("CallHistory"," checkLoadMore Contact = "+ true);
+                        mAdapter.notifyItemRangeInserted(insertIndex-1, mDataTamp.size() );
+                        Log.d("CallHistory"," checkLoadMore Call = "+ true);
                         progressBar_Call.setVisibility(View.GONE);
                     }
                     else {

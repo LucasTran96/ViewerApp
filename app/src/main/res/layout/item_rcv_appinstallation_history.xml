@@ -36,16 +36,23 @@
                 android:layout_marginStart="10dp"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_marginTop="1dp"
                     android:text="Facebook"
                     android:textColor="#3366ff"
                     android:textSize="20sp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
                     android:paddingBottom="1dp"
                     android:id="@+id/txt_name_AppInstall_History"
                     android:layout_height="wrap_content" />
+               <!-- <TextView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="1dp"
+                    android:text="Content: I love you"
+                    android:textColor="#3366ff"
+                    android:textSize="20sp"
+                    android:paddingBottom="1dp"
+                    android:id="@+id/txt_Content_Clipboard_History"
+                    android:layout_height="wrap_content" />-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="2021-07-06 15:06"

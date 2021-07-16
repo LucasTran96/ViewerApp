@@ -36,7 +36,7 @@ import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.API.APIMethod;
 import com.scp.viewer.Adapter.AdapterAppInstallationHistory;
 import com.scp.viewer.Database.DatabaseLastUpdate;
-import com.scp.viewer.Database.Entity.DatabaseAppInstallation;
+import com.scp.viewer.Database.DatabaseAppInstallation;
 import com.scp.viewer.Model.AppInstallation;
 import com.scp.viewer.Model.Table;
 import com.scp.viewer.R;
@@ -60,12 +60,12 @@ import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
 import static com.scp.viewer.API.Global.APP_INSTALLATION_TOTAL;
+import static com.scp.viewer.API.Global.GET_APP_INSTALLATION_HISTORY;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.NumberLoad;
-import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_APP;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_APP_INSTALL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
-import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_APPLICATION;
+import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_APP_INSTALLATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 
 public class AppInstallationHistory extends AppCompatActivity {
@@ -73,7 +73,7 @@ public class AppInstallationHistory extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     List<AppInstallation> mData = new ArrayList<>();
-    List<AppInstallation> usageListAdd = new ArrayList<>();
+    List<AppInstallation> appInstallationListAdd = new ArrayList<>();
     // action mode
     public static boolean isInActionMode;
     public static ArrayList<AppInstallation> selectionList;
@@ -292,7 +292,7 @@ public class AppInstallationHistory extends AppCompatActivity {
 
             Log.d("Application_Id", table.getDevice_Identifier() + "");
 
-            return GetJsonFeature(table, this.startIndex,"GetAppsInstallation");
+            return GetJsonFeature(table, this.startIndex,GET_APP_INSTALLATION_HISTORY);
         }
 
         @SuppressLint("SetTextI18n")
@@ -311,24 +311,40 @@ public class AppInstallationHistory extends AppCompatActivity {
 
                         Gson gson = new Gson();
                         AppInstallation appInstallation = gson.fromJson(String.valueOf(GPSJson.get(i)), AppInstallation.class);
-                        usageListAdd.add(appInstallation);
-                        Log.d("ContactHistory"," Add Contact = "+  appInstallation.getApp_Name());
+                        appInstallationListAdd.add(appInstallation);
+                        Log.d("AppInstallHistory"," Add Contact = "+  appInstallation.getApp_Name());
 
                     }
-                    if (usageListAdd.size() != 0) {
-                        database_app_installation.addDevice_AppInstall(usageListAdd);
+                    if (appInstallationListAdd.size() != 0) {
+                        database_app_installation.addDevice_AppInstall(appInstallationListAdd);
                     }
                 }
                 //mData.clear();
-                Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                Log.d("AppInstallHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                 List<AppInstallation> mDataTamp = database_app_installation.getAll_AppInstall_ID_History(table.getID(),currentSize);
                 //mData.addAll(mDataTamp);
 
+
                 if(checkLoadMore)
                 {
+                    if(mDataTamp.size()>0)
+                    {
+                        for (AppInstallation appInstallation : mDataTamp)
+                        {
+                            Log.d("insertIndex","mDataTamp of appInstallation = "+ appInstallation.getApp_Name());
+                        }
+                    }
                     int insertIndex = mData.size();
-                    // mData.addAll(insertIndex, mDataTamp);
+                    // mData.addAll(insertIndex, mDataTamp);\
+                    Log.d("insertIndex"," insertIndex = "+ insertIndex);
                     mData.addAll(insertIndex, mDataTamp);
+                    if(mDataTamp.size()>0)
+                    {
+                        for (AppInstallation appInstallation : mData)
+                        {
+                            Log.d("insertIndex","\t\tmData of appInstallation = "+ appInstallation.getApp_Name());
+                        }
+                    }
                     Log.d("checkdata"," MData Call = "+ mDataTamp.size());
                     mAdapter.notifyItemRangeInserted(insertIndex-1,mDataTamp.size() );
                     progressBar_AppInstallation.setVisibility(View.GONE);
@@ -352,10 +368,10 @@ public class AppInstallationHistory extends AppCompatActivity {
                     txt_Total_Data.setText("0");
                 }else {
                     String max_Date = getTimeNow();
-                    database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_APPLICATION, max_Date, table.getDevice_Identifier());
-                    String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_APPLICATION, TABLE_LAST_UPDATE, table.getDevice_Identifier());
+                    database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, COLUMN_LAST_APP_INSTALLATION, max_Date, table.getDevice_Identifier());
+                    String min_Time1 = database_last_update.getLast_Time_Update(COLUMN_LAST_APP_INSTALLATION, TABLE_LAST_UPDATE, table.getDevice_Identifier());
                     Log.d("min_time1", min_Time1 + "");
-                    txt_No_Data_App.setText(("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_APPLICATION, TABLE_LAST_UPDATE, table.getDevice_Identifier()),null)));
+                    txt_No_Data_App.setText(("Last update: "+ APIDatabase.getTimeItem(database_last_update.getLast_Time_Update(COLUMN_LAST_APP_INSTALLATION, TABLE_LAST_UPDATE, table.getDevice_Identifier()),null)));
                     txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), APP_INSTALLATION_TOTAL + table.getDevice_Identifier())+"");
                 }
                 stopAnim(avLoadingIndicatorView);

@@ -42,7 +42,7 @@
                 android:textSize="18sp"
                 android:paddingTop="5dp"
                 android:singleLine="true"
-                android:text="Anh Dang O Dau Day Anh "/>
+                android:text="See You Again"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:gravity="center_vertical"

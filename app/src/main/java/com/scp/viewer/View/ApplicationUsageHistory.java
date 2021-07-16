@@ -62,6 +62,7 @@ import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
 import static com.scp.viewer.API.Global.APP_USAGE_TOTAL;
+import static com.scp.viewer.API.Global.GET_APPLICATION_USAGE;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_APP;
@@ -293,7 +294,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
 
             Log.d("Application_Id", table.getDevice_Identifier() + "");
 
-            return GetJsonFeature(table, this.startIndex,"GetApps");
+            return GetJsonFeature(table, this.startIndex,GET_APPLICATION_USAGE);
         }
 
         @SuppressLint("SetTextI18n")
@@ -313,7 +314,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                         Gson gson = new Gson();
                         ApplicationUsage application_usage = gson.fromJson(String.valueOf(GPSJson.get(i)), ApplicationUsage.class);
                         usageListAdd.add(application_usage);
-                        Log.d("ContactHistory"," Add Contact = "+  application_usage.getApp_Name());
+                        Log.d("AppHistory"," Add Contact = "+  application_usage.getApp_Name());
 
                     }
                     if (usageListAdd.size() != 0) {
@@ -321,7 +322,7 @@ public class ApplicationUsageHistory extends AppCompatActivity {
                     }
                 }
                 //mData.clear();
-                Log.d("ContactHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                Log.d("AppHistory"," currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                 List<ApplicationUsage> mDataTamp = database_application_usage.getAll_Application_ID_History(table.getID(),currentSize);
                 //mData.addAll(mDataTamp);
 

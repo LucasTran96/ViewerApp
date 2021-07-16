@@ -24,17 +24,17 @@ import java.util.List;
 import static com.scp.viewer.API.Global.TAG;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.Database.DatabaseHelper.getInstance;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_DEVICE_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ID;
+import static com.scp.viewer.Database.Entity.CalendarEntity.COLUMN_ROW_INDEX;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_ADDRESS_CONTACT;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_CLIENT_CONTACT_TIME;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_COLOR_CONTACT;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_CONTACT_NAME;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_CREATED_DATE_CONTACT;
-import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_DEVICE_ID_CONTACT;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_EMAIL_CONTACT;
-import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_ID_CONTACT;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_ORGANIZATION_CONTACT;
 import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_PHONE_CONTACT;
-import static com.scp.viewer.Database.Entity.ContactEntity.COLUMN_ROWINDEX_CONTACT;
 import static com.scp.viewer.Database.Entity.ContactEntity.TABLE_CONTACT_HISTORY;
 
 public class DatabaseContact  {
@@ -51,8 +51,8 @@ public class DatabaseContact  {
     private void createTable() {
 
         Log.i(TAG, "DatabaseCall.onCreate ... " + TABLE_CONTACT_HISTORY);
-        String scriptTable = " CREATE TABLE " + TABLE_CONTACT_HISTORY + "(" + COLUMN_ROWINDEX_CONTACT + " LONG ," + COLUMN_ID_CONTACT + " LONG,"
-                + COLUMN_DEVICE_ID_CONTACT + " TEXT," + COLUMN_CLIENT_CONTACT_TIME + " TEXT," + COLUMN_CONTACT_NAME + " TEXT,"
+        String scriptTable = " CREATE TABLE " + TABLE_CONTACT_HISTORY + "(" + COLUMN_ROW_INDEX + " LONG ," + COLUMN_ID + " LONG,"
+                + COLUMN_DEVICE_ID + " TEXT," + COLUMN_CLIENT_CONTACT_TIME + " TEXT," + COLUMN_CONTACT_NAME + " TEXT,"
                 + COLUMN_PHONE_CONTACT + " TEXT," + COLUMN_EMAIL_CONTACT + " INTEGER," + COLUMN_ORGANIZATION_CONTACT + " INTEGER," +
                 COLUMN_ADDRESS_CONTACT + " TEXT," + COLUMN_CREATED_DATE_CONTACT + " TEXT," + COLUMN_COLOR_CONTACT + " INTEGER" + ")";
         database.getWritableDatabase().execSQL(scriptTable);
@@ -65,7 +65,8 @@ public class DatabaseContact  {
         try {
             for (int i = 0; i < contact.size(); i++) {
 
-                if(!checkItemExist(database.getWritableDatabase(),TABLE_CONTACT_HISTORY,COLUMN_DEVICE_ID_CONTACT,contact.get(i).getDevice_ID(),COLUMN_ID_CONTACT,contact.get(i).getID()))
+                if(!checkItemExist(database.getWritableDatabase(), TABLE_CONTACT_HISTORY, COLUMN_DEVICE_ID,
+                        contact.get(i).getDevice_ID(), COLUMN_ID,contact.get(i).getID()))
                 {
                     //  contentValues1 receives the value from the method API_Add_Database()
                     ContentValues contentValues1 = APIDatabase.API_Add_Database(contact.get(i),false);
@@ -115,9 +116,9 @@ public class DatabaseContact  {
                 //if (cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CONTACT)).equals(deviceID)) {
 
                     Contact contact = new Contact();
-                    contact.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROWINDEX_CONTACT)));
-                    contact.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID_CONTACT)));
-                    contact.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID_CONTACT)));
+                    contact.setRowIndex(cursor.getLong(cursor.getColumnIndex(COLUMN_ROW_INDEX)));
+                    contact.setID(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
+                    contact.setDevice_ID(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
                     contact.setClient_Contact_Time(cursor.getString(cursor.getColumnIndex(COLUMN_CLIENT_CONTACT_TIME)));
                     contact.setContact_Name(cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_NAME)));
                     contact.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PHONE_CONTACT)));
@@ -139,8 +140,8 @@ public class DatabaseContact  {
         Log.i(TAG, "DatabaseSMS.getSMSCount ... " + TABLE_CONTACT_HISTORY);
 
         //Cursor cursor = database.rawQuery(countQuery, null);
-        Cursor cursor = database.getWritableDatabase().query(TABLE_CONTACT_HISTORY, new String[]{COLUMN_DEVICE_ID_CONTACT
-                }, COLUMN_DEVICE_ID_CONTACT + "=?",
+        Cursor cursor = database.getWritableDatabase().query(TABLE_CONTACT_HISTORY, new String[]{COLUMN_DEVICE_ID
+                }, COLUMN_DEVICE_ID + "=?",
                 new String[]{String.valueOf(deviceID)}, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -149,7 +150,7 @@ public class DatabaseContact  {
 
     public void delete_Contact_History(Contact contact) {
         Log.i(TAG, "DatabaseCall.deleteLocation ... " + contact.getID());
-        database.getWritableDatabase().delete(TABLE_CONTACT_HISTORY, COLUMN_ID_CONTACT + " = ?",
+        database.getWritableDatabase().delete(TABLE_CONTACT_HISTORY, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(contact.getID())});
         database.close();
     }

@@ -15,9 +15,9 @@ public class ContactEntity {
      * Table name: ContactHistory
      */
     public static final String TABLE_CONTACT_HISTORY = "ContactHistory";
-    public static final String COLUMN_ROWINDEX_CONTACT = "Row_Index";
-    public static final String COLUMN_ID_CONTACT = "ID";
-    public static final String COLUMN_DEVICE_ID_CONTACT = "Device_ID";
+    //public static final String COLUMN_ROWINDEX_CONTACT = "Row_Index";
+    //public static final String COLUMN_ID_CONTACT = "ID";
+    //public static final String COLUMN_DEVICE_ID_CONTACT = "Device_ID";
     public static final String COLUMN_CLIENT_CONTACT_TIME = "Client_Contact_Time";
     public static final String COLUMN_CONTACT_NAME = "Contact_Name";
     public static final String COLUMN_PHONE_CONTACT = "Phone";
