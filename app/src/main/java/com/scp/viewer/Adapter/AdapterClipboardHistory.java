@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.Model.AppInstallation;
 import com.scp.viewer.Model.Clipboard;
+import com.scp.viewer.Model.Notifications;
 import com.scp.viewer.R;
 import com.scp.viewer.View.AppInstallationHistory;
 import com.scp.viewer.View.ClipboardHistory;
@@ -57,6 +58,7 @@ public class AdapterClipboardHistory extends RecyclerView.Adapter<AdapterClipboa
 
         ViewHolder(View v) {
             super(v);
+
             txt_From_App_History = v.findViewById(R.id.txt_From_App_History);
             txt_Date_Clipboard_History = v.findViewById(R.id.txt_Date_Clipboard_History);
             txt_Content_Clipboard_History = v.findViewById(R.id.txt_Content_Clipboard_History);
@@ -95,6 +97,7 @@ public class AdapterClipboardHistory extends RecyclerView.Adapter<AdapterClipboa
         mActivity = activity;
         listData = myDataSet;
     }
+
 
     @NonNull
     @Override

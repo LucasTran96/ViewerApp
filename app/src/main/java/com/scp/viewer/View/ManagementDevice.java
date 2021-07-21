@@ -436,11 +436,32 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
                         for (Table t : tableList) {
                             //deviceList.add(new ModelDevice(t.getDevice_Name(),t.getID()));
                             databaseDevice.addDevice(t);
-                            if (database_last_update.test_Last_Time_Get_Update(t.getDevice_Identifier()) == 0) {
-                                database_last_update.addLast_Time_Get_Update(new LastTimeGetUpdate(t.getDevice_Identifier(), TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT
-                                        , TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT,
-                                        TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT,
-                                        TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT, TIME_DEFAULT));
+                            if (database_last_update.test_Last_Time_Get_Update(t.getDevice_Identifier()) == 0)
+                            {
+                                Log.d("test_DeviceID", t.getDevice_Identifier() + " == " + tableJson.length());
+                                database_last_update.addLast_Time_Get_Update(new LastTimeGetUpdate(t.getDevice_Identifier(),
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT,
+                                        TIME_DEFAULT));
                             }
                         }
                         tableList.clear();

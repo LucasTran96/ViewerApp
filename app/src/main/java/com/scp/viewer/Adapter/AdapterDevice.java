@@ -36,7 +36,9 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
     private ArrayList<Table> deviceList;
     private int linkItem;
     private Activity context;
-
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 300;
+    
     //  constructor three parameters
     public AdapterDevice(ArrayList<Table> deviceList, int linkItem, Activity context) {
         this.deviceList = deviceList;
@@ -100,6 +102,12 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            long now = System.currentTimeMillis();
+            if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+                return;
+            }
+            mLastClickTime = now;
+
             if (position != RecyclerView.NO_POSITION) {
                 //  intent will open the activity Dashboard
                 ModelDevice device = new ModelDevice(deviceList.get(position).getDevice_Name(), deviceList.get(position).getID());

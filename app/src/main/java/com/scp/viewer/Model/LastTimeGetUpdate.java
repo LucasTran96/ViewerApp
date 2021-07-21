@@ -37,6 +37,9 @@ public class LastTimeGetUpdate implements Serializable {
     private String last_LINE;
     private String last_KIK;
 
+    //2021-07-23
+    private String last_Instagram;
+
     public LastTimeGetUpdate() {
     }
 
@@ -47,7 +50,7 @@ public class LastTimeGetUpdate implements Serializable {
                              String last_Skype, String last_Notes, String last_Video,
                              String last_Voice, String last_Ambient_Voice_Recording,
                              String last_KeyLogger, String last_Hangouts, String last_BBM,
-                             String last_LINE, String last_KIK) {
+                             String last_LINE, String last_KIK, String last_Instagram) {
         this.last_Device = last_Device;
         this.last_Call = last_Call;
         this.last_SMS = last_SMS;
@@ -70,6 +73,15 @@ public class LastTimeGetUpdate implements Serializable {
         this.last_BBM = last_BBM;
         this.last_LINE = last_LINE;
         this.last_KIK = last_KIK;
+        this.last_Instagram = last_Instagram;
+    }
+
+    public String getLast_Instagram() {
+        return last_Instagram;
+    }
+
+    public void setLast_Instagram(String last_Instagram) {
+        this.last_Instagram = last_Instagram;
     }
 
     public String getLast_Device() {

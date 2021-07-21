@@ -38,6 +38,7 @@ import static com.scp.viewer.Database.Entity.SMSEntity.COLUMN_TEXT_MESSAGE_SMS;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_BBM;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_FACEBOOK;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_HANGOUTS;
+import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_INSTAGRAM;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_KIK;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_LINE;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_SKYPE;
@@ -75,6 +76,8 @@ public class DatabaseGetSMS
 
     private static final String CREATE_TABLE_KIK = createTableMethod(TABLE_GET_KIK);
 
+    private static final String CREATE_TABLE_INSTAGRAM = createTableMethod(TABLE_GET_INSTAGRAM);
+
 
     private static String createTableMethod(String tableName)
     {
@@ -104,6 +107,8 @@ public class DatabaseGetSMS
             database.getWritableDatabase().execSQL(CREATE_TABLE_LINE);
         if(!database.checkTableExist(TABLE_GET_KIK))
             database.getWritableDatabase().execSQL(CREATE_TABLE_KIK);
+        if(!database.checkTableExist(TABLE_GET_INSTAGRAM))
+            database.getWritableDatabase().execSQL(CREATE_TABLE_INSTAGRAM);
     }
 
 

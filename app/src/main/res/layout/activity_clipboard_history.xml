@@ -7,7 +7,7 @@
     android:background="#f4f4f6"
     android:id="@+id/swp_ClipboardHistory"
     android:layout_height="match_parent"
-    tools:context=".View.ApplicationUsageHistory">
+    tools:context=".View.ClipboardHistory">
 
     <LinearLayout
         android:layout_width="match_parent"

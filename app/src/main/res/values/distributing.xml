@@ -28,7 +28,7 @@
 
     <!--http://monitor-protocol-a.scp.com--> <!--http://protocol-viewer-a.scp.com  https://protocol-viewer-a.secondclone.com--> <!--http://protocol-viewer-a.copy9.com-->
     <!--This is the default protocol link you can change by the protocol you need to use.-->
-    <string name = "DEFAULT_LINK_PROTOCOL_URL" tools:ignore="MissingTranslation" translatable="false">http://protocol-viewer-a.secondclone.com</string>
+        <string name = "DEFAULT_LINK_PROTOCOL_URL" tools:ignore="MissingTranslation" translatable="false">http://protocol-viewer-a.secondclone.com</string>
 
     <!--This is the default FORGET PASSWORD you can change by the FORGET PASSWORD you need to use.-->
     <string name = "LINK_FORGET_PASSWORD" tools:ignore="MissingTranslation" translatable="false">https://my.secondclone.com/Account/ForgotPassword</string>

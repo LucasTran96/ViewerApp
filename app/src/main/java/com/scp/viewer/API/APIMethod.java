@@ -50,6 +50,7 @@ import static com.scp.viewer.API.Global.DEFAULT_DATE_FORMAT;
 import static com.scp.viewer.API.Global.DEFAULT_DATE_FORMAT_MMM;
 import static com.scp.viewer.API.Global.FACEBOOK_TOTAL;
 import static com.scp.viewer.API.Global.HANGOUTS_TOTAL;
+import static com.scp.viewer.API.Global.INSTAGRAM_TOTAL;
 import static com.scp.viewer.API.Global.LENGHT;
 import static com.scp.viewer.API.Global.MIN_TIME;
 import static com.scp.viewer.API.Global.SETTINGS;
@@ -57,6 +58,7 @@ import static com.scp.viewer.API.Global.SKYPE_TOTAL;
 import static com.scp.viewer.API.Global.SMS_DEFAULT_TYPE;
 import static com.scp.viewer.API.Global.SMS_FACEBOOK_TYPE;
 import static com.scp.viewer.API.Global.SMS_HANGOUTS_TYPE;
+import static com.scp.viewer.API.Global.SMS_INSTAGRAM_TYPE;
 import static com.scp.viewer.API.Global.SMS_SKYPE_TYPE;
 import static com.scp.viewer.API.Global.SMS_TOTAL;
 import static com.scp.viewer.API.Global.SMS_VIBER_TYPE;
@@ -281,6 +283,9 @@ public class APIMethod {
             case SMS_HANGOUTS_TYPE:
                 setToTalLog(totalRow, HANGOUTS_TOTAL + deviceID, context);
                 break;
+            case SMS_INSTAGRAM_TYPE:
+                setToTalLog(totalRow, INSTAGRAM_TOTAL + deviceID, context);
+                break;
         }
     }
 
@@ -308,6 +313,9 @@ public class APIMethod {
                 break;
             case SMS_HANGOUTS_TYPE:
                 sms_Total = getSharedPreferLong(context, HANGOUTS_TOTAL + deviceID);
+                break;
+            case SMS_INSTAGRAM_TYPE:
+                sms_Total = getSharedPreferLong(context, INSTAGRAM_TOTAL + deviceID);
                 break;
         }
         return String.valueOf(sms_Total);

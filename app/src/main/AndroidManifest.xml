@@ -190,6 +190,18 @@
             android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
             tools:ignore="InnerclassSeparator" />
 
+        <activity
+            android:name=".View.NotificationHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".View.KeyloggerHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.SlidrActivityTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
+
         <!--
              Optionally, register AnalyticsReceiver and AnalyticsService to support background
              dispatching on non-Google Play devices
