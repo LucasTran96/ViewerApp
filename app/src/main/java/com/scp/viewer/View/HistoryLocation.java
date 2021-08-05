@@ -50,6 +50,7 @@ import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
@@ -57,10 +58,14 @@ import static com.scp.viewer.API.APIMethod.updateViewCounterAll;
 import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
+import static com.scp.viewer.API.Global.CALL_PULL_ROW;
+import static com.scp.viewer.API.Global.GPS_PULL_ROW;
 import static com.scp.viewer.API.Global.GPS_TOTAL;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_GPS;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_LOCATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -85,6 +90,7 @@ public class HistoryLocation extends AppCompatActivity {
     boolean endLoading = false;
     boolean isLoading = false;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     private int currentSize = 0;
     boolean selectAll = false;
     //aviLocation
@@ -132,6 +138,10 @@ public class HistoryLocation extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     @SuppressLint("SetTextI18n")
     private void getLocationInfo() {
         //if there is a network call method
@@ -191,7 +201,7 @@ public class HistoryLocation extends AppCompatActivity {
                 JSONArray jsonArray = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonPaging = jsonObj.getJSONArray("Table1");
                 setToTalLog(GPSJsonPaging, GPS_TOTAL + table.getDevice_Identifier(), getApplicationContext());
-
+                setSharedPreferLong(getApplicationContext(), GPS_PULL_ROW +_TOTAL + table.getDevice_Identifier() + NEW_ROW, 0);
                 if (jsonArray.length() != 0)
                 {
 
@@ -250,6 +260,9 @@ public class HistoryLocation extends AppCompatActivity {
         }
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -268,7 +281,18 @@ public class HistoryLocation extends AppCompatActivity {
                         //bottom of list!
                         isLoading = true;
                         progressBar_Locations.setVisibility(View.VISIBLE);
-                        loadMore();
+                       // loadMore();
+
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_Locations.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -497,6 +521,9 @@ public class HistoryLocation extends AppCompatActivity {
         }
     }
 
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     */
     public void swipeRefreshLayout() {
         swp_History_Location.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -509,7 +536,13 @@ public class HistoryLocation extends AppCompatActivity {
                     checkLoadMore = false;
                     currentSize = 0;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        gpsListAdd.clear();
+                        //gpsListAdd.clear();
+                        //Method for refresh recycle view
+                        if (!gpsListAdd.isEmpty())
+                        {
+                            gpsListAdd.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         clearActionMode();
                         new LocationAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {

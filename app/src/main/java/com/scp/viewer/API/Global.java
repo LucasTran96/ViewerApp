@@ -29,6 +29,12 @@ public class Global {
     static final String VALUE_CONTENT_TYPE = "application/json";
     public static final String TABLE = "Table";
     public static final String TABLE1 = "Table1";
+    public static final String APP_NAME = "AppName";
+    public static final String TOTAL_ROW = "TotalRow";
+    public static final String DATA_JSON = "Data";
+    public static final String NEW_ROW = "newRow";
+    public static final String _TOTAL = "_Total";
+
 
     /**
      * MyDatabase
@@ -82,6 +88,7 @@ public class Global {
     public static final String GET_YOUTUBE_HISTORY = "GetYouTube";
     public static final String GET_NOTIFICATION_HISTORY = "GetNotification";
     public static final String GET_KEYLOGGER_HISTORY = "GetKeylogger";
+    public static final String GET_ALL_ROW_TOTALS = "GetAllRowTotals";
 
     public static final String POST_CLEAR_MULTI_SMS = "DeleteMultiChatDataLog";
     public static final String POST_CLEAR_MULTI_PHONE_RECORDING = "ClearMultiPhoneRecording";
@@ -102,35 +109,64 @@ public class Global {
     public static final String POST_CLEAR_MULTI_NOTIFICATION = "clearMultiNotification"; //2021-07-19
     public static final String POST_CLEAR_MULTI_KEYLOGGER = "ClearKeylogger"; //2021-07-23
 
+
+    /**
+     *  Get All Row Totals
+     */
+    public static final String APP_INSTALL_PULL_ROW = "app_installation";
+    public static final String APP_USAGE_PULL_ROW = "app_usage";
+    public static final String CALENDAR_PULL_ROW = "calendar";
+    public static final String CALL_PULL_ROW = "call";
+    public static final String CLIPBOARD_PULL_ROW = "clipboard";
+    public static final String CONTACT_PULL_ROW = "contact";
+    public static final String GPS_PULL_ROW = "gps";
+    public static final String NETWORK_CONNECTION_PULL_ROW = "network connection";
+    public static final String NOTE_PULL_ROW = "note";
+    public static final String PHONE_CALL_RECORDING_PULL_ROW = "phone call recording";
+    public static final String PHOTO_PULL_ROW = "photo";
+    public static final String URL_PULL_ROW = "Url";
+    public static final String YOUTUBE_PULL_ROW = "youtube";
+
+    public static final String SMS_PULL_ROW = "sms";
+    public static final String VIBER_PULL_ROW = "viber";
+    public static final String WHATSAPP_PULL_ROW = "whatsapp";
+    public static final String SKYPE_PULL_ROW = "skype";
+    public static final String HANGOUTS_PULL_ROW = "hangouts";
+    public static final String INSTAGRAM_PULL_ROW = "instagram";
+    public static final String FACEBOOK_PULL_ROW = "facebook";
+    public static final String KEYLOGGER_PULL_ROW = "keylogger";
+    public static final String NOTIFICATION_PULL_ROW = "notification";
+
     /**
      * SharedPreferences
      */
     public static final String SETTINGS = "Setting";
-    public static final String CONTACT_TOTAL = "Contact_Total";
-    public static final String CALL_TOTAL = "Call_Total";
-    public static final String PHONE_CALL_RECORDING_TOTAL = "Phone_Call_Total";
+    public static final String CONTACT_TOTAL = "contact_Total";
+    public static final String CALL_TOTAL = "call_Total";
+    public static final String PHONE_CALL_RECORDING_TOTAL = "phone call recording_Total";
     public static final String AMBIENT_RECORDING_TOTAL = "Ambient_Recording_Total";
-    public static final String URL_TOTAL = "URL_Total";
-    public static final String APP_USAGE_TOTAL = "App_Usage_Total";
-    public static final String APP_INSTALLATION_TOTAL = "App_Installation_Total";
-    public static final String GPS_TOTAL = "GPS_Total";
-    public static final String PHOTO_TOTAL = "Photo_Total";
-    public static final String WHATSAPP_TOTAL = "WhatsApp_Total";
-    public static final String VIBER_TOTAL = "Viber_Total";
-    public static final String FACEBOOK_TOTAL = "Facebook_Total";
-    public static final String SMS_TOTAL = "SMS_Total";
-    public static final String SKYPE_TOTAL = "Skype_Total";
-    public static final String HANGOUTS_TOTAL = "Hangouts_Total";
+    public static final String URL_TOTAL = "Url_Total";
+    public static final String APP_USAGE_TOTAL = "app_usage_Total";
+    public static final String APP_INSTALLATION_TOTAL = "app_installation_Total";
+    public static final String GPS_TOTAL = "gps_Total";
+    public static final String NOTE_TOTAL = "note_Total";
+    public static final String PHOTO_TOTAL = "photo_Total";
+    public static final String WHATSAPP_TOTAL = "whatsapp_Total";
+    public static final String VIBER_TOTAL = "viber_Total";
+    public static final String FACEBOOK_TOTAL = "facebook_Total";
+    public static final String SMS_TOTAL = "sms_Total";
+    public static final String SKYPE_TOTAL = "skype_Total";
+    public static final String HANGOUTS_TOTAL = "hangouts_Total";
     public static final String MAPTYPE = "maptype";
-    public static final String INSTAGRAM_TOTAL = "Instagram_Total";
+    public static final String INSTAGRAM_TOTAL = "instagram_Total";
 
     // 2021-07-15
-    public static final String CLIPBOARD_TOTAL = "Clipboard_Total";
-    public static final String CALENDAR_TOTAL = "Calendar_Total";
-    public static final String NETWORK_TOTAL = "Network_Total";
-    public static final String YOUTUBE_TOTAL = "YouTube_Total";
-    public static final String NOTIFICATION_TOTAL = "Notification_Total";
-    public static final String KEYLOGGER_TOTAL = "Keylogger_Total";
+    public static final String CLIPBOARD_TOTAL = "clipboard_Total";
+    public static final String CALENDAR_TOTAL = "calendar_Total";
+    public static final String NETWORK_TOTAL = "network connection_Total";
+    public static final String YOUTUBE_TOTAL = "youtube_Total";
+    public static final String NOTIFICATION_TOTAL = "notification_Total";
+    public static final String KEYLOGGER_TOTAL = "keylogger_Total";
 
     /**
      * SMS type
@@ -163,13 +199,13 @@ public class Global {
     /**
      * Distributing
      */
-    public static String DEFAULT_PROTOCOL_LINK = "http://monitor-protocol-a.secondclone.com/api/apiv2";
+    public static String DEFAULT_PROTOCOL_LINK = "http://protocol-viewer-a.secondclone.com/api/apiv2";
     public static String DEFAULT_LINK_FORGETPASSWORD = "http://my.secondclone.com/Account/ForgotPassword";
     public static String DEFAULT_LINK_ABOUTUS = "http://secondclone.com/about-us/";
     public static String DEFAULT_LINK_REGISTER = "http://my.secondclone.us/Account/SignUp";
     public static String DEFAULT_LINK_RENEW = "http://my.secondclone.com/Prices";
     public static String DEFAULT_PRODUCT_NAME = "ViewerApp";
-    public static String DEFAULT_VERSION_NAME = "0.8.15.0";
+    public static String DEFAULT_VERSION_NAME = "1.6.29.1";
     public static String DEFAULT_COPYRIGHT = "Copyright © 2010-2020 SecondClone LLC. All rights reserved";
     public static String DEFAULT_LOGO_IMAGE_PATH = "https://my.secondclone.com/favicon.ico";
     public static final String File_PATH_SAVE_PHONE_CALL_RECORD = Environment.getExternalStorageDirectory() + "/" + DEFAULT_PRODUCT_NAME;

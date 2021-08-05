@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +40,8 @@ import com.scp.viewer.API.APIDatabase;
 import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
 import java.util.Locale;
+import java.util.Objects;
+
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
 import static com.scp.viewer.API.APIURL.bodyLogin;
@@ -98,6 +101,7 @@ public class Authentication extends AppCompatActivity {
         txt_AppName_Authentication.setText(DEFAULT_PRODUCT_NAME);
         txt_AppVersion_Authentication.setText(DEFAULT_VERSION_NAME);
 
+        Log.d("DEFAULT_LOGO_IMAGE_PATH", DEFAULT_LOGO_IMAGE_PATH);
         Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Authentication);
     }
 
@@ -127,6 +131,15 @@ public class Authentication extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 MyApplication.getInstance().trackEvent("SignIn", "SignIn", "Login Event");
+
+                try  {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    assert imm != null;
+                    imm.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), 0);
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+
                 if (APIURL.isConnected(getApplicationContext())) {
                     if (edt_Email.getText().toString().length() < 1 || edt_Password.getText().toString().length() < 1) {
                         Toast.makeText(Authentication.this, "Username or password is empty", Toast.LENGTH_SHORT).show();

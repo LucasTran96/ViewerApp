@@ -8,7 +8,7 @@
     /* app_name: Please open the strings.xml to change app_name. */
 
     <!-- "1.01.11" ==> This is the version that is used to display the activity of the application you can replace it as desired.-->
-    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">2.01.22.0</string>
+    <string name = "VERSION_NAME" tools:ignore="MissingTranslation" translatable="false">1.6.29.1</string>
 
     <!--NOTE: how to change default version of the application -->
     <!--1.Go to build.gradle(Module: app)  in Android/Gradle Scripts/build.gradle(Module: app)-->
@@ -24,7 +24,7 @@
 
     <!--"http://my.scp.com/favicon.ico" ==> This is the default icon used for Class: ManagementDevice, Authentication, LaunchScreen.-->
     <!--This is the default icon link you can change with the icon you need to use.-->
-    <string name = "LOGO_IMAGE_PATH" tools:ignore="MissingTranslation,ReferenceType" translatable="false">http://my.secondclone.com/favicon.ico</string>
+    <string name = "LOGO_IMAGE_PATH" tools:ignore="MissingTranslation,ReferenceType" translatable="false">https://my.secondclone.com/favicon.ico</string>
 
     <!--http://monitor-protocol-a.scp.com--> <!--http://protocol-viewer-a.scp.com  https://protocol-viewer-a.secondclone.com--> <!--http://protocol-viewer-a.copy9.com-->
     <!--This is the default protocol link you can change by the protocol you need to use.-->

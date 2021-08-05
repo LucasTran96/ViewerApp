@@ -16,7 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +38,7 @@ public class AdapterNotificationHistory extends RecyclerView.Adapter<AdapterNoti
 
         TextView txt_App_Name_Notification, txt_Title_Notification, txt_Date_Notification, txt_Content_Notification;
         View mView;
+        //LinearLayout ln_Info_Notification;
         CardView card_view_Notification;
 
         ViewHolder(View v) {
@@ -44,9 +48,11 @@ public class AdapterNotificationHistory extends RecyclerView.Adapter<AdapterNoti
             txt_Title_Notification = v.findViewById(R.id.txt_Title_Notification);
             txt_Date_Notification = v.findViewById(R.id.txt_Date_Notification);
             card_view_Notification = v.findViewById(R.id.card_view_Notification);
+            //ln_Info_Notification = v.findViewById(R.id.ln_Info_Notification);
             mView = v;
             v.setOnLongClickListener(this);
             card_view_Notification.setOnClickListener(this);
+            //ln_Info_Notification.setOnClickListener(this);
             v.setOnClickListener(this);
         }
 
@@ -63,6 +69,15 @@ public class AdapterNotificationHistory extends RecyclerView.Adapter<AdapterNoti
                 ((NotificationHistory) mActivity).prepareSelection(getAdapterPosition());
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
+
+                try {
+                    Notifications notifications = listData.get(position);
+                    Toast.makeText(mActivity, notifications.getNotification_Content(), Toast.LENGTH_LONG).show();
+                }catch (Exception e)
+                {
+                    e.getMessage();
+                }
+
             }
         }
     }

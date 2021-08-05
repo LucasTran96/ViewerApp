@@ -67,22 +67,44 @@
                     android:layout_width="match_parent"
                     android:text="Luvis has a birthday today!"
                     android:textColor="#3E3C3C"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:ellipsize="end"
                     android:paddingBottom="1dp"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/txt_Content_Notification"
                     android:layout_height="wrap_content" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="2020-08-06 15:06"
-                    android:layout_marginRight="5dp"
-                    android:layout_gravity="right"
-                    android:textColor="@color/grey_600"
-                    android:paddingBottom="3dp"
-                    android:id="@+id/txt_Date_Notification"
-                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="2020-08-06 15:06"
+                        android:layout_marginRight="5dp"
+                        android:layout_gravity="right"
+                        android:textColor="@color/grey_600"
+                        android:paddingBottom="3dp"
+                        android:id="@+id/txt_Date_Notification"
+                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:id="@+id/ln_Info_Notification"
+                        android:gravity="right"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/ic_info_blue_24dp"
+                            android:layout_height="24dp"/>
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
 
             </LinearLayout>
 

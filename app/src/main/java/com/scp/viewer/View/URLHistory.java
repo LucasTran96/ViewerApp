@@ -50,6 +50,7 @@ import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.setToTalLogTable1;
 import static com.scp.viewer.API.APIMethod.startAnim;
@@ -60,10 +61,14 @@ import static com.scp.viewer.API.APIURL.bodyLogin;
 import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
+import static com.scp.viewer.API.Global.CALL_PULL_ROW;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_URL;
+import static com.scp.viewer.API.Global.URL_PULL_ROW;
 import static com.scp.viewer.API.Global.URL_TOTAL;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_URL;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -88,6 +93,7 @@ public class URLHistory extends AppCompatActivity {
     private ProgressBar progressBar_URL;
     boolean endLoading = false;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     private int currentSize = 0;
     boolean selectAll = false;
     //aviURL
@@ -138,6 +144,10 @@ public class URLHistory extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
     private void getBrowserInfo() {
         //if there is a network call method
@@ -191,7 +201,7 @@ public class URLHistory extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 setToTalLogTable1(jsonObj, URL_TOTAL + table.getDevice_Identifier(), getApplicationContext());
-
+                setSharedPreferLong(getApplicationContext(), URL_PULL_ROW +_TOTAL+ table.getDevice_Identifier() + NEW_ROW, 0);
                 if (GPSJson.length() != 0)
                 {
                     for (int i = 0; i < GPSJson.length(); i++) {
@@ -282,6 +292,9 @@ public class URLHistory extends AppCompatActivity {
         updateViewCounterAll(toolbar, counter);
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -301,7 +314,17 @@ public class URLHistory extends AppCompatActivity {
                         //bottom of list!
                         isLoading = true;
                         progressBar_URL.setVisibility(View.VISIBLE);
-                        loadMore();
+                        //loadMore();
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_URL.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -489,6 +512,9 @@ public class URLHistory extends AppCompatActivity {
         }
     }
 
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     */
     public void swipeRefreshLayout() {
         swp_URL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -500,7 +526,12 @@ public class URLHistory extends AppCompatActivity {
                 if (isConnected(getApplicationContext()))
                 {
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        urlListAdd.clear();
+                        //urlListAdd.clear();
+                        if (!urlListAdd.isEmpty())
+                        {
+                            urlListAdd.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         clearActionMode();
 
                         new getURLAsyncTask(0).execute();

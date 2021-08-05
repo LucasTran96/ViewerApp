@@ -24,22 +24,18 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
 import com.scp.viewer.Model.AmbientRecord;
 import com.scp.viewer.Model.Table;
 import com.scp.viewer.R;
 import com.scp.viewer.View.MyApplication;
 import com.wang.avi.AVLoadingIndicatorView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.scp.viewer.API.APIDatabase.checkValueStringT;
 import static com.scp.viewer.API.APIDatabase.formatDate;
@@ -66,7 +62,6 @@ import static com.scp.viewer.API.Global.SMS_WHATSAPP_TYPE;
 import static com.scp.viewer.API.Global.VIBER_TOTAL;
 import static com.scp.viewer.API.Global.WHATSAPP_TOTAL;
 import static com.scp.viewer.Database.Entity.AmbientRecordEntity.COLUMN_CREATED_DATE_AMBIENTRECORD;
-
 
 public class APIMethod {
 
@@ -260,6 +255,15 @@ public class APIMethod {
     }
 
     /**
+     * setToTalLog JSONArray is the method to get the total number of items in a feature called from the server.
+     * @return
+     */
+    public static void setToTalLong(long totalRow, String name_Log, Context context)
+    {
+            setSharedPreferLong(context,name_Log,totalRow);
+    }
+
+    /**
      * setTotalLongForSMS This is a method that supports saving the total number of records for each feature such as SMS, WhatsApp, Skype ...
      */
     public static void setTotalLongForSMS(String totalRow, String style, Context context, String deviceID)
@@ -319,6 +323,39 @@ public class APIMethod {
                 break;
         }
         return String.valueOf(sms_Total);
+    }
+
+
+    /**
+     * getTotalLongForSMS This is a method that supports get the total number of records for each feature such as SMS, WhatsApp, Skype ...
+     */
+    public static String getNameFeatureOfForSMS(String style, String deviceID)
+    {
+        String sms_Total = "DEFAULT";
+        switch (style) {
+            case SMS_DEFAULT_TYPE:
+                sms_Total = SMS_TOTAL;
+                break;
+            case SMS_WHATSAPP_TYPE:
+                sms_Total = WHATSAPP_TOTAL;
+                break;
+            case SMS_VIBER_TYPE:
+                sms_Total = VIBER_TOTAL;
+                break;
+            case SMS_FACEBOOK_TYPE:
+                sms_Total = FACEBOOK_TOTAL;
+                break;
+            case SMS_SKYPE_TYPE:
+                sms_Total = SKYPE_TOTAL;
+                break;
+            case SMS_HANGOUTS_TYPE:
+                sms_Total = HANGOUTS_TOTAL;
+                break;
+            case SMS_INSTAGRAM_TYPE:
+                sms_Total = INSTAGRAM_TOTAL;
+                break;
+        }
+        return sms_Total + deviceID;
     }
 
     /**
@@ -383,6 +420,7 @@ public class APIMethod {
     {
         SharedPreferences.Editor editor = context.getSharedPreferences(SETTINGS, MODE_PRIVATE).edit();
         editor.putLong(name, value);
+        editor.apply();
         editor.commit();
     }
 
@@ -627,6 +665,6 @@ public class APIMethod {
         });
 
         builder.show();
-
     }
+
 }

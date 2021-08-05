@@ -132,7 +132,15 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
 
             holder.card_view_URL.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
             String time_URL = getTimeItem(checkValueStringT( url.getClient_URL_Time()), DEFAULT_DATE_FORMAT_MMM);
-            String domain = formatURL(url.getURL_Link());
+
+
+            String domain;
+
+            if(url.getURL_Link().contains("google.com/search?"))
+                domain ="google.com";
+            else
+                domain = formatURL(url.getURL_Link());
+
             Log.d("domain","domain = "+domain);
             holder.txt_name_URL_History.setText(domain);
 

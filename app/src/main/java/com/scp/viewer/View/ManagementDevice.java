@@ -238,6 +238,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
         TextView txt_nameAPP_Management = findViewById(R.id.txt_nameAPP_Management);
         ImageView img_Logo_Management = findViewById(R.id.img_Logo_Management);
         TextView txt_Copyright_launch = findViewById(R.id.txt_Copyright_launch);
+        Log.d("DEFAULT_LOGO_IMAGE_PATH", DEFAULT_LOGO_IMAGE_PATH);
         Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Management);
         txt_version_name.setText(" " + DEFAULT_VERSION_NAME);
         txt_nameAPP_Management.setText(DEFAULT_PRODUCT_NAME);

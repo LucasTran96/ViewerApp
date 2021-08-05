@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -83,6 +84,14 @@ public class AdapterClipboardHistory extends RecyclerView.Adapter<AdapterClipboa
                 ((ClipboardHistory) mActivity).prepareSelection(getAdapterPosition());
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
+
+                try {
+                    Clipboard clipboard = listData.get(position);
+                    Toast.makeText(mActivity, clipboard.getClipboard_Content(), Toast.LENGTH_LONG).show();
+                }catch (Exception e)
+                {
+                    e.getMessage();
+                }
 
                 /*MyApplication.getInstance().trackEvent("Clipboard", "View App detail: " + listData.get(position).getApp_Name(), "" + listData.get(position).getApp_Name());
                 Intent intent = new Intent(Intent.ACTION_VIEW);

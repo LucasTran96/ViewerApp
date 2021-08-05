@@ -7,8 +7,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 29
         multiDexEnabled true
-        versionCode 4
-        versionName "1.1.25.0"
+        versionCode 5
+        versionName "1.6.29.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
@@ -45,7 +45,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.0'
     //implementation 'testfairy:testfairy-android-sdk:1.+@aar'
     // RecyclerView
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     //implementation 'testfairy:testfairy-android-sdk:1.+@aar'
 
     // CardView

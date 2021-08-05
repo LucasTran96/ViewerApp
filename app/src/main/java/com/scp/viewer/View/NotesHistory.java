@@ -97,14 +97,18 @@ public class NotesHistory extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        getLocationInfo();
+        getNoteInfo();
 
         // adapter
         mAdapter = new AdapterNoteHistory(this, (ArrayList<Notes>) mData);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void getLocationInfo() {
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
+    private void getNoteInfo() {
         //if there is a network call method
         //logger.debug("internet = "+isConnected(this)+"\n==================End!");
         if (isConnected(this)) {

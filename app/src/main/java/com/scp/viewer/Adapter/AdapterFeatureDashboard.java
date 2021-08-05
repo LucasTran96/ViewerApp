@@ -16,12 +16,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.load.model.Model;
 import com.scp.viewer.API.APIGetTotalItemOfFeature;
 import com.scp.viewer.Model.Feature;
 import com.scp.viewer.Model.Table;
@@ -45,6 +49,7 @@ import com.scp.viewer.View.YouTubeHistory;
 
 import java.util.ArrayList;
 
+import static com.scp.viewer.API.APIGetTotalItemOfFeature.setNewRowNumber;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.Global.GET_AMBIENT_VOICE_RECORDING;
 import static com.scp.viewer.API.Global.GET_SMS_HISTORY;
@@ -93,6 +98,7 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
     private long mLastClickTime = System.currentTimeMillis();
     private static final long CLICK_TIME_INTERVAL = 300;
 
+
     //  constructor three parameters
     public AdapterFeatureDashboard(ArrayList<Feature> featureList, Activity context, Table table) {
         this.featureList = featureList;
@@ -119,18 +125,24 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
         {
             if(!feature.getFunctionName().isEmpty())
             {
-                if(feature.getFunctionName().equals(GET_SMS_HISTORY))
+                if(feature.getFunctionName().equals(GET_AMBIENT_VOICE_RECORDING))
                 {
-                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_Identifier(),context,getSMSType(feature.getFeatureName(),context), holder.txt_total_number).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+                    Log.d("TotalRoS", "GET_AMBIENT_VOICE_RECORDING feature = "+ feature.getFunctionName());
+                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_Identifier(),context, holder.txt_total_number).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
                 else
-                    new APIGetTotalItemOfFeature.contactAsyncTask(feature.getFunctionName(),table.getDevice_Identifier(),context, holder.txt_total_number).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
+                {
+                    Log.d("TotalRoS", "setNewRowNumber feature = "+ feature.getFunctionName());
+                    setNewRowNumber(feature.getFunctionName(),table.getDevice_Identifier(),context, holder.txt_total_number);
+                }
             }
             else {
                 holder.txt_total_number.setVisibility(View.GONE);
             }
         }
     }
+
+
 
     // Count the number of elements in deviceList
     @Override
@@ -167,6 +179,10 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
             mLastClickTime = now;
             if (position != RecyclerView.NO_POSITION)
             {
+                Log.d("TotalRoS", "setNewRowNumber feature = "+ featureList.get(position).getFeatureName());
+                txt_total_number.setText("0");
+                txt_total_number.setVisibility(View.GONE);
+
                 if(!featureList.get(position).getFeatureName().isEmpty())
                 {
                     if(featureList.get(position).getFeatureName().equals(context.getResources().getString(R.string.LOCATION_HISTORY)))
@@ -281,6 +297,8 @@ public class AdapterFeatureDashboard extends RecyclerView.Adapter<AdapterFeature
             }
         }
     }
+
+
 
     /**
      * getSMSType is the method of finding out the type of message for which you want to get the total item.

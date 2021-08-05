@@ -82,24 +82,27 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
-                <EditText
-                    android:gravity="center"
 
-                    android:layout_gravity="center_vertical"
-                    android:paddingBottom="7dp"
+                <EditText
+                    android:id="@+id/edt_Password"
+
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
-                    android:id="@+id/edt_Password"
-                    android:textColor="#fff"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:textColorHint="#fff"
-                    android:background="@drawable/custom_edt"
-                    android:hint="@string/Password"
-                    app:theme="@style/StyleEdit"
-                    android:inputType="textPassword"
                     android:autofillHints=""
+                    android:background="@drawable/custom_edt"
+                    android:gravity="center"
+                    android:hint="@string/Password"
+                    android:inputType="textPassword"
+                    android:paddingBottom="7dp"
+                    android:imeOptions="actionDone"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    app:theme="@style/StyleEdit"
                     tools:ignore="UnusedAttribute" />
+
                 <ImageView
                     android:layout_width="25dp"
                     android:background="@android:color/transparent"

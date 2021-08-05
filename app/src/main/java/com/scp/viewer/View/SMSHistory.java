@@ -47,7 +47,11 @@ import java.util.List;
 import static com.scp.viewer.API.APIDatabase.getTimeItem;
 import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
+import static com.scp.viewer.API.APIMethod.getNameFeatureOfForSMS;
+import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.getTotalLongForSMS;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
 import static com.scp.viewer.API.APIMethod.updateViewCounterAll;
@@ -57,10 +61,16 @@ import static com.scp.viewer.API.APIURL.getDateNowInMaxDate;
 import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
+import static com.scp.viewer.API.Global.CALL_TOTAL;
 import static com.scp.viewer.API.Global.GET_SMS_HISTORY;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
+import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_PULL_ROW;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_SMS;
+import static com.scp.viewer.API.Global.TOTAL_ROW;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
+import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CALL;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_INSTAGRAM;
 import static com.scp.viewer.Database.Entity.SMSEntity.TABLE_GET_KIK;
@@ -228,6 +238,7 @@ public class SMSHistory extends AppCompatActivity {
                 if(jsonObj != null && jsonObj.toString().contains("Table"))
                 {
                     JSONArray SMS_Json = jsonObj.getJSONArray("Table");
+                    JSONArray table1_Json = jsonObj.getJSONArray("Table1");
                     list_SMS.clear();
                     if (SMS_Json.length() != 0)
                     {
@@ -241,6 +252,24 @@ public class SMSHistory extends AppCompatActivity {
                             databaseGetSMS.addDevice_SMS(smsList, nameTable);
                         }
                     }
+
+
+                    /*try {
+                        String totalRow = table1_Json.getJSONObject(0).getString(TOTAL_ROW);
+                        if(!totalRow.equals("0"))
+                        {
+                            //setToTalLog(table1_Json, getNameFeatureOfForSMS(style, table.getDevice_Identifier()), getApplicationContext());
+                            setSharedPreferLong(getApplicationContext(), getNameFeatureOfForSMS(style, table.getDevice_Identifier()) + NEW_ROW, Long.parseLong(totalRow));
+                        }
+
+                    }catch (Exception e)
+                    {
+                        e.getMessage();
+                    }*/
+
+                    Log.d("TotalRoS", "table1_Json = " + table1_Json +"nameFeature ROW = " + getNameFeatureOfForSMS(style, table.getDevice_Identifier()));
+                    Log.d("TotalRoS", "nameFeature ROW = " + getNameFeatureOfForSMS(style, table.getDevice_Identifier()) + NEW_ROW);
+                    setSharedPreferLong(getApplicationContext(), getNameFeatureOfForSMS(style, table.getDevice_Identifier()) + NEW_ROW, 0);
                     Log.d("update_Last_Time", "nameFeature = " + nameFeature);
                     database_last_update.update_Last_Time_Get_Update(TABLE_LAST_UPDATE, nameFeature, date_max, table.getDevice_Identifier());
                     String max_time = database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier());
@@ -248,7 +277,7 @@ public class SMSHistory extends AppCompatActivity {
                 }
 
 
-                int SMSCount = databaseGetSMS.getSMSCount(nameTable, table.getID());
+                long SMSCount = databaseGetSMS.getSMSCount(nameTable, table.getID());
                 lnl_Total.setVisibility(View.VISIBLE);
                 if (SMSCount != 0) {
                     list_SMS = databaseGetSMS.get_DISTINCT_SMS_Name(table.getID(), nameTable);
@@ -256,8 +285,15 @@ public class SMSHistory extends AppCompatActivity {
                     adapter_SMS = new AdapterSMSHistory(SMSHistory.this, list_SMS);
                     rcl_SMS.setAdapter(adapter_SMS);
                     adapter_SMS.notifyDataSetChanged();
-                    txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext(), table.getDevice_Identifier()));
+                    //txt_Total_Data.setText(getTotalLongForSMS(style, getApplicationContext(), table.getDevice_Identifier()));
                     txt_No_Data_SMS.setText("Last update: "+getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier()),null));
+                    Log.d("TotalRoS"," Last update = "+  "Last update: "+ getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier()),null));
+                    //txt_No_Data_SMS.setText("Last update: " + getTimeItem(database_last_update.getLast_Time_Update(nameFeature, TABLE_LAST_UPDATE, table.getDevice_Identifier()),null));
+                    //txt_Total_Data.setText(getSharedPreferLong(getApplicationContext(), getNameFeatureOfForSMS(style, table.getDevice_Identifier())) +"");
+                    txt_Total_Data.setText(SMSCount + "");
+                    setSharedPreferLong(getApplicationContext(), getNameFeatureOfForSMS(style, table.getDevice_Identifier()), SMSCount);
+                    Log.d("TotalRoS"," txt_Total_Data = "+  getSharedPreferLong(getApplicationContext(), getNameFeatureOfForSMS(style, table.getDevice_Identifier()))+"");
+
                 } else {
                     txt_No_Data_SMS.setText(MyApplication.getResourcses().getString(R.string.NoData));
                     txt_Total_Data.setText("0");
@@ -467,7 +503,11 @@ public class SMSHistory extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     public void swipeRefreshLayout() {
         swp_SMS.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -476,7 +516,12 @@ public class SMSHistory extends AppCompatActivity {
                 if (isConnected(getApplicationContext()))
                 {
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        smsList.clear();
+                        //smsList.clear();
+                        if (!smsList.isEmpty())
+                        {
+                            smsList.clear(); //The list for update recycle view
+                            adapter_SMS.notifyDataSetChanged();
+                        }
                         clearActionMode();
                         new getSMS_AsyncTask().execute();
                         new Handler().postDelayed(new Runnable() {

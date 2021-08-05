@@ -51,6 +51,7 @@ import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
@@ -60,10 +61,14 @@ import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
 import static com.scp.viewer.API.Global.APP_INSTALLATION_TOTAL;
+import static com.scp.viewer.API.Global.APP_INSTALL_PULL_ROW;
 import static com.scp.viewer.API.Global.GET_APP_INSTALLATION_HISTORY;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_APP_INSTALL;
+import static com.scp.viewer.API.Global.URL_PULL_ROW;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_APP_INSTALLATION;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -85,6 +90,7 @@ public class AppInstallationHistory extends AppCompatActivity {
     private TextView txt_No_Data_App, txt_Total_Data;
     private ProgressBar progressBar_AppInstallation;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     boolean isLoading = false;
     private int currentSize = 0;
     boolean endLoading = false;
@@ -105,6 +111,7 @@ public class AppInstallationHistory extends AppCompatActivity {
         database_last_update = new DatabaseLastUpdate(this);
         table = (Table) getIntent().getSerializableExtra("tableAppInstallation");
         // show dialog Loading...
+        Log.d("AppInstallHistory"," onCreate currentSize  = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
         getAppInstallationInfo();
         swipeRefreshLayout();
     }
@@ -132,10 +139,15 @@ public class AppInstallationHistory extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     @SuppressLint("SetTextI18n")
     private void getAppInstallationInfo() {
         //if there is a network call method
         if (isConnected(this)) {
+            Log.d("AppInstallHistory"," getAppInstallationInfo currentSize  = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
             avLoadingIndicatorView.setVisibility(View.VISIBLE);
             startAnim(avLoadingIndicatorView);
             new getAppInstallAsyncTask(0).execute();
@@ -164,20 +176,37 @@ public class AppInstallationHistory extends AppCompatActivity {
         }
     }
 
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     */
     public void swipeRefreshLayout() {
+
         swp_AppInstallationHistory.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d("AppInstallHistory"," onRefresh currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                 Calendar calendar = Calendar.getInstance();
                 endLoading = false;
+                isLoading = false;
                 checkLoadMore = false;
                 currentSize = 0;
+                Log.d("AppInstallHistory"," onRefresh1 currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                 if (isConnected(getApplicationContext()))
                 {
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        mData.clear();
+                        Log.d("AppInstallHistory"," time_Refresh_Device currentSize Contact = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                        //mData.clear();
+
+                        //Method for refresh recycle view
+                        if (!mData.isEmpty())
+                        {
+                            mData.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         clearActionMode();
                         new getAppInstallAsyncTask(0).execute();
+
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run()
@@ -198,6 +227,9 @@ public class AppInstallationHistory extends AppCompatActivity {
         });
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -218,7 +250,16 @@ public class AppInstallationHistory extends AppCompatActivity {
                         //bottom of list!
                         isLoading = true;
                         progressBar_AppInstallation.setVisibility(View.VISIBLE);
-                        loadMore();
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_AppInstallation.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -231,45 +272,46 @@ public class AppInstallationHistory extends AppCompatActivity {
      */
     private void loadMore() {
         try {
-            checkLoadMore = true;
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run()
-                {
-                    currentSize =  mData.size();
-                    if(isConnected(getApplicationContext()))
+            Log.d("AppInstallHistory","loadMore currentSize  = "+  currentSize+ " checkRefresh = "+ checkRefresh);
+           /* if(!checkRefresh)
+            {*/
+                checkLoadMore = true;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run()
                     {
-                        // Here is the total item value contact of device current has on CPanel
-                        long totalContact = getSharedPreferLong(getApplicationContext(), APP_INSTALLATION_TOTAL + table.getDevice_Identifier());
-                        new getAppInstallAsyncTask(currentSize+1).execute();
-
-                        if((mData.size()+1) >= totalContact)
+                        currentSize =  mData.size();
+                        if(isConnected(getApplicationContext()))
                         {
-                            endLoading = true;
-                        }
-                        //mAdapter.notifyDataSetChanged();
-                        //progressBar_Locations.setVisibility(View.GONE);
-                        isLoading = false;
+                            // Here is the total item value contact of device current has on CPanel
+                            long totalContact = getSharedPreferLong(getApplicationContext(), APP_INSTALLATION_TOTAL + table.getDevice_Identifier());
+                            new getAppInstallAsyncTask(currentSize+1).execute();
 
-                    }
-                    else {
-                        List<AppInstallation> mDataCall = database_app_installation.getAll_AppInstall_ID_History(table.getID(),currentSize);
-                        // Here is the total item value contact of device current has on Cpanel
-                        int insertIndex = mData.size();
-                        mData.addAll(insertIndex,mDataCall);
-                        mAdapter.notifyItemRangeInserted(insertIndex-1,mDataCall.size() );
-                        if(mDataCall.size()< NumberLoad)
-                        {
-                            endLoading = true;
+                            if((mData.size()+1) >= totalContact)
+                            {
+                                endLoading = true;
+                            }
+                            isLoading = false;
+
                         }
-                        //mAdapter.notifyDataSetChanged();
-                        //progressBar_Locations.setVisibility(View.GONE);
-                        isLoading = false;
-                        progressBar_AppInstallation.setVisibility(View.GONE);
+                        else {
+                            List<AppInstallation> mDataCall = database_app_installation.getAll_AppInstall_ID_History(table.getID(),currentSize);
+                            // Here is the total item value contact of device current has on Cpanel
+                            int insertIndex = mData.size();
+                            mData.addAll(insertIndex,mDataCall);
+                            mAdapter.notifyItemRangeInserted(insertIndex-1,mDataCall.size() );
+                            if(mDataCall.size()< NumberLoad)
+                            {
+                                endLoading = true;
+                            }
+                            //mAdapter.notifyDataSetChanged();
+                            //progressBar_Locations.setVisibility(View.GONE);
+                            isLoading = false;
+                            progressBar_AppInstallation.setVisibility(View.GONE);
+                        }
                     }
-                }
-            }, 100);
+                }, 100);
 
         }catch (Exception e)
         {
@@ -290,8 +332,9 @@ public class AppInstallationHistory extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
 
-            Log.d("Application_Id", table.getDevice_Identifier() + "");
-
+            Log.d("AppInstallHistory", table.getDevice_Identifier() + "");
+            //Log.d("AppInstallHistory","doInBackground currentSize = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+            Log.d("AppInstallHistory","doInBackground currentSize  = "+  currentSize+ " checkLoadMore = "+ checkLoadMore + " startIndex = "+ startIndex);
             return GetJsonFeature(table, this.startIndex,GET_APP_INSTALLATION_HISTORY);
         }
 
@@ -299,11 +342,13 @@ public class AppInstallationHistory extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             try {
+                Log.d("AppInstallHistory","onPostExecute currentSize = "+  currentSize+ " checkLoadMore = "+ checkLoadMore + " checkRefresh = " + checkRefresh);
                 deviceObject(s);
                 JSONObject jsonObj = new JSONObject(bodyLogin.getData());
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
                 setToTalLog(GPSJsonTable1, APP_INSTALLATION_TOTAL + table.getDevice_Identifier(), getApplicationContext());
+                setSharedPreferLong(getApplicationContext(), APP_INSTALL_PULL_ROW +_TOTAL+ table.getDevice_Identifier() + NEW_ROW, 0);
 
                 if (GPSJson.length() != 0) {
 
@@ -324,9 +369,9 @@ public class AppInstallationHistory extends AppCompatActivity {
                 List<AppInstallation> mDataTamp = database_app_installation.getAll_AppInstall_ID_History(table.getID(),currentSize);
                 //mData.addAll(mDataTamp);
 
-
                 if(checkLoadMore)
                 {
+                    Log.d("AppInstallHistory","checkLoadMore && !checkRefresh currentSize  = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
                     if(mDataTamp.size()>0)
                     {
                         for (AppInstallation appInstallation : mDataTamp)
@@ -350,12 +395,16 @@ public class AppInstallationHistory extends AppCompatActivity {
                     progressBar_AppInstallation.setVisibility(View.GONE);
                 }
                 else {
-
+                    Log.d("AppInstallHistory","mData.size() >= NumberLoad currentSize  = "+  currentSize+ " checkLoadMore = "+ checkLoadMore);
+                    //checkRefresh = false;
                     mData.clear();
+                    //mAdapter.notifyDataSetChanged();
                     mData.addAll(mDataTamp);
                     if(mData.size() >= NumberLoad)
                     {
+                        Log.d("AppInstallHistory"," initScrollListener === " + " currentSize = " +  currentSize+ " checkLoadMore = "+ checkLoadMore);
                         initScrollListener();
+
                     }
                     mAdapter = new AdapterAppInstallationHistory(AppInstallationHistory.this, (ArrayList<AppInstallation>) mData);
                     mRecyclerView.setAdapter(mAdapter);

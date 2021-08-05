@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,7 +64,13 @@ public class AdapterKeyloggerHistory extends RecyclerView.Adapter<AdapterKeylogg
                 ((KeyloggerHistory) mActivity).prepareSelection(getAdapterPosition());
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
-
+                try {
+                    Keyloggers keyloggers = listData.get(position);
+                    Toast.makeText(mActivity, keyloggers.getContent(), Toast.LENGTH_LONG).show();
+                }catch (Exception e)
+                {
+                    e.getMessage();
+                }
             }
         }
     }

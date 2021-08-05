@@ -13,6 +13,7 @@ package com.scp.viewer.View;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -45,11 +46,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
 import static com.scp.viewer.API.APIDatabase.getTimeItem;
 import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
@@ -59,10 +64,13 @@ import static com.scp.viewer.API.APIURL.bodyLogin;
 import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
+import static com.scp.viewer.API.Global.CALL_PULL_ROW;
 import static com.scp.viewer.API.Global.CALL_TOTAL;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_CALL;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CALL;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -85,6 +93,7 @@ public class CallHistory extends AppCompatActivity {
     private ProgressBar progressBar_Call;
     boolean endLoading = false;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     private int currentSize = 0;
     // This is the value to store the temporary variable when you choose to select all item or remove all selected items.
     boolean selectAll = false;
@@ -117,6 +126,52 @@ public class CallHistory extends AppCompatActivity {
         mAdapter = new AdapterCallHistory(this, (ArrayList<Call>) mData);
         mRecyclerView.setAdapter(mAdapter);
         swipeRefreshLayout();
+        Log.d("android10above", getDeviceIDAndroid10Above());// 358697535677244  357697898677243
+                                                                 //  358697535677244
+       // Log.d("android10above", getIMEIAndroid10Above());//
+    }
+
+    public  static String getIMEIAndroid10Above() {
+        String uniquePseudoID = "35" +
+                Build.BOARD.length() % 10 +
+                Build.BRAND.length() % 10 +
+                Build.DEVICE.length() % 10 +
+                Build.DISPLAY.length() % 10 +
+                Build.HOST.length() % 10 +
+                Build.ID.length() % 10 +
+                Build.MANUFACTURER.length() % 10 +
+                Build.MODEL.length() % 10 +
+                Build.PRODUCT.length() % 10 +
+                Build.TAGS.length() % 10 +
+                Build.TYPE.length() % 10 +
+                Build.USER.length() % 10;
+        String serial = Build.getRadioVersion();
+        String uuid = new UUID(uniquePseudoID.hashCode(), serial.hashCode()).toString();
+        Log.d("Device ID", uuid);
+        return uuid;
+    }
+
+    public  static String getDeviceIDAndroid10Above(){
+        try {
+            String devIDShort = "35" + //we make this look like a valid IMEI
+                    Build.BOARD.length()%10+ Build.BRAND.length()%10 +
+                    Build.CPU_ABI.length()%10 + Build.DEVICE.length()%10 +
+                    Build.DISPLAY.length()%10 + Build.HOST.length()%10 +
+                    Build.ID.length()%10 + Build.MANUFACTURER.length()%10 +
+                    Build.MODEL.length()%10 + Build.PRODUCT.length()%10 +
+                    Build.TAGS.length()%10 + Build.TYPE.length()%10 +
+                    Build.USER.length()%10 ; //13 digits
+            int random = new Random().nextInt(1000);
+            Log.d("android10above", "Build.BOARD.length() = " + Build.BOARD.length() + " Build.BOARD.length()%10 = " + Build.BOARD.length()%10
+                                               + "Build.BRAND.length()%10 = " + Build.BRAND.length()%10);
+            Log.d("android10above", "devIDShort= "+ devIDShort + " uuid = "+ random);
+
+            return  devIDShort + random;
+        }catch (Exception e)
+        {
+            e.getMessage();
+            return String.valueOf(System.currentTimeMillis());
+        }
     }
 
     private void setID()
@@ -133,6 +188,10 @@ public class CallHistory extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
     }
 
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
     private void getCallHistoryInfo() {
         //if there is a network call method
@@ -166,6 +225,9 @@ public class CallHistory extends AppCompatActivity {
         }
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -185,7 +247,18 @@ public class CallHistory extends AppCompatActivity {
                         //bottom of list!
                         isLoading = true;
                         progressBar_Call.setVisibility(View.VISIBLE);
-                        loadMore();
+                       //loadMore();
+
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_Call.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -271,7 +344,9 @@ public class CallHistory extends AppCompatActivity {
                     JSONArray GPSJson = jsonObj.getJSONArray("Table");
                     JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
                     setToTalLog(GPSJsonTable1, CALL_TOTAL  + table.getDevice_Identifier(), getApplicationContext());
+                    setSharedPreferLong(getApplicationContext(), CALL_PULL_ROW+_TOTAL+ table.getDevice_Identifier() + NEW_ROW, 0);
                     Log.d("CallHistory"," GPSJson = "+  GPSJson);
+                    Log.d("TotalRoS"," CALL_TOTAL = "+  CALL_TOTAL  + table.getDevice_Identifier());
                     if (GPSJson.length() != 0)
                     {
 
@@ -422,7 +497,6 @@ public class CallHistory extends AppCompatActivity {
                 super.onBackPressed();
             }
         }
-
         return true;
     }
 
@@ -520,6 +594,9 @@ public class CallHistory extends AppCompatActivity {
         }
     }
 
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     */
     public void swipeRefreshLayout() {
         swp_CallHistory.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -532,7 +609,13 @@ public class CallHistory extends AppCompatActivity {
                     checkLoadMore = false;
                     currentSize = 0;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        listCall.clear();
+                        //listCall.clear();
+                        //Method for refresh recycle view
+                        if (!listCall.isEmpty())
+                        {
+                            listCall.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         clearActionMode();
                         new getCallAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {

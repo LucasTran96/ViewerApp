@@ -54,6 +54,7 @@ import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
@@ -63,10 +64,14 @@ import static com.scp.viewer.API.APIURL.bodyLogin;
 import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
+import static com.scp.viewer.API.Global.CLIPBOARD_PULL_ROW;
+import static com.scp.viewer.API.Global.CONTACT_PULL_ROW;
 import static com.scp.viewer.API.Global.CONTACT_TOTAL;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_CONTACT;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_CONTACT;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
@@ -88,6 +93,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
     private LinearLayout lnl_Total;
     private SwipeRefreshLayout swp_Contact;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     boolean isLoading = false;
     boolean endLoading = false;
     private int currentSize = 0;
@@ -133,10 +139,15 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         // recyclerView
         mRecyclerView = findViewById(R.id.rcl_Contact_History);
         mRecyclerView.setHasFixedSize(true);
+        //mRecyclerView.setItemAnimator(null);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     @SuppressLint("SetTextI18n")
     private void getContactsInfo() {
         //if there is a network call method
@@ -171,6 +182,9 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         }
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -189,7 +203,17 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                         //bottom of list!
                         isLoading = true;
                         progressBar_Contacts.setVisibility(View.VISIBLE);
-                        loadMore();
+                       // loadMore();
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_Contacts.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -289,6 +313,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 JSONArray GPSJson = jsonObj.getJSONArray("Table");
                 JSONArray GPSJsonTable1 = jsonObj.getJSONArray("Table1");
                 setToTalLog(GPSJsonTable1, CONTACT_TOTAL + table.getDevice_Identifier(), getApplicationContext());
+                setSharedPreferLong(getApplicationContext(), CONTACT_PULL_ROW +_TOTAL+ table.getDevice_Identifier() + NEW_ROW, 0);
 
                 if (GPSJson.length() != 0) {
 
@@ -573,6 +598,9 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
         }
     }
 
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     */
     public void swipeRefreshLayout() {
         swp_Contact.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -582,9 +610,17 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 if (isConnected(getApplicationContext()))
                 {
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        contactListAdd.clear();
+                        //contactListAdd.clear();
                         clearActionMode();
-                        mData.clear();
+                        //mData.clear();
+//                        mRecyclerView.getRecycledViewPool().clear();
+//                        mAdapter.notifyDataSetChanged();
+                        //Method for refresh recycle view
+                        if (!mData.isEmpty())
+                        {
+                            mData.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         checkLoadMore = false;
                         currentSize = 0;
                         new contactAsyncTask(0).execute();

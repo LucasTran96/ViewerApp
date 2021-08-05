@@ -68,6 +68,7 @@ import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.setToTalLogTable1;
 import static com.scp.viewer.API.APIMethod.startAnim;
@@ -80,9 +81,13 @@ import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
 import static com.scp.viewer.API.Global.File_PATH_SAVE_IMAGE;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
+import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_PULL_ROW;
+import static com.scp.viewer.API.Global.PHOTO_PULL_ROW;
 import static com.scp.viewer.API.Global.PHOTO_TOTAL;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_PHOTO;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Adapter.AdapterPhotoHistory.positionLastSelected;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHOTO;
@@ -110,6 +115,7 @@ public class PhotoHistory extends AppCompatActivity {
     private long ID;
     boolean isLoading = false;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     private int currentSize = 0;
     private ProgressBar progressBar_Photo;
     boolean endLoading = false;
@@ -159,6 +165,9 @@ public class PhotoHistory extends AppCompatActivity {
 
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -178,7 +187,17 @@ public class PhotoHistory extends AppCompatActivity {
                         //bottom of list!
                         isLoading = true;
                         progressBar_Photo.setVisibility(View.VISIBLE);
-                        loadMore();
+                       // loadMore();
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_Photo.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -237,6 +256,8 @@ public class PhotoHistory extends AppCompatActivity {
 
     /**
      * getPhotoHistoryInfo() - get image taking method when there is Connected internet or no Connected internet.
+     *  This is a method to get data from the server to the device and display it in Recyclerview.
+     *  If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
      */
     @SuppressLint("SetTextI18n")
     private void getPhotoHistoryInfo() {
@@ -312,6 +333,7 @@ public class PhotoHistory extends AppCompatActivity {
                 String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
                 JSONArray GPSJson = jsonObjListImg.getJSONArray("Table");
                 setToTalLogTable1(jsonObjListImg, PHOTO_TOTAL  + table.getDevice_Identifier(), getApplicationContext());
+                setSharedPreferLong(getApplicationContext(), PHOTO_PULL_ROW +_TOTAL+ table.getDevice_Identifier() + NEW_ROW, 0);
 
                 if (GPSJson.length() != 0)
                 {
@@ -683,7 +705,6 @@ public class PhotoHistory extends AppCompatActivity {
      * onResume()
      * Save the image to internal memory if the image has not been saved before.
      */
-
     public void swipeRefreshLayout() {
         swp_PhotoHistory.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -692,7 +713,12 @@ public class PhotoHistory extends AppCompatActivity {
                 endLoading = false;
                 if (isConnected(getApplicationContext())) {
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        listPhoto.clear();
+                        //listPhoto.clear();
+                        if (!listPhoto.isEmpty())
+                        {
+                            listPhoto.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         clearActionMode(true);
                         checkLoadMore = false;
                         currentSize = 0;

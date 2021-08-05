@@ -60,16 +60,41 @@
             android:layout_marginStart="5dp"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:text="Eat Lunch"
-                android:textColor="#000"
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:textSize="16sp"
-                android:paddingBottom="1dp"
-                android:id="@+id/txt_Calendar_Title"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text="Eat Lunch"
+                    android:textColor="#000"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
+                    android:paddingBottom="1dp"
+                    android:id="@+id/txt_Calendar_Title"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:id="@+id/ln_Info_Notification"
+                    android:gravity="right"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/ic_info_blue_24dp"
+                        android:layout_height="24dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"

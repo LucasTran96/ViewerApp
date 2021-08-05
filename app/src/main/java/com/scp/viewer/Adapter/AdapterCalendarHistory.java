@@ -17,12 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.Model.Calendars;
+import com.scp.viewer.Model.Clipboard;
 import com.scp.viewer.R;
 import com.scp.viewer.View.CalendarHistory;
 
@@ -71,6 +74,14 @@ public class AdapterCalendarHistory extends RecyclerView.Adapter<AdapterCalendar
                 ((CalendarHistory) mActivity).prepareSelection(getAdapterPosition());
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
+
+                try {
+                    Calendars calendars = listData.get(position);
+                    Toast.makeText(mActivity, calendars.getTitle(), Toast.LENGTH_LONG).show();
+                }catch (Exception e)
+                {
+                    e.getMessage();
+                }
 
                 /*MyApplication.getInstance().trackEvent("Clipboard", "View App detail: " + listData.get(position).getApp_Name(), "" + listData.get(position).getApp_Name());
                 Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -51,6 +51,7 @@ import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
+import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
 import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
@@ -59,18 +60,21 @@ import static com.scp.viewer.API.APIURL.deviceObject;
 import static com.scp.viewer.API.APIURL.getTimeNow;
 import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
+import static com.scp.viewer.API.Global.CONTACT_PULL_ROW;
 import static com.scp.viewer.API.Global.GET_KEYLOGGER_HISTORY;
+import static com.scp.viewer.API.Global.KEYLOGGER_PULL_ROW;
 import static com.scp.viewer.API.Global.KEYLOGGER_TOTAL;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
+import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_KEYLOGGER;
 import static com.scp.viewer.API.Global.TABLE;
 import static com.scp.viewer.API.Global.TABLE1;
+import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.KeyloggerEntity.TABLE_KEYLOGGER_HISTORY;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_KEYLOGGER;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
-import static com.scp.viewer.Database.Entity.NotificationEntity.TABLE_NOTIFICATION_HISTORY;
 
 public class KeyloggerHistory extends AppCompatActivity {
     private Toolbar toolbar;
@@ -89,6 +93,7 @@ public class KeyloggerHistory extends AppCompatActivity {
     private TextView txt_No_Data_Keylogger, txt_Total_Data;
     private ProgressBar progressBar_Keylogger;
     private boolean checkLoadMore = false;
+    private boolean checkRefresh = false;
     boolean isLoading = false;
     private int currentSize = 0;
     boolean endLoading = false;
@@ -109,7 +114,7 @@ public class KeyloggerHistory extends AppCompatActivity {
         database_last_update = new DatabaseLastUpdate(this);
         table = (Table) getIntent().getSerializableExtra(TABLE_KEYLOGGER_HISTORY);
         // show dialog Loading...
-        getNotificationInfo();
+        getKeyloggerInfo();
         swipeRefreshLayout();
     }
 
@@ -136,8 +141,12 @@ public class KeyloggerHistory extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
+    /**
+     * This is a method to get data from the server to the device and display it in Recyclerview.
+     * If there is no internet, get data from SQLite stored on the device and display it in Recyclerview.
+     */
     @SuppressLint("SetTextI18n")
-    private void getNotificationInfo() {
+    private void getKeyloggerInfo() {
         //if there is a network call method
         if (isConnected(this)) {
             avLoadingIndicatorView.setVisibility(View.VISIBLE);
@@ -168,6 +177,9 @@ public class KeyloggerHistory extends AppCompatActivity {
         }
     }
 
+    /**
+     * swipeRefreshLayout is a method that reloads the page and updates it further if new data has been added to the server.
+     */
     public void swipeRefreshLayout() {
         swp_Keylogger_History.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -179,7 +191,12 @@ public class KeyloggerHistory extends AppCompatActivity {
                 if (isConnected(getApplicationContext()))
                 {
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
-                        mData.clear();
+                        //mData.clear();
+                        if (!mData.isEmpty())
+                        {
+                            mData.clear(); //The list for update recycle view
+                            mAdapter.notifyDataSetChanged();
+                        }
                         clearActionMode();
                         new getKeyloggerAsyncTask(0).execute();
                         new Handler().postDelayed(new Runnable() {
@@ -202,6 +219,9 @@ public class KeyloggerHistory extends AppCompatActivity {
         });
     }
 
+    /**
+     * This is a feature load more for user view data in the type as page as on web each time only see 30 items after that when the last scod down, new load data after.
+     */
     private void initScrollListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -222,7 +242,18 @@ public class KeyloggerHistory extends AppCompatActivity {
                         //bottom of list!
                         isLoading = true;
                         progressBar_Keylogger.setVisibility(View.VISIBLE);
-                        loadMore();
+                        //loadMore();
+
+                        if(!checkRefresh)
+                        {
+                            loadMore();
+                        }
+                        else {
+                            isLoading = false;
+                            endLoading = false;
+                            progressBar_Keylogger.setVisibility(View.GONE);
+                            checkRefresh = false;
+                        }
                     }
                 }
             }
@@ -303,6 +334,7 @@ public class KeyloggerHistory extends AppCompatActivity {
                 JSONArray NotificationJson = jsonObj.getJSONArray(TABLE);
                 JSONArray NotificationJsonTable1 = jsonObj.getJSONArray(TABLE1);
                 setToTalLog(NotificationJsonTable1, KEYLOGGER_TOTAL + table.getDevice_Identifier(), getApplicationContext());
+                setSharedPreferLong(getApplicationContext(), KEYLOGGER_PULL_ROW +_TOTAL+ table.getDevice_Identifier() + NEW_ROW, 0);
 
                 if (NotificationJson.length() != 0) {
 
