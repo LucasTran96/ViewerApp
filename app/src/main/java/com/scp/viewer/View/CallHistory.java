@@ -608,6 +608,7 @@ public class CallHistory extends AppCompatActivity {
                 {
                     checkLoadMore = false;
                     currentSize = 0;
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         //listCall.clear();
                         //Method for refresh recycle view

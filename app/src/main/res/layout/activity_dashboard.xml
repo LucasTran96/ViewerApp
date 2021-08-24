@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
                 android:background="@drawable/custom_bg_shopp"
-                android:layout_height="125dp">
+                android:layout_height="wrap_content">
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_marginStart="10dp"
@@ -51,9 +51,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
+                    android:paddingBottom="10dp"
                     android:paddingStart="5dp"
-                    android:layout_height="match_parent"
-                    tools:ignore="RtlSymmetry">
+                    android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -127,6 +128,7 @@
                             tools:ignore="RtlSymmetry" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -159,6 +161,53 @@
                             tools:ignore="RtlSymmetry" />
 
                     </LinearLayout>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:text="Check Status"
+                        android:textAllCaps="false"
+                        android:textSize="14sp"
+                        android:paddingEnd="5dp"
+                        android:id="@+id/btn_Check_Status"
+                        android:paddingStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/colorAccent"
+                        android:background="@drawable/background_check_status_custorm"
+                        android:layout_height="25dp"/>
+
+                   <!-- <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:text="@string/Status"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=":"
+                            android:paddingStart="1dp"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:layout_gravity="center_vertical"
+                            android:paddingEnd="3dp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/white"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:id="@+id/txt_Status_Sync"
+                            android:paddingStart="5dp"
+                            android:text=""
+                            tools:ignore="RtlSymmetry" />
+
+                    </LinearLayout>-->
+
                 </LinearLayout>
 
 

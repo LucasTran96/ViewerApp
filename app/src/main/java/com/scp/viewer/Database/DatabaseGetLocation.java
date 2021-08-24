@@ -63,6 +63,7 @@ public class DatabaseGetLocation
                 {
                     //  contentValues1 receives the value from the method API_Add_Database()
                     ContentValues contentValues1 = API_Add_Database(gps.get(i),false);
+                    Log.d("contentValues1", contentValues1.toString());
                     // Insert a row of data into the table.
                     database.getWritableDatabase().insert(TABLE_GETLOCATION, null, contentValues1);
                 }

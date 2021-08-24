@@ -609,6 +609,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 endLoading = false;
                 if (isConnected(getApplicationContext()))
                 {
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         //contactListAdd.clear();
                         clearActionMode();

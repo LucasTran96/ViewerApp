@@ -138,6 +138,23 @@ public class Global {
     public static final String NOTIFICATION_PULL_ROW = "notification";
 
     /**
+     * Function Name
+     * settings_updated
+     * get_gps_now
+     * ambient_record_start
+     * report_problem
+     * check_network_available
+     */
+    public static final String FUNCTION_NAME_PUSH_NOTIFICATION = "PushNotificationToDevice";
+    public static final String FUNCTION_NAME_GET_CONNECTION_INFO = "GetConnectionInfo";
+    public static final String TYPE_GET_GPS_NOW = "get_gps_now";
+    public static final String TYPE_TAKE_A_PICTURE = "take_a_picture";
+    public static final String TYPE_SETTINGS_UPDATED = "settings_updated";
+    public static final String TYPE_CHECK_CONNECTION = "check_network_available";
+    public static final String TYPE_START_AMBIENT_RECORDING = "ambient_record_start";
+
+
+    /**
      * SharedPreferences
      */
     public static final String SETTINGS = "Setting";

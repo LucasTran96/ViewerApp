@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:minHeight="120dp"
+    android:gravity="center_vertical"
+    android:background="@android:color/transparent"
+    android:layout_height="wrap_content">
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        card_view:cardCornerRadius="10dp"
+        android:minHeight="100dp"
+        card_view:cardElevation="2dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/ln_Progress_Get_GPS_Now"
+                android:orientation="vertical"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="5% to Complete"
+                        android:id="@+id/txt_Percent"
+                        android:textStyle="bold"
+                        android:textColor="#5293f6"
+                        android:textSize="16sp"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical|right"
+                        android:layout_marginRight="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_timer_black_24dp"
+                            android:layout_height="15dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="@string/seconds_30"
+                            android:id="@+id/txt_Seconds"
+                            android:paddingStart="3dp"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+                <ProgressBar
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/PrB_Get_GPS_Now"
+                    android:progress="20"
+                    android:scaleY="2"
+                    android:max="100"
+                    android:indeterminate="true"
+                    android:indeterminateTint="#5293f6"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:id="@+id/ln_Current_Position"
+                android:visibility="visible"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/current_position"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:id="@+id/txt_Result_Get_GPS"
+                    android:textColor="@color/white"
+                    android:background="@drawable/background_get_gps_now_custorm"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:paddingBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:src="@drawable/gps_icon"
+                        android:layout_height="20dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:id="@+id/txt_Current_Position"
+                        android:text="16/234, Losangerles, Newyork, United"
+                        android:maxLines="2"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

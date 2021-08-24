@@ -193,6 +193,7 @@ public class ClipboardHistory extends AppCompatActivity {
                 currentSize = 0;
                 if (isConnected(getApplicationContext()))
                 {
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         //mData.clear();
                         //Method for refresh recycle view

@@ -24,8 +24,7 @@ public class GPS implements Serializable {
     private String Created_Date;
 
 
-    public GPS(int rowIndex, long ID, String device_ID, String client_GPS_Time,
-               Double latitude, Double longitude, int accuracy, String created_Date) {
+    public GPS(int rowIndex, long ID, String device_ID, String client_GPS_Time, Double latitude, Double longitude, int accuracy, String created_Date) {
         RowIndex = rowIndex;
         this.ID = ID;
         Device_ID = device_ID;
@@ -35,7 +34,6 @@ public class GPS implements Serializable {
         Accuracy = accuracy;
         Created_Date = created_Date;
     }
-
 
     public GPS() {
     }
@@ -108,6 +106,7 @@ public class GPS implements Serializable {
      "ID":239305087,
      "Device_ID":"D22228E7-9697-4BCC-A87B-382BF57624D2",
      "Client_GPS_Time":"2018-06-25T15:32:02",
+     "Location_Address": "Newyork"
      "Latitude":10.1123323,
      "Longitude":106.1234444,
      "Accuracy":0,

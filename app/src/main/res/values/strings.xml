@@ -76,6 +76,7 @@
     <string name="DeviceOS">Device OS</string>
     <string name="TargetVersion">Target App Version</string>
     <string name="LastSync">Last Sync</string>
+    <string name="Status" tools:ignore="MissingTranslation">Status</string>
     <string name="AdvantedOption">ADVANCED OPTIONS</string>
     <string name="SaveBattery">Save Battery</string>
     <string name="GPSInterval">GPS Interval</string>
@@ -127,5 +128,17 @@
     <string name="terrain" translatable="false">Terrain</string>
     <string name="satellite" translatable="false">Satellite</string>
     <string name="title_activity_maps_activityqw" translatable="false">Map</string>
+
+    <string name="get_gps_now" translatable="false">Get GPS Now</string>
+    <string name="play_ambient" translatable="false">Play</string>
+    <string name="take_a_photo_font" translatable="false">Take a photo front </string>
+    <string name="take_a_photo_back" translatable="false">Take a photo back</string>
+    <string name="seconds_30" translatable="false">30 seconds</string>
+    <!--Device is currently offline or location is off!-->
+    <string name="current_position" translatable="false">Current Position</string>
+    <string name="device_offline" translatable="false">Device is currently offline or location is off!</string>
+    <string name="to_complete" translatable="false">% to Complete</string>
+    <string name="done" translatable="false">Done</string>
+    <string name="completed" translatable="false">Completed</string>
 
 </resources>

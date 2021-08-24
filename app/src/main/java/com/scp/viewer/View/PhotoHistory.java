@@ -711,7 +711,9 @@ public class PhotoHistory extends AppCompatActivity {
             public void onRefresh() {
                 Calendar calendar = Calendar.getInstance();
                 endLoading = false;
-                if (isConnected(getApplicationContext())) {
+                if (isConnected(getApplicationContext()))
+                {
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         //listPhoto.clear();
                         if (!listPhoto.isEmpty())

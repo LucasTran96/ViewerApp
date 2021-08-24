@@ -525,6 +525,7 @@ public class URLHistory extends AppCompatActivity {
                 endLoading = false;
                 if (isConnected(getApplicationContext()))
                 {
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         //urlListAdd.clear();
                         if (!urlListAdd.isEmpty())

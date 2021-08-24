@@ -750,6 +750,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                 currentSize = 0;
                 if (isConnected(getApplicationContext()))
                 {
+                    checkRefresh = true;
                     if ((calendar.getTimeInMillis() - time_Refresh_Device) > LIMIT_REFRESH) {
                         //phoneCallRecordList.clear();
                         if (!phoneCallRecordList.isEmpty())

