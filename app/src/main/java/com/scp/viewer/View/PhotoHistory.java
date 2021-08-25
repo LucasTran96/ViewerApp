@@ -14,14 +14,17 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,18 +34,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.scp.viewer.API.APIMethod;
+import com.scp.viewer.API.APIURL;
 import com.scp.viewer.Adapter.AdapterPhotoHistory;
 import com.scp.viewer.Database.DatabaseLastUpdate;
 import com.scp.viewer.Database.DatabasePhotos;
+import com.scp.viewer.Model.DeviceStatus;
 import com.scp.viewer.Model.Photo;
 import com.scp.viewer.Model.PhotoJson;
 import com.scp.viewer.Model.Table;
@@ -61,12 +70,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import static com.scp.viewer.API.APIDatabase.getTimeItem;
+import static com.scp.viewer.API.APIMethod.GetJsonCheckConnectionFeature;
 import static com.scp.viewer.API.APIMethod.GetJsonFeature;
+import static com.scp.viewer.API.APIMethod.GetJsonNowFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
+import static com.scp.viewer.API.APIMethod.getMilliFromDate;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
@@ -87,11 +100,16 @@ import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_PULL_ROW;
 import static com.scp.viewer.API.Global.PHOTO_PULL_ROW;
 import static com.scp.viewer.API.Global.PHOTO_TOTAL;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_PHOTO;
+import static com.scp.viewer.API.Global.PRT_GET_PHOTO;
+import static com.scp.viewer.API.Global.TYPE_CHECK_CONNECTION;
+import static com.scp.viewer.API.Global.TYPE_TAKE_A_PICTURE;
 import static com.scp.viewer.API.Global._TOTAL;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Adapter.AdapterPhotoHistory.positionLastSelected;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHOTO;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
+import static com.scp.viewer.View.HistoryLocation.countDownTimer;
+import static com.scp.viewer.View.HistoryLocation.setProgressNow;
 
 public class PhotoHistory extends AppCompatActivity {
 
@@ -123,6 +141,16 @@ public class PhotoHistory extends AppCompatActivity {
     public static int countImageDownloaded = 0;
     //aviPhoto
     private AVLoadingIndicatorView aviPhoto;
+    private String minDateCheck;
+
+    // Dialog
+    AlertDialog.Builder mBuilder;
+    AlertDialog dialog;
+    ProgressBar PrB_Take_A_Photo;
+    ImageView img_Result;
+    LinearLayout ln_Show_Photo, ln_Progress_Take_A_Photo;
+    TextView txt_Percent, txt_Seconds, txt_Result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -314,7 +342,7 @@ public class PhotoHistory extends AppCompatActivity {
             String value = "<RequestParams Device_ID=\"" + table.getDevice_ID() + "\" Min_Date=\"" + min_Time + "\" Max_Date= \"" + max_Date + " \" Start=\"0\" Length=\"1000\" />";
             String function = "GetPhotos";*/
 
-            return GetJsonFeature(table, this.startIndex,"GetPhotos");
+            return GetJsonFeature(table, this.startIndex, PRT_GET_PHOTO);
         }
 
         @Override
@@ -429,7 +457,7 @@ public class PhotoHistory extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_action_take_a_photo, menu);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         return true;
     }
@@ -513,7 +541,18 @@ public class PhotoHistory extends AppCompatActivity {
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_black_24dp);
             }
         }
-        else if (item.getItemId() == R.id.item_Download_selected_images) {
+        else if (item.getItemId() == R.id.item_Take_a_Photo_Font)
+        {
+            //1: Take_a_Photo_Font
+            takeAPhoto(1);
+        }
+        else if (item.getItemId() == R.id.item_Take_a_Photo_Back)
+        {
+            // Take_a_Photo_Back
+            takeAPhoto(2); //2: Take_a_Photo_Back
+        }
+        else if (item.getItemId() == R.id.item_Download_selected_images)
+        {
 
             if (isConnected(PhotoHistory.this)) {
                 if (checkPermissions)
@@ -577,6 +616,186 @@ public class PhotoHistory extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    /**
+     * takeAPhoto this is the method to handle the remote photography event
+     * step 1: pushNotification to target app, 1: capture with front camera; 2: taken with the back camera
+     * step 2: wait 20s
+     * step 3: after waiting for 30 seconds, get a new photo and display it on the custom Dialog for users to see directly.
+     * @param camera_Use 1 or 2
+     */
+    private void takeAPhoto(int camera_Use)
+    {
+        //Take_a_Photo_Font
+        minDateCheck = getTimeNow();
+        // minDateCheck is the time to compare with last online to see if it's too big to show the device is online or offline.
+        setDialog(PhotoHistory.this);
+        // Dialog includes: Process name, Progress, Detailed target device information (Display can't get device information when Network Offline)
+        // Display custom process Dialog at 0% Starting...
+        // handle get gps now
+        setProgressNow(20, txt_Percent, PhotoHistory.this);
+        final String minDate = minDateCheck;
+        // handle check connection
+        new APIMethod.PushNotification(table.getID(), TYPE_TAKE_A_PICTURE, table.getDevice_Identifier(), camera_Use).execute();
+
+        // Show Dialog custom process at 30% Push notification to the target app.
+        setProgressNow(30, txt_Percent, PhotoHistory.this);
+        countDownTimer(txt_Seconds, txt_Percent, PhotoHistory.this);
+        setDePlay(minDate);
+    }
+
+    /**
+     * setDialog this is the Dialog constructor for the take-a-photo method.
+     */
+    @SuppressLint("SetTextI18n")
+    public void setDialog(final Activity mActivity)
+    {
+        mBuilder = new AlertDialog.Builder(mActivity);
+        @SuppressLint("InflateParams") View mView = LayoutInflater.from(mActivity).inflate(R.layout.item_dialog_pushnotification_take_a_picture, null);
+
+        // Progress Bar
+        PrB_Take_A_Photo = mView.findViewById(R.id.PrB_Take_A_Photo);
+
+        // TextView
+        txt_Percent = mView.findViewById(R.id.txt_Percent);
+        txt_Seconds = mView.findViewById(R.id.txt_Seconds);
+        txt_Result = mView.findViewById(R.id.txt_Result);
+
+        // ImageView
+        img_Result = mView.findViewById(R.id.img_Result);
+        // LinearLayout
+        ln_Show_Photo = mView.findViewById(R.id.ln_Show_Photo);
+        ln_Progress_Take_A_Photo = mView.findViewById(R.id.ln_Progress_Take_A_Photo);
+        ln_Show_Photo.setVisibility(View.GONE);
+
+        mBuilder.setView(mView);
+        dialog = mBuilder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        txt_Percent.setText(0 + getApplicationContext().getResources().getString(R.string.to_complete));
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                // handle when exiting dialog
+                //Toast.makeText(mActivity, "Close Dialog", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    /**
+     * setDePlay is the method to wait for how many seconds before performing the next steps.
+     */
+    public void setDePlay( final String minDate)
+    {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // The processor obtains information about the current state of the target device.
+                new getPhotoNowAsyncTask(minDate).execute();
+            }
+        }, 20000);
+    }
+
+    /**
+     * checkConnectAsyncTask this is the AsyncTask method that calls the server to get the latest status information of the target device.
+     */
+    @SuppressLint("StaticFieldLeak")
+    private class getPhotoNowAsyncTask extends AsyncTask<String, Void, String>
+    {
+
+        String minDate;
+
+        public getPhotoNowAsyncTask(String minDate) {
+            this.minDate = minDate;
+        }
+
+        @Override
+        protected String doInBackground(String... strings)
+        {
+
+            Log.d("locationId", table.getDevice_Identifier() + "");
+            return GetJsonNowFeature(table, minDate,PRT_GET_PHOTO);
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String s) {
+            try {
+
+                setProgressNow(90, txt_Percent, PhotoHistory.this);
+
+                deviceObject(s);
+                JSONObject jsonObj = new JSONObject(bodyLogin.getData());
+                JSONObject jsonObjListImg = jsonObj.getJSONObject("ListImg");
+                String jsonObjCDN_URL = jsonObj.getString("CDN_URL");
+                JSONArray GPSJson = jsonObjListImg.getJSONArray("Table");
+                ln_Show_Photo.setVisibility(View.VISIBLE);
+                ln_Progress_Take_A_Photo.setVisibility(View.GONE);
+
+                if (GPSJson.length() != 0)
+                {
+                    Log.d("PhotoHistory"," GPSJson.get(i) = "+ GPSJson.get(0));
+                    Gson gson = new Gson();
+                    PhotoJson photoJsonHistory = gson.fromJson(String.valueOf(GPSJson.get(0)), PhotoJson.class);
+                    Photo photo = new Photo();
+                    photo.setRowIndex(photoJsonHistory.getID());
+                    photo.setID(photoJsonHistory.getID());
+                    photo.setIsLoaded(0);
+                    photo.setDevice_ID(photoJsonHistory.getDevice_ID());
+                    photo.setClient_Captured_Date(photoJsonHistory.getClientCapturedDate());
+                    photo.setCaption(photoJsonHistory.getCaption());
+                    photo.setFile_Name(photoJsonHistory.getFileName());
+                    photo.setExt(photoJsonHistory.getExt());
+                    photo.setMedia_URL(photoJsonHistory.getMediaURL());
+                    photo.setCreated_Date(photoJsonHistory.getCreatedDate());
+                    photo.setCDN_URL(jsonObjCDN_URL);
+
+                   // Log.d("PhotoHistory"," Add Photo = "+  photo.getDevice_ID() + " Add Name = "+  photo.getFile_Name());
+
+                    if (photo.getMedia_URL() != null && photo.getFile_Name() != null && photo.getCDN_URL() != null)
+                    {
+                        img_Result.setVisibility(View.VISIBLE);
+                        txt_Result.setVisibility(View.GONE);
+
+                        String url = photo.getCDN_URL() + photo.getMedia_URL()  + "/" + photo.getFile_Name();//+ "/thumb/l"
+                        //photo.getCDN_URL() + photo.getMedia_URL() + "/thumb/l" + "/" + photo.getFile_Name();
+
+                        Glide.with(PhotoHistory.this)
+                                .load(url) //Edit
+                                .placeholder(R.drawable.spinner)
+                                .error(R.drawable.no_image)
+                                .into(img_Result);
+                    }
+                    else {
+                        setProgressNow(100, txt_Percent, PhotoHistory.this);
+                        img_Result.setVisibility(View.GONE);
+                        txt_Result.setVisibility(View.VISIBLE);
+                        txt_Result.setText(getResources().getString(R.string.device_offline_photo));
+                    }
+                }
+                else {
+                    setProgressNow(100, txt_Percent, PhotoHistory.this);
+                    ln_Show_Photo.setVisibility(View.VISIBLE);
+                    ln_Progress_Take_A_Photo.setVisibility(View.VISIBLE);
+                    img_Result.setVisibility(View.GONE);
+                    txt_Result.setVisibility(View.VISIBLE);
+                    txt_Result.setText(getResources().getString(R.string.device_offline_photo));
+                }
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                // error when get Check-Connection data
+                ln_Show_Photo.setVisibility(View.VISIBLE);
+                ln_Progress_Take_A_Photo.setVisibility(View.GONE);
+                txt_Result.setText(getResources().getString(R.string.device_offline_photo));
+            }
+        }
     }
 
     /**
@@ -661,7 +880,7 @@ public class PhotoHistory extends AppCompatActivity {
         if(isInActionMode)
         {
             toolbar.getMenu().clear();
-            toolbar.inflateMenu(R.menu.menu_main);
+            toolbar.inflateMenu(R.menu.menu_action_take_a_photo);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setHomeAsUpIndicator(null);

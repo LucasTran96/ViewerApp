@@ -79,6 +79,23 @@
 
             </LinearLayout>
 
+            <!--
+             <LinearLayout
+                android:layout_width="match_parent"
+               android:layout_margin="5dp"
+                android:id="@+id/ln_Device_Status"
+                android:visibility="visible"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"/>
+
+            </LinearLayout>
+
+            -->
             <LinearLayout
                 android:layout_width="match_parent"
                android:layout_margin="5dp"

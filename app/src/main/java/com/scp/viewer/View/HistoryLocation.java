@@ -309,7 +309,7 @@ public class HistoryLocation extends AppCompatActivity {
         protected void onPostExecute(String s) {
             try {
 
-                setProgressGetGPSNow(90);
+                setProgressNow(90, txt_Percent, HistoryLocation.this);
 
                 // Show custom process Dialog at 70% Get gps now...
                 APIURL.deviceObject(s);
@@ -325,7 +325,7 @@ public class HistoryLocation extends AppCompatActivity {
                     // handle the latest gps display
                     if(gpsList.size() == 1)
                     {
-                        setProgressGetGPSNow(100);
+                        setProgressNow(100, txt_Percent, HistoryLocation.this);
                         ln_Current_Position.setVisibility(View.VISIBLE);
                         ln_Progress_Get_GPS_Now.setVisibility(View.GONE);
                         txt_Current_Position.setText(getAddress(gps.getLatitude(), gps.getLongitude(),HistoryLocation.this));
@@ -345,7 +345,7 @@ public class HistoryLocation extends AppCompatActivity {
 
                     ln_Current_Position.setVisibility(View.VISIBLE);
                     ln_Progress_Get_GPS_Now.setVisibility(View.GONE);
-                    setProgressGetGPSNow(100);
+                    setProgressNow(100, txt_Percent, HistoryLocation.this);
                     txt_Result_Get_GPS.setText("Get GPS now failed");
                     txt_Current_Position.setText(getApplicationContext().getResources().getString(R.string.device_offline));
                     // error getting gps now
@@ -540,15 +540,15 @@ public class HistoryLocation extends AppCompatActivity {
                 // handle get gps now
                 //Toast.makeText(HistoryLocation.this, "Start sending get gps now", Toast.LENGTH_LONG).show();
 
-                setProgressGetGPSNow(20);
+                setProgressNow(20, txt_Percent, HistoryLocation.this);
                 final String minDate = getTimeNow();
                 new APIMethod.PushNotification(table.getID(), TYPE_GET_GPS_NOW, table.getDevice_Identifier(), 0).execute();
                 // handle check connection
                 new APIMethod.PushNotification(table.getID(), TYPE_CHECK_CONNECTION, table.getDevice_Identifier(), 0).execute();
 
                 // Display custom process Dialog at 25% Push notification to the target app
-                setProgressGetGPSNow(30);
-                countDownTimer();
+                setProgressNow(30, txt_Percent, HistoryLocation.this);
+                countDownTimer(txt_Seconds, txt_Percent, HistoryLocation.this);
                 setDePlay(minDate);
 
             } else {
@@ -561,40 +561,43 @@ public class HistoryLocation extends AppCompatActivity {
 
     /**
      * countDownTimer count down timer 20000 milliseconds
+     * Use: HistoryLocation.java
+     *      DashBoard.java
      */
-    private void countDownTimer()
+    public static void countDownTimer(final TextView txt_Seconds, final TextView text_Percent, final Activity mActivity)
     {
         new CountDownTimer(20000, 1000) {
 
+            @SuppressLint("SetTextI18n")
             public void onTick(long duration) {
                 // Duration
                 long second = (duration / 1000) % 60;
-                txt_Seconds.setText(second + " Seconds");
+                txt_Seconds.setText(second + mActivity.getResources().getString(R.string.seconds));
 
                 if (second == 18)
-                    setProgressGetGPSNow(40);
+                    setProgressNow(40, text_Percent, mActivity);
                 else if(second == 16)
-                    setProgressGetGPSNow(45);
+                    setProgressNow(45, text_Percent, mActivity);
                 else if(second == 14)
-                    setProgressGetGPSNow(50);
+                    setProgressNow(50, text_Percent, mActivity);
                 else if(second == 12)
-                    setProgressGetGPSNow(55);
+                    setProgressNow(55, text_Percent, mActivity);
                 else if(second == 10)
-                    setProgressGetGPSNow(60);
+                    setProgressNow(60, text_Percent, mActivity);
                 else if(second == 8)
-                    setProgressGetGPSNow(65);
+                    setProgressNow(65, text_Percent, mActivity);
                 else if(second == 6)
-                    setProgressGetGPSNow(70);
+                    setProgressNow(70, text_Percent, mActivity);
                 else if(second == 4)
-                    setProgressGetGPSNow(75);
+                    setProgressNow(75, text_Percent, mActivity);
                 else if(second == 2)
-                    setProgressGetGPSNow(80);
+                    setProgressNow(80, text_Percent, mActivity);
                 else if(second == 0)
-                    setProgressGetGPSNow(85);
+                    setProgressNow(85, text_Percent, mActivity);
             }
 
             public void onFinish() {
-                txt_Seconds.setText(getApplicationContext().getResources().getString(R.string.done));
+                txt_Seconds.setText(mActivity.getResources().getString(R.string.done));
             }
         }.start();
     }
@@ -619,14 +622,14 @@ public class HistoryLocation extends AppCompatActivity {
      * @param percent percent
      */
     @SuppressLint("SetTextI18n")
-    public void setProgressGetGPSNow(int percent)
+    public static void setProgressNow(int percent, TextView txt_Percent, Activity mActivity)
     {
-        PrB_Get_GPS_Now.setProgress(percent);
+        //PrB_Get_GPS_Now.setProgress(percent);
 
         if(percent == 100)
-            txt_Percent.setText(getApplicationContext().getResources().getString(R.string.completed));
+            txt_Percent.setText(mActivity.getResources().getString(R.string.completed));
         else
-            txt_Percent.setText(percent + getApplicationContext().getResources().getString(R.string.to_complete));
+            txt_Percent.setText(percent + " " +mActivity.getResources().getString(R.string.to_complete));
     }
 
     /**

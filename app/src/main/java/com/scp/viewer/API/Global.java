@@ -185,6 +185,10 @@ public class Global {
     public static final String NOTIFICATION_TOTAL = "notification_Total";
     public static final String KEYLOGGER_TOTAL = "keylogger_Total";
 
+    // protocols
+    public static final String PRT_GET_PHOTO = "GetPhotos";
+
+
     /**
      * SMS type
      */

@@ -136,9 +136,11 @@
     <string name="seconds_30" translatable="false">30 seconds</string>
     <!--Device is currently offline or location is off!-->
     <string name="current_position" translatable="false">Current Position</string>
-    <string name="device_offline" translatable="false">Device is currently offline or location is off!</string>
+    <string name="device_offline" translatable="false">The device is currently offline or the location is off!</string>
+    <string name="device_offline_photo" translatable="false">The device is currently offline or the Photo History feature is not enabled!</string>
     <string name="to_complete" translatable="false">% to Complete</string>
     <string name="done" translatable="false">Done</string>
     <string name="completed" translatable="false">Completed</string>
+    <string name="seconds" translatable="false"> Seconds</string>
 
 </resources>

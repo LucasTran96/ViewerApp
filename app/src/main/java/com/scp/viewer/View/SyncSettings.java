@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.scp.viewer.API.APIDatabase;
+import com.scp.viewer.API.APIMethod;
 import com.scp.viewer.API.APIURL;
 import com.scp.viewer.Database.DatabaseDevice;
 import com.scp.viewer.Database.DatabaseGetSetting;
@@ -52,6 +53,8 @@ import static com.scp.viewer.API.APIMethod.startAnim;
 import static com.scp.viewer.API.APIMethod.stopAnim;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.REQUEST_CODE_GPS_ACCESS_CODE;
+import static com.scp.viewer.API.Global.TYPE_CHECK_CONNECTION;
+import static com.scp.viewer.API.Global.TYPE_SETTINGS_UPDATED;
 import static com.scp.viewer.API.Global.time_Refresh_Setting;
 
 public class SyncSettings extends AppCompatActivity implements View.OnClickListener {
@@ -315,7 +318,10 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                     startAnim(avLoadingIndicatorView);
                     new set_SettingAsyncTask().execute();
                     new getSettingAsyncTask().execute();
-                    //APIDatabase.getTimeLastSync(txt_Last_Sync, Dashboard.this, table.getModified_Date());
+
+                    // handle settings updated
+                    setDePlaySyncSetting();
+
                 } else {
                     //
                     //APIDatabase.getTimeLastSync(txt_Last_Sync, Dashboard.this, table.getDevice_ID());
@@ -353,6 +359,22 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 break;
             }
         }
+    }
+
+    /**
+     * setDePlay is the method to wait for how many seconds before performing the next steps.
+     */
+    private void setDePlaySyncSetting()
+    {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // The processor obtains information about the current state of the target device.
+                // handle settings updated
+                new APIMethod.PushNotification(table.getID(), TYPE_SETTINGS_UPDATED, table.getDevice_Identifier(), 0).execute();
+            }
+        }, 3000);
     }
 
     @SuppressLint("StaticFieldLeak")

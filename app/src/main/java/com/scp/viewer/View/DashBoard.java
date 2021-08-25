@@ -66,6 +66,8 @@ import static com.scp.viewer.API.Global.URL_PULL_ROW;
 import static com.scp.viewer.API.Global.VIBER_PULL_ROW;
 import static com.scp.viewer.API.Global.WHATSAPP_PULL_ROW;
 import static com.scp.viewer.API.Global.YOUTUBE_PULL_ROW;
+import static com.scp.viewer.View.HistoryLocation.countDownTimer;
+import static com.scp.viewer.View.HistoryLocation.setProgressNow;
 
 public class DashBoard extends AppCompatActivity {
 
@@ -108,6 +110,7 @@ public class DashBoard extends AppCompatActivity {
         setID();
         setEvent();
     }
+
 
     private void setEvent()
     {
@@ -173,18 +176,20 @@ public class DashBoard extends AppCompatActivity {
                 // handle get connection
                 if (APIURL.isConnected(DashBoard.this))
                 {
+                    minDateCheck = getTimeNow();
+                    // minDateCheck is the time to compare with last online to see if it's too big to show the device is online or offline.
                     setDialog(DashBoard.this);
                     // Dialog includes: Process name, Progress, Detailed target device information (Display can't get device information when Network Offline)
                     // Display custom process Dialog at 0% Starting...
                     // handle get gps now
-                    setProgressCheckConnection(20);
+                    setProgressNow(20, txt_Percent, DashBoard.this);
                     final String minDate = getTimeNow();
                     // handle check connection
                     new APIMethod.PushNotification(table.getID(), TYPE_CHECK_CONNECTION, table.getDevice_Identifier(), 0).execute();
 
                     // Show Dialog custom process at 30% Push notification to the target app.
-                    setProgressCheckConnection(30);
-                    countDownTimer();
+                    setProgressNow(30, txt_Percent, DashBoard.this);
+                    countDownTimer(txt_Seconds, txt_Percent, DashBoard.this);
                     setDePlay(minDate);
 
                 } else {
@@ -212,8 +217,9 @@ public class DashBoard extends AppCompatActivity {
     }
 
     /**
-     * setDialog this is the Dialog constructor for the get GPS now method.
+     * setDialog this is the Dialog constructor for the check-connection method.
      */
+    @SuppressLint("SetTextI18n")
     public void setDialog(final Activity mActivity)
     {
         mBuilder = new AlertDialog.Builder(mActivity);
@@ -240,7 +246,7 @@ public class DashBoard extends AppCompatActivity {
         dialog = mBuilder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
-        txt_Percent.setText("0% to Complete");
+        txt_Percent.setText(0 + getApplicationContext().getResources().getString(R.string.to_complete));
 
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -251,16 +257,19 @@ public class DashBoard extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("SetTextI18n")
+
+    /**
+     * setProgressCheckConnection set progress check-connection
+     * @param percent percent
+     */
+    /*@SuppressLint("SetTextI18n")
     private void setProgressCheckConnection(int percent)
     {
-        //PrB_Check_Connection.setProgress(percent);
-
         if(percent == 100)
-            txt_Percent.setText("Completed");
+            txt_Percent.setText(getApplicationContext().getResources().getString(R.string.completed));
         else
-            txt_Percent.setText(percent+"% to Complete");
-    }
+            txt_Percent.setText(percent + getApplicationContext().getResources().getString(R.string.to_complete));
+    }*/
 
     /**
      * setDePlay is the method to wait for how many seconds before performing the next steps.
@@ -272,55 +281,13 @@ public class DashBoard extends AppCompatActivity {
             @Override
             public void run() {
                 // The processor obtains information about the current state of the target device.
-                minDateCheck = getTimeNow();
                 new checkConnectAsyncTask(minDate).execute();
             }
         }, 20000);
     }
 
-    private void countDownTimer()
-    {
-        new CountDownTimer(20000, 1000) {
-
-            public void onTick(long duration) {
-                //tTimer.setText("seconds remaining: " + millisUntilFinished / 1000);
-                //here you can have your logic to set text to edittext resource id
-                // Duration
-                long second = (duration / 1000) % 60;
-                txt_Seconds.setText(second + " Seconds");
-
-                if (second == 18)
-                    setProgressCheckConnection(40);
-                else if(second == 16)
-                    setProgressCheckConnection(45);
-                else if(second == 14)
-                    setProgressCheckConnection(50);
-                else if(second == 12)
-                    setProgressCheckConnection(55);
-                else if(second == 10)
-                    setProgressCheckConnection(60);
-                else if(second == 8)
-                    setProgressCheckConnection(65);
-                else if(second == 6)
-                    setProgressCheckConnection(70);
-                else if(second == 4)
-                    setProgressCheckConnection(75);
-                else if(second == 2)
-                    setProgressCheckConnection(80);
-                else if(second == 0)
-                    setProgressCheckConnection(85);
-            }
-
-            public void onFinish() {
-                txt_Seconds.setText("Done");
-            }
-
-        }.start();
-
-    }
-
     /**
-     * getGPSNowAsyncTask this is the AsyncTask method that calls the server to get the latest status information of the target device.
+     * checkConnectAsyncTask this is the AsyncTask method that calls the server to get the latest status information of the target device.
      */
     private class checkConnectAsyncTask extends AsyncTask<String, Void, String>
     {
@@ -344,7 +311,7 @@ public class DashBoard extends AppCompatActivity {
         protected void onPostExecute(String s) {
             try {
 
-                setProgressCheckConnection(90);
+                setProgressNow(90, txt_Percent, DashBoard.this);
 
                 // Display custom process Dialog at 70% Get GPS now...
                 APIURL.deviceObject(s);
@@ -359,7 +326,7 @@ public class DashBoard extends AppCompatActivity {
                     ln_Device_Status.setVisibility(View.VISIBLE);
                     ln_Progress_Check_Connection.setVisibility(View.GONE);
 
-                    if(deviceStatus != null && deviceStatus.getLastOnline()!=null && getMilliFromDate(minDateCheck) < getMilliFromDate(deviceStatus.getLastOnline()))
+                    if(deviceStatus != null && deviceStatus.getLastOnline()!= null && getMilliFromDate(minDateCheck) < getMilliFromDate(deviceStatus.getLastOnline()))
                     {
 
                         // error when converting GPS data
