@@ -25,6 +25,7 @@ import android.os.Environment;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -148,6 +149,7 @@ public class PhotoHistory extends AppCompatActivity {
     AlertDialog dialog;
     ProgressBar PrB_Take_A_Photo;
     ImageView img_Result;
+    CardView crv_Take_a_Photo_Now;
     LinearLayout ln_Show_Photo, ln_Progress_Take_A_Photo;
     TextView txt_Percent, txt_Seconds, txt_Result;
 
@@ -662,6 +664,9 @@ public class PhotoHistory extends AppCompatActivity {
         txt_Seconds = mView.findViewById(R.id.txt_Seconds);
         txt_Result = mView.findViewById(R.id.txt_Result);
 
+        // CardView
+        crv_Take_a_Photo_Now = mView.findViewById(R.id.crv_Take_a_Photo_Now);
+
         // ImageView
         img_Result = mView.findViewById(R.id.img_Result);
         // LinearLayout
@@ -763,7 +768,7 @@ public class PhotoHistory extends AppCompatActivity {
 
                         String url = photo.getCDN_URL() + photo.getMedia_URL()  + "/" + photo.getFile_Name();//+ "/thumb/l"
                         //photo.getCDN_URL() + photo.getMedia_URL() + "/thumb/l" + "/" + photo.getFile_Name();
-
+                        crv_Take_a_Photo_Now.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.stranparent));
                         Glide.with(PhotoHistory.this)
                                 .load(url) //Edit
                                 .placeholder(R.drawable.spinner)
