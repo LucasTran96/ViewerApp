@@ -233,7 +233,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     protected void onResume() {
-        MyApplication.getInstance().trackScreenView("Dashboard Screen");
+        //MyApplication.getInstance().trackScreenView("Dashboard Screen");
         super.onResume();
     }
 
@@ -311,7 +311,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId()) {
             case R.id.btn_Save_Sync: {
-                MyApplication.getInstance().trackEvent("Dashboard", "Open Save_Sync", "");
+                //MyApplication.getInstance().trackEvent("Dashboard", "Open Save_Sync", "");
                 if (APIURL.isConnected(this)) {
                     avLoadingIndicatorView.setVisibility(View.VISIBLE);
                     setClickableItems(false);
@@ -332,7 +332,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
             }
             case R.id.ln_AccessCode: {
                 /* Open the Access Code class and transmit the Access_Code value */
-                MyApplication.getInstance().trackEvent("Dashboard", "Open AccessCode", "");
+                //MyApplication.getInstance().trackEvent("Dashboard", "Open AccessCode", "");
                 Intent intent1 = new Intent(this, AccessCode.class);
                 intent1.putExtra("Access_Code", txt_Access_Code.getText().toString());
                 startActivityForResult(intent1, REQUEST_CODE_GPS_ACCESS_CODE);
@@ -423,7 +423,7 @@ public class SyncSettings extends AppCompatActivity implements View.OnClickListe
                 avLoadingIndicatorView.setVisibility(View.GONE);
                 stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
                 //logger.error("getSettingAsyncTask =="+ e+"\n================End");
             }

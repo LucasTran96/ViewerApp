@@ -65,7 +65,7 @@ public class AdapterNoteHistory extends RecyclerView.Adapter<AdapterNoteHistory.
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
                 Notes notes = mDataSet.get(position);
-                MyApplication.getInstance().trackEvent("NoteHistory", "View note detail", "" + notes.getID());
+                //MyApplication.getInstance().trackEvent("NoteHistory", "View note detail", "" + notes.getID());
                 // Path through new activity.
                 Intent intent = new Intent(mActivity, NotesHistoryDetail.class);
                 intent.putExtra("notes_Detail", notes);

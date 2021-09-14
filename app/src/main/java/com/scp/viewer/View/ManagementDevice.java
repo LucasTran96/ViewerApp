@@ -490,7 +490,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
                 }
 
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
@@ -509,7 +509,7 @@ public class ManagementDevice extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onResume() {
-        MyApplication.getInstance().trackScreenView("ManagementDevice Screen");
+        //MyApplication.getInstance().trackScreenView("ManagementDevice Screen");
         super.onResume();
     }
 

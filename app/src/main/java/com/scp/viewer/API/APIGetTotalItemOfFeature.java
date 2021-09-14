@@ -203,7 +203,7 @@ public class APIGetTotalItemOfFeature {
                 setNewTotalItemOfFeature(functionName, totalRow, txt_total_number);
 
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
@@ -316,7 +316,7 @@ public class APIGetTotalItemOfFeature {
                 // update adapter
 
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }

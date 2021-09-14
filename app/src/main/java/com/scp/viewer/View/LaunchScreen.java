@@ -152,7 +152,7 @@ public class LaunchScreen extends AppCompatActivity {
                 DEFAULT_LINK_RENEW = getStringResourceByName("LINK_RENEW",context);
             }
         } catch (Exception e) {
-            MyApplication.getInstance().trackException(e);
+            //MyApplication.getInstance().trackException(e);
             e.getMessage();
         }
     }
@@ -194,7 +194,7 @@ public class LaunchScreen extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 Toast.makeText(LaunchScreen.this, "Has an error with the link protocol", Toast.LENGTH_SHORT).show();
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 Intent intentMain = new Intent(getApplicationContext(), Authentication.class);
                 startActivity(intentMain);
                 finish();
@@ -207,7 +207,7 @@ public class LaunchScreen extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        MyApplication.getInstance().trackScreenView("LaunchScreen Screen");
+        //MyApplication.getInstance().trackScreenView("LaunchScreen Screen");
         super.onResume();
     }
 }

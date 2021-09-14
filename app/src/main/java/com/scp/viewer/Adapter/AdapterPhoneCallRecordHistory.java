@@ -201,7 +201,7 @@ public class AdapterPhoneCallRecordHistory extends RecyclerView.Adapter<AdapterP
 
     private void playAudio() {
         try {
-            MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
+            //MyApplication.getInstance().trackEvent("PhoneCallRecordHistory", "Download and play audio", "Play PhoneCallRecord");
             mediaPlayerStart = true;
             String fileName =  "/" + phoneCallRecorded.getAudioName();
             Log.d("AmbientMediaLink",fileName + " urlAudio = " + urlAudio);

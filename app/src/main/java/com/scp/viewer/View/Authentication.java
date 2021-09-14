@@ -32,6 +32,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.scp.viewer.API.APIURL;
 import com.scp.viewer.Database.DatabaseUser;
 import com.scp.viewer.Model.User;
@@ -67,6 +69,8 @@ public class Authentication extends AppCompatActivity {
     private AVLoadingIndicatorView avLoadingIndicatorView;
     // public static Body bodyLogin =new Body();
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +105,9 @@ public class Authentication extends AppCompatActivity {
         txt_AppName_Authentication.setText(DEFAULT_PRODUCT_NAME);
         txt_AppVersion_Authentication.setText(DEFAULT_VERSION_NAME);
 
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         Log.d("DEFAULT_LOGO_IMAGE_PATH", DEFAULT_LOGO_IMAGE_PATH);
         Picasso.with(getApplicationContext()).load(DEFAULT_LOGO_IMAGE_PATH).error(R.drawable.no_image).into(img_Logo_Authentication);
     }
@@ -130,7 +137,13 @@ public class Authentication extends AppCompatActivity {
         btn_SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyApplication.getInstance().trackEvent("SignIn", "SignIn", "Login Event");
+                //MyApplication.getInstance().trackEvent("SignIn", "SignIn", "Login Event");
+
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "SignIn");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "SignIn");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Login Event");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
                 try  {
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);

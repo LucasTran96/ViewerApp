@@ -395,7 +395,7 @@ public class YouTubeHistory extends AppCompatActivity {
                 }
                 stopAnim(avLoadingIndicatorView);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+              //  MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }

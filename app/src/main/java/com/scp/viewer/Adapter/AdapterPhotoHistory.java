@@ -229,7 +229,7 @@ public class AdapterPhotoHistory extends RecyclerView.Adapter<AdapterPhotoHistor
 
             } else if (adapterPosition != RecyclerView.NO_POSITION) {
                 Photo photo = photoList.get(adapterPosition);
-                MyApplication.getInstance().trackEvent("PhotoHistory", "View Photo detail ", "View PhotoHistory");
+                //MyApplication.getInstance().trackEvent("PhotoHistory", "View Photo detail ", "View PhotoHistory");
                 Intent intent = new Intent(photoHistory, PhotoHistoryDetail.class);
                 intent.putExtra("position", adapterPosition);
                 photoHistory.startActivity(intent);

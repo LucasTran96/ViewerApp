@@ -12,11 +12,6 @@ package com.scp.viewer.View;
 
 import android.app.Application;
 import android.content.res.Resources;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.StandardExceptionParser;
-import com.google.android.gms.analytics.Tracker;
-import com.scp.viewer.API.AnalyticsTrackers;
 
 public class MyApplication extends Application {
     private static Resources res;
@@ -30,8 +25,7 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
         res = getResources();
-        AnalyticsTrackers.initialize(this);
-        AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
+
 
     }
 
@@ -39,7 +33,7 @@ public class MyApplication extends Application {
         return res;
     }
 
-    public static synchronized MyApplication getInstance() {
+   /* public static synchronized MyApplication getInstance() {
         return mInstance;
     }
 
@@ -47,13 +41,13 @@ public class MyApplication extends Application {
         AnalyticsTrackers analyticsTrackers = AnalyticsTrackers.getInstance();
         return analyticsTrackers.get(AnalyticsTrackers.Target.APP);
     }
-
+*/
     /***
      * Tracking screen view
      *
      * @param screenName screen name to be displayed on GA dashboard
      */
-    public void trackScreenView(String screenName) {
+  /*  public void trackScreenView(String screenName) {
         Tracker t = getGoogleAnalyticsTracker();
 
         // Set screen name.
@@ -63,14 +57,14 @@ public class MyApplication extends Application {
         t.send(new HitBuilders.ScreenViewBuilder().build());
 
         GoogleAnalytics.getInstance(this).dispatchLocalHits();
-    }
+    }*/
 
     /***
      * Tracking exception
      *
      * @param e exception to be tracked
      */
-    public void trackException(Exception e) {
+   /* public void trackException(Exception e) {
         if (e != null) {
             Tracker t = getGoogleAnalyticsTracker();
 
@@ -82,7 +76,7 @@ public class MyApplication extends Application {
                     .build()
             );
         }
-    }
+    }*/
 
     /***
      * Tracking event
@@ -91,12 +85,12 @@ public class MyApplication extends Application {
      * @param action   action of the event
      * @param label    label
      */
-    public void trackEvent(String category, String action, String label) {
+  /*  public void trackEvent(String category, String action, String label) {
         Tracker t = getGoogleAnalyticsTracker();
 
         // Build and send an Event.
         t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
-    }
+    }*/
 
 
 

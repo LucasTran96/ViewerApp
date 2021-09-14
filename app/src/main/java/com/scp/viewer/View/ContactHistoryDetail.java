@@ -118,7 +118,7 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
             case R.id.txt_MakeCall_Contact_Detail_History: {
 
                 if (testCall) {
-                    MyApplication.getInstance().trackEvent("ContactHistory", "Call: " + contact.getContact_Name(), "" + contact.getContact_Name());
+                    //MyApplication.getInstance().trackEvent("ContactHistory", "Call: " + contact.getContact_Name(), "" + contact.getContact_Name());
                     //intent_Contact = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "001"+call.getPhone_Number().trim()));
                     intent_Contact = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact.getPhone()));
                     startActivity(intent_Contact);
@@ -129,7 +129,7 @@ public class ContactHistoryDetail extends AppCompatActivity implements View.OnCl
                 break;
             }
             case R.id.txt_SendMessager_Contact_Detail_History: {
-                MyApplication.getInstance().trackEvent("ContactHistory", "Send SMS: " + contact.getContact_Name(), "" + contact.getContact_Name());
+                //MyApplication.getInstance().trackEvent("ContactHistory", "Send SMS: " + contact.getContact_Name(), "" + contact.getContact_Name());
                 intent_Contact = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + contact.getPhone()));
                 intent_Contact.putExtra("", "");
                 startActivity(intent_Contact);

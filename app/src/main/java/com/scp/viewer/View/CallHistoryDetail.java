@@ -178,7 +178,7 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
             case R.id.txt_MakeCall_Call_Detail_History:
             case R.id.img_Make_Call: {
                 if (testCall) {
-                    MyApplication.getInstance().trackEvent("CallHistory", "Call: " + call.getContact_Name(), "" + call.getContact_Name());
+                   // MyApplication.getInstance().trackEvent("CallHistory", "Call: " + call.getContact_Name(), "" + call.getContact_Name());
                     intent_Call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + testPhoneCall(call).trim()));
                     startActivity(intent_Call);
                 } else {
@@ -187,7 +187,7 @@ public class CallHistoryDetail extends AppCompatActivity implements View.OnClick
                 break;
             }
             case R.id.txt_SendMessager_Call_Detail_History: {
-                MyApplication.getInstance().trackEvent("CallHistory", "Send SMS: " + call.getContact_Name(), "" + call.getContact_Name());
+                //MyApplication.getInstance().trackEvent("CallHistory", "Send SMS: " + call.getContact_Name(), "" + call.getContact_Name());
                 intent_Call = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + testPhoneCall(call).trim()));
                 intent_Call.putExtra("", "");
                 startActivity(intent_Call);

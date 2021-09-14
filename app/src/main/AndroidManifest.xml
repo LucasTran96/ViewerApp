@@ -206,7 +206,7 @@
              Optionally, register AnalyticsReceiver and AnalyticsService to support background
              dispatching on non-Google Play devices
         -->
-        <receiver
+     <!--   <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true"
             tools:ignore="ExportedReceiver">
@@ -219,10 +219,10 @@
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
             android:exported="false" />
-        <!--
+        &lt;!&ndash;
              Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
              installation campaign reporting
-        -->
+        &ndash;&gt;
         <receiver
             android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
             android:exported="true"
@@ -232,7 +232,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />-->
     </application>
 
 </manifest>

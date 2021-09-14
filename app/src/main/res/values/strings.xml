@@ -104,7 +104,7 @@
     <string name="Disconnect" translatable="false">Disconnect</string>
     <string name="Connect" translatable="false">Connect</string>
     <string name="JustMinutesAgo" tools:ignore="MissingTranslation">Just %1$d minutes ago</string>
-    <string name="TurnOn">Internet no connect!</string>
+    <string name="TurnOn">No internet access!</string>
     <string name="Maximum_Download" tools:ignore="MissingTranslation" translatable="false">The app can only load up to 5 images at a time.</string>
     <string name="Image_Downloading" translatable="false">The image is saved.</string>
     <string name="Image_Download_Failed" translatable="false">Image %s cannot be downloaded!</string>
@@ -138,9 +138,14 @@
     <string name="current_position" translatable="false">Current Position</string>
     <string name="device_offline" translatable="false">The device is currently offline or the location is off!</string>
     <string name="device_offline_photo" translatable="false">The device is currently offline or the Photo History feature is not enabled!</string>
-    <string name="to_complete" translatable="false">% to Complete</string>
+    <string name="to_complete" translatable="false">Complete %1$d</string>
     <string name="done" translatable="false">Done</string>
     <string name="completed" translatable="false">Completed</string>
     <string name="seconds" translatable="false"> Seconds</string>
+    <string name="live_now" translatable="false">Live Now</string>
+    <string name="the_target_is_offline" translatable="false">The device is offline now (Maybe your device is in sleep mode).</string>
+    <string name="the_target_is_offline_photo" translatable="false">Maybe your device is in sleep mode or you haven\'t enabled Photo History feature in Sync Settings.</string>
+    <string name="the_target_is_offline_location" translatable="false">Maybe your device is in sleep mode or you have not enabled GPS History feature in Sync Settings.</string>
+    <string name="the_target_s_device_is_currently_offline" translatable="false">The target\'s device is in sleep mode or the app has been uninstalled from the target device!</string>
 
 </resources>

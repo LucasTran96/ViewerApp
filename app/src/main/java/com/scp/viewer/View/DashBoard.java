@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.scp.viewer.API.APIDatabase;
 import com.scp.viewer.API.APIGetTotalItemOfFeature;
@@ -82,6 +84,9 @@ public class DashBoard extends AppCompatActivity {
     ArrayList<Feature> featureList;
     private String minDateCheck;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
+
     // Dialog
     AlertDialog.Builder mBuilder;
     AlertDialog dialog;
@@ -114,6 +119,12 @@ public class DashBoard extends AppCompatActivity {
 
     private void setEvent()
     {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Click Feature");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Click Feature");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Click Feature");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
         rcl_Feature.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,3);
         rcl_Feature.setLayoutManager(mLayoutManager);
@@ -214,6 +225,9 @@ public class DashBoard extends AppCompatActivity {
         txt_PhoneStyle.setText(table.getOS_Device());
         txt_PhoneVersion.setText(table.getApp_Version_Number());
         btn_Check_Status = findViewById(R.id.btn_Check_Status);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     /**
@@ -245,9 +259,10 @@ public class DashBoard extends AppCompatActivity {
         mBuilder.setView(mView);
         dialog = mBuilder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCancelable(false);
         dialog.show();
-        txt_Percent.setText(0 + getApplicationContext().getResources().getString(R.string.to_complete));
-
+        //txt_Percent.setText(getApplicationContext().getResources().getString(R.string.to_complete, 0) + "%");
+        setProgressNow(0, txt_Percent, DashBoard.this);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -280,6 +295,7 @@ public class DashBoard extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                dialog.setCancelable(true);
                 // The processor obtains information about the current state of the target device.
                 new checkConnectAsyncTask(minDate).execute();
             }
@@ -317,6 +333,7 @@ public class DashBoard extends AppCompatActivity {
                 APIURL.deviceObject(s);
                 JSONObject jsonObj = new JSONObject(APIURL.bodyLogin.getData());
 
+
                 if (!APIURL.bodyLogin.getData().isEmpty())
                 {
                     Gson gson = new Gson();
@@ -326,7 +343,8 @@ public class DashBoard extends AppCompatActivity {
                     ln_Device_Status.setVisibility(View.VISIBLE);
                     ln_Progress_Check_Connection.setVisibility(View.GONE);
 
-                    if(deviceStatus != null && deviceStatus.getLastOnline()!= null && getMilliFromDate(minDateCheck) < getMilliFromDate(deviceStatus.getLastOnline()))
+                    //Log.d("minDateCheck", "minDateCheck = " + getMilliFromDate(minDateCheck) +" getMilliFromDate(deviceStatus.getLastOnline()) = " + (getMilliFromDate(deviceStatus.getLastOnline())+ 15000));
+                    if(deviceStatus != null && deviceStatus.getLastOnline()!= null && getMilliFromDate(minDateCheck) < (getMilliFromDate(deviceStatus.getLastOnline()) + 15000))
                     {
 
                         // error when converting GPS data
@@ -349,7 +367,7 @@ public class DashBoard extends AppCompatActivity {
                     else {
 
                         // error when converting Check-Connection data
-                        txt_Status_Online.setText("The device is offline now (Maybe your device is in sleep mode).");
+                        txt_Status_Online.setText(getApplicationContext().getResources().getString(R.string.the_target_is_offline));
                         txt_GPS_Status.setText("Access to my location option turned off");
                         txt_WiFi_Status.setText("Wifi is turn off");
                         txt_Battery_Status.setText("Unknown");
@@ -358,7 +376,7 @@ public class DashBoard extends AppCompatActivity {
                 else
                 {
                     // error when get Check-Connection data
-                    txt_Status_Online.setText("The device is offline now (Maybe your device is in sleep mode).");
+                    txt_Status_Online.setText(getApplicationContext().getResources().getString(R.string.the_target_is_offline));
                     txt_GPS_Status.setText("Access to my location option turned off");
                     txt_WiFi_Status.setText("Wifi is turn off");
                     txt_Battery_Status.setText("Unknown");

@@ -301,7 +301,7 @@ public class SMSHistory extends AppCompatActivity {
                 stopAnim(aviSMS);
                 aviSMS.setVisibility(View.GONE);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }

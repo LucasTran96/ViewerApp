@@ -86,7 +86,7 @@ public class AdapterURLHistory extends RecyclerView.Adapter<AdapterURLHistory.Vi
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
                 URL url = mDataSet.get(position);
-                MyApplication.getInstance().trackEvent("URLHistory", "View URL detail: " + url.getURL_Link(), "" + url.getURL_Link());
+                //MyApplication.getInstance().trackEvent("URLHistory", "View URL detail: " + url.getURL_Link(), "" + url.getURL_Link());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(startOpenWebPage(url.getURL_Link())));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "564290315034",
+    "project_id": "traceyou-e11b3",
+    "storage_bucket": "traceyou-e11b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564290315034:android:8948eacf9c80c988df42a3",
+        "android_client_info": {
+          "package_name": "com.scp.viewer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564290315034-9kv27novqhitbk72fpmrdgtcov95m1df.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.scp.viewer",
+            "certificate_hash": "86ca769814a07623946eee74cc7383b13571d42b"
+          }
+        },
+        {
+          "client_id": "564290315034-kuqos3ilh9hu4413e1945vgkfl6vmgqb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgT-mQsrHPQc7ZDthEUPG_vZiDW6j_s_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564290315034-kuqos3ilh9hu4413e1945vgkfl6vmgqb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

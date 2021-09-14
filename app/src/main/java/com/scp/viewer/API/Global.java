@@ -218,6 +218,11 @@ public class Global {
     public static final int LENGHT = 50;
 
     /**
+     * Event checkInternet in the target App.
+     */
+    public static boolean checkInternet = false;
+
+    /**
      * Distributing
      */
     public static String DEFAULT_PROTOCOL_LINK = "http://protocol-viewer-a.secondclone.com/api/apiv2";

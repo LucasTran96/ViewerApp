@@ -71,7 +71,7 @@ public class AdapterSMSHistory extends RecyclerView.Adapter<AdapterSMSHistory.Vi
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
                 SMS sms = mDataSet.get(position);
-                MyApplication.getInstance().trackEvent("SMSHistory", "View SMS detail: " + sms.getContact_Name(), "" + sms.getContact_Name());
+                //MyApplication.getInstance().trackEvent("SMSHistory", "View SMS detail: " + sms.getContact_Name(), "" + sms.getContact_Name());
                 // Path through new activity.
                 Log.d("nameTable", SMSHistory.name_Table_SMSHistory);
                 Intent intent = new Intent(mActivity, SMSHistoryDetail.class);

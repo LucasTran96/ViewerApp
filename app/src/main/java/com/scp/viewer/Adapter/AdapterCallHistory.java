@@ -83,7 +83,7 @@ public class AdapterCallHistory extends RecyclerView.Adapter<AdapterCallHistory.
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
                 Call call = mDataSet.get(position);
-                MyApplication.getInstance().trackEvent("CallHistory", "Call phone number: " + call.getContact_Name(), "" + call.getContact_Name());
+                //MyApplication.getInstance().trackEvent("CallHistory", "Call phone number: " + call.getContact_Name(), "" + call.getContact_Name());
                 // Path through new activity.
                 Intent intent = new Intent(mActivity, CallHistoryDetail.class);
                 intent.putExtra("Call_Detail", call);

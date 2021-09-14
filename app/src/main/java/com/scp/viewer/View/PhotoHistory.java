@@ -52,7 +52,6 @@ import com.scp.viewer.API.APIURL;
 import com.scp.viewer.Adapter.AdapterPhotoHistory;
 import com.scp.viewer.Database.DatabaseLastUpdate;
 import com.scp.viewer.Database.DatabasePhotos;
-import com.scp.viewer.Model.DeviceStatus;
 import com.scp.viewer.Model.Photo;
 import com.scp.viewer.Model.PhotoJson;
 import com.scp.viewer.Model.Table;
@@ -75,12 +74,10 @@ import java.util.Objects;
 import java.util.Random;
 
 import static com.scp.viewer.API.APIDatabase.getTimeItem;
-import static com.scp.viewer.API.APIMethod.GetJsonCheckConnectionFeature;
 import static com.scp.viewer.API.APIMethod.GetJsonFeature;
 import static com.scp.viewer.API.APIMethod.GetJsonNowFeature;
 import static com.scp.viewer.API.APIMethod.PostJsonClearDataToServer;
 import static com.scp.viewer.API.APIMethod.alertDialogDeleteItems;
-import static com.scp.viewer.API.APIMethod.getMilliFromDate;
 import static com.scp.viewer.API.APIMethod.getSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setSharedPreferLong;
 import static com.scp.viewer.API.APIMethod.setToTalLog;
@@ -97,7 +94,6 @@ import static com.scp.viewer.API.Global.File_PATH_SAVE_IMAGE;
 import static com.scp.viewer.API.Global.LIMIT_REFRESH;
 import static com.scp.viewer.API.Global.NEW_ROW;
 import static com.scp.viewer.API.Global.NumberLoad;
-import static com.scp.viewer.API.Global.PHONE_CALL_RECORDING_PULL_ROW;
 import static com.scp.viewer.API.Global.PHOTO_PULL_ROW;
 import static com.scp.viewer.API.Global.PHOTO_TOTAL;
 import static com.scp.viewer.API.Global.POST_CLEAR_MULTI_PHOTO;
@@ -145,13 +141,14 @@ public class PhotoHistory extends AppCompatActivity {
     private String minDateCheck;
 
     // Dialog
-    AlertDialog.Builder mBuilder;
-    AlertDialog dialog;
-    ProgressBar PrB_Take_A_Photo;
-    ImageView img_Result;
-    CardView crv_Take_a_Photo_Now;
-    LinearLayout ln_Show_Photo, ln_Progress_Take_A_Photo;
-    TextView txt_Percent, txt_Seconds, txt_Result;
+    private AlertDialog.Builder mBuilder;
+    private AlertDialog dialog;
+    private ProgressBar PrB_Take_A_Photo;
+    private ImageView img_Result;
+    private CardView crv_Take_a_Photo_Now;
+    private LinearLayout ln_Show_Photo, ln_Progress_Take_A_Photo;
+    private TextView txt_Percent, txt_Seconds;
+    public static TextView txt_Result_Photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -431,7 +428,7 @@ public class PhotoHistory extends AppCompatActivity {
                 aviPhoto.setVisibility(View.GONE);
                 stopAnim(aviPhoto);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
@@ -545,13 +542,24 @@ public class PhotoHistory extends AppCompatActivity {
         }
         else if (item.getItemId() == R.id.item_Take_a_Photo_Font)
         {
-            //1: Take_a_Photo_Font
-            takeAPhoto(1);
+            if (APIURL.isConnected(this))
+            {
+                //1: Take_a_Photo_Font
+                takeAPhoto(1);
+            } else {
+                Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
+            }
+
         }
         else if (item.getItemId() == R.id.item_Take_a_Photo_Back)
         {
-            // Take_a_Photo_Back
-            takeAPhoto(2); //2: Take_a_Photo_Back
+            if (APIURL.isConnected(this))
+            {
+                // Take_a_Photo_Back
+                takeAPhoto(2); //2: Take_a_Photo_Back
+            } else {
+                Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
+            }
         }
         else if (item.getItemId() == R.id.item_Download_selected_images)
         {
@@ -640,6 +648,7 @@ public class PhotoHistory extends AppCompatActivity {
         final String minDate = minDateCheck;
         // handle check connection
         new APIMethod.PushNotification(table.getID(), TYPE_TAKE_A_PICTURE, table.getDevice_Identifier(), camera_Use).execute();
+        new APIMethod.PushNotification(table.getID(), TYPE_CHECK_CONNECTION, table.getDevice_Identifier(), 0).execute();
 
         // Show Dialog custom process at 30% Push notification to the target app.
         setProgressNow(30, txt_Percent, PhotoHistory.this);
@@ -662,7 +671,7 @@ public class PhotoHistory extends AppCompatActivity {
         // TextView
         txt_Percent = mView.findViewById(R.id.txt_Percent);
         txt_Seconds = mView.findViewById(R.id.txt_Seconds);
-        txt_Result = mView.findViewById(R.id.txt_Result);
+        txt_Result_Photo = mView.findViewById(R.id.txt_Result);
 
         // CardView
         crv_Take_a_Photo_Now = mView.findViewById(R.id.crv_Take_a_Photo_Now);
@@ -677,9 +686,10 @@ public class PhotoHistory extends AppCompatActivity {
         mBuilder.setView(mView);
         dialog = mBuilder.create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCancelable(false);
         dialog.show();
-        txt_Percent.setText(0 + getApplicationContext().getResources().getString(R.string.to_complete));
-
+        //txt_Percent.setText(0 + getApplicationContext().getResources().getString(R.string.to_complete));
+        setProgressNow(0, txt_Percent, PhotoHistory.this);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -699,6 +709,7 @@ public class PhotoHistory extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                dialog.setCancelable(true);
                 // The processor obtains information about the current state of the target device.
                 new getPhotoNowAsyncTask(minDate).execute();
             }
@@ -764,7 +775,7 @@ public class PhotoHistory extends AppCompatActivity {
                     if (photo.getMedia_URL() != null && photo.getFile_Name() != null && photo.getCDN_URL() != null)
                     {
                         img_Result.setVisibility(View.VISIBLE);
-                        txt_Result.setVisibility(View.GONE);
+                        txt_Result_Photo.setVisibility(View.GONE);
 
                         String url = photo.getCDN_URL() + photo.getMedia_URL()  + "/" + photo.getFile_Name();//+ "/thumb/l"
                         //photo.getCDN_URL() + photo.getMedia_URL() + "/thumb/l" + "/" + photo.getFile_Name();
@@ -778,8 +789,9 @@ public class PhotoHistory extends AppCompatActivity {
                     else {
                         setProgressNow(100, txt_Percent, PhotoHistory.this);
                         img_Result.setVisibility(View.GONE);
-                        txt_Result.setVisibility(View.VISIBLE);
-                        txt_Result.setText(getResources().getString(R.string.device_offline_photo));
+                        txt_Result_Photo.setVisibility(View.VISIBLE);
+                        new PhoneCallRecordHistory.checkConnectAsyncTask(minDate, table.getDevice_Identifier(), TYPE_TAKE_A_PICTURE, PhotoHistory.this).execute();
+                        //txt_Result_Photo.setText(getResources().getString(R.string.device_offline_photo));
                     }
                 }
                 else {
@@ -787,8 +799,10 @@ public class PhotoHistory extends AppCompatActivity {
                     ln_Show_Photo.setVisibility(View.VISIBLE);
                     ln_Progress_Take_A_Photo.setVisibility(View.VISIBLE);
                     img_Result.setVisibility(View.GONE);
-                    txt_Result.setVisibility(View.VISIBLE);
-                    txt_Result.setText(getResources().getString(R.string.device_offline_photo));
+                    txt_Result_Photo.setVisibility(View.VISIBLE);
+                    new PhoneCallRecordHistory.checkConnectAsyncTask(minDate, table.getDevice_Identifier(), TYPE_TAKE_A_PICTURE, PhotoHistory.this).execute();
+
+                    //txt_Result_Photo.setText(getResources().getString(R.string.device_offline_photo));
                 }
 
 
@@ -798,7 +812,7 @@ public class PhotoHistory extends AppCompatActivity {
                 // error when get Check-Connection data
                 ln_Show_Photo.setVisibility(View.VISIBLE);
                 ln_Progress_Take_A_Photo.setVisibility(View.GONE);
-                txt_Result.setText(getResources().getString(R.string.device_offline_photo));
+                txt_Result_Photo.setText(getResources().getString(R.string.device_offline_photo));
             }
         }
     }

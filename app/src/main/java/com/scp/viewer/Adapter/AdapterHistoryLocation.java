@@ -82,7 +82,7 @@ public class AdapterHistoryLocation extends RecyclerView.Adapter<AdapterHistoryL
                 GPS gps = gpsArrayList.get(position);
                 if(gps != null)
                 {
-                    MyApplication.getInstance().trackEvent("LocationHistory", "View location detail ", "" + gps.getID());
+                    //MyApplication.getInstance().trackEvent("LocationHistory", "View location detail ", "" + gps.getID());
                     // Path through new activity.
                     Intent intent = new Intent(mActivity, MapLocation.class);
                     intent.putExtra("GPS", gps);

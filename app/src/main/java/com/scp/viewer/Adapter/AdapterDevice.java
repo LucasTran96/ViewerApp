@@ -119,7 +119,7 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
                 ON_BACK = 1;
-                MyApplication.getInstance().trackEvent("Device", "ViewDevice: " + device.getName(), "" + device.getName());
+                //MyApplication.getInstance().trackEvent("Device", "ViewDevice: " + device.getName(), "" + device.getName());
             }
         }
     }

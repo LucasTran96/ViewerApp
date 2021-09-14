@@ -385,7 +385,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
                 stopAnim(avLoadingIndicatorView);
                 avLoadingIndicatorView.setVisibility(View.GONE);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }

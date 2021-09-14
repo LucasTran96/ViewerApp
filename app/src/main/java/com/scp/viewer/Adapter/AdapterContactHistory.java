@@ -77,7 +77,7 @@ import java.util.ArrayList;
             {
                 try {
                     Contact contact = contactListFiltered.get(position);
-                    MyApplication.getInstance().trackEvent("ContactHistory", "View contact detail: " + contact.getContact_Name(), "" + contact.getContact_Name());
+                    //MyApplication.getInstance().trackEvent("ContactHistory", "View contact detail: " + contact.getContact_Name(), "" + contact.getContact_Name());
                     // Path through new activity.
                     Intent intent = new Intent(mActivity, ContactHistoryDetail.class);
                     intent.putExtra("contact_Detail", contact);

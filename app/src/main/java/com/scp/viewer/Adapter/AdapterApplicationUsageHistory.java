@@ -72,7 +72,7 @@ public class AdapterApplicationUsageHistory extends RecyclerView.Adapter<Adapter
                 ((ApplicationUsageHistory) mActivity).prepareSelection(getAdapterPosition());
                 notifyItemChanged(getAdapterPosition());
             } else if (position != RecyclerView.NO_POSITION) {
-                MyApplication.getInstance().trackEvent("ApplicationHistory", "View App detail: " + listData.get(position).getApp_Name(), "" + listData.get(position).getApp_Name());
+                //MyApplication.getInstance().trackEvent("ApplicationHistory", "View App detail: " + listData.get(position).getApp_Name(), "" + listData.get(position).getApp_Name());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(LINK_GOOGLE_PLAY + listData.get(position).getApp_Name()));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

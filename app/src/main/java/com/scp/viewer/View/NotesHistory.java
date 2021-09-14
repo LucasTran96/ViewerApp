@@ -197,7 +197,7 @@ public class NotesHistory extends AppCompatActivity {
                 //progressDialog.dismiss();
                 getThread(APIMethod.progressDialog);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
                 //logger.error("\n\n\n\tContactAsyncTask =="+ e+"\n================End");
             }

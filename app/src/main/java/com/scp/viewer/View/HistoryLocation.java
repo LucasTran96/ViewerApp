@@ -109,11 +109,12 @@ public class HistoryLocation extends AppCompatActivity {
     //private AVLoadingIndicatorView avi_Loading_Get_GPS_Now;
 
     // Dialog
-    AlertDialog.Builder mBuilder;
-    AlertDialog dialog;
-    ProgressBar PrB_Get_GPS_Now;
-    LinearLayout ln_Current_Position, ln_Progress_Get_GPS_Now;
-    TextView txt_Percent, txt_Seconds, txt_Current_Position, txt_Result_Get_GPS;
+    private AlertDialog.Builder mBuilder;
+    private AlertDialog dialog;
+    private ProgressBar PrB_Get_GPS_Now;
+    private LinearLayout ln_Current_Position, ln_Progress_Get_GPS_Now;
+    private TextView txt_Percent, txt_Seconds, txt_Result_Get_GPS;
+    public static TextView txt_Current_Position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,7 +278,7 @@ public class HistoryLocation extends AppCompatActivity {
                 stopAnim(aviLocation);
                 aviLocation.setVisibility(View.GONE);
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
@@ -335,13 +336,20 @@ public class HistoryLocation extends AppCompatActivity {
                         // handle assigning position name to Dialog for users to see
                     }
                     else {
+                        // check internet of the target app
+                        // The processor obtains information about the current state of the target device.
+                        new PhoneCallRecordHistory.checkConnectAsyncTask(minDate, table.getDevice_Identifier(), TYPE_GET_GPS_NOW, HistoryLocation.this).execute();
                         ln_Current_Position.setVisibility(View.VISIBLE);
                         // error when converting GPS data
-                        txt_Current_Position.setText(getApplicationContext().getResources().getString(R.string.device_offline));
+                        //txt_Current_Position.setText(getApplicationContext().getResources().getString(R.string.device_offline));
                     }
 
                 }
                 else {
+
+                    // check internet of the target app
+                    // The processor obtains information about the current state of the target device.
+                    new PhoneCallRecordHistory.checkConnectAsyncTask(minDate, table.getDevice_Identifier(), TYPE_GET_GPS_NOW, HistoryLocation.this).execute();
 
                     ln_Current_Position.setVisibility(View.VISIBLE);
                     ln_Progress_Get_GPS_Now.setVisibility(View.GONE);
@@ -354,7 +362,7 @@ public class HistoryLocation extends AppCompatActivity {
 
 
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
@@ -572,7 +580,7 @@ public class HistoryLocation extends AppCompatActivity {
             public void onTick(long duration) {
                 // Duration
                 long second = (duration / 1000) % 60;
-                txt_Seconds.setText(second + mActivity.getResources().getString(R.string.seconds));
+                txt_Seconds.setText(second +" "+ mActivity.getResources().getString(R.string.seconds));
 
                 if (second == 18)
                     setProgressNow(40, text_Percent, mActivity);
@@ -611,8 +619,10 @@ public class HistoryLocation extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                dialog.setCancelable(true);
                 // process to get gps from this time take up to 1 gps and check if it is, display it, if not, the message can't be obtained
                 new getGPSNowAsyncTask(minDate).execute();
+
             }
         }, 20000);
     }
@@ -629,7 +639,7 @@ public class HistoryLocation extends AppCompatActivity {
         if(percent == 100)
             txt_Percent.setText(mActivity.getResources().getString(R.string.completed));
         else
-            txt_Percent.setText(percent + " " +mActivity.getResources().getString(R.string.to_complete));
+            txt_Percent.setText(mActivity.getResources().getString(R.string.to_complete, percent)+ "%");
     }
 
     /**
@@ -652,9 +662,10 @@ public class HistoryLocation extends AppCompatActivity {
             mBuilder.setView(mView);
             dialog = mBuilder.create();
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.setCancelable(false);
             dialog.show();
-            txt_Percent.setText(0 + mActivity.getResources().getString(R.string.to_complete));
-
+            //txt_Percent.setText(0 + mActivity.getResources().getString(R.string.to_complete));
+            setProgressNow(0, txt_Percent, HistoryLocation.this);
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialogInterface) {

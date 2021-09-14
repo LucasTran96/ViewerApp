@@ -407,7 +407,7 @@ public class CallHistory extends AppCompatActivity {
                 }
 
             } catch (JSONException e) {
-                MyApplication.getInstance().trackException(e);
+                //MyApplication.getInstance().trackException(e);
                 e.printStackTrace();
             }
         }
