@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.scp.viewer.API.APIMethod;
@@ -60,11 +61,11 @@ public class PhotoHistoryDetail extends AppCompatActivity {
         if (toolbar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
+        //}
         databasePhotos = new DatabasePhotos(this);
         //data = getIntent().getParcelableArrayListExtra("dataPhoto");
         data = photoList;
@@ -184,15 +185,32 @@ public class PhotoHistoryDetail extends AppCompatActivity {
             PhotoView imageView = rootView.findViewById(R.id.detail_image);
 
             if (isConnected(getContext())) {
+
+
                 //Glide.with(getActivity()).load(url).thumbnail(0.1f).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
                 //Picasso.with(getActivity()).load(url).error(R.drawable.no_image).placeholder(R.drawable.spinner).into(imageView);
-                Glide.with(getActivity())
+
+               /* Glide.with(getActivity())
                         .load(url) //Edit
                         .placeholder(R.drawable.spinner_small)
 //                        .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.no_image)
-                        .into(imageView);
+                        .into(imageView);*/
+
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.drawable.spinner_small)
+                        .timeout(30000)
+                        .error(R.drawable.no_image);
+
+                Glide.with(this).load(url).apply(options).into(imageView);
+
+                /*  Glide.with(photoHistory)
+                            .load(url) //Edit
+                            .placeholder(R.drawable.spinner)
+                            .error(R.drawable.no_image)
+                            .into(holder.img_photo_History);*/
 
             } else {
                 Glide.with(getActivity())

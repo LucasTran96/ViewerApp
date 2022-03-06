@@ -161,7 +161,7 @@ public class ContactHistory extends AppCompatActivity implements SearchView.OnQu
             lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
-            int i = database_contact.get_ContactCount_DeviceID(table.getDevice_Identifier());
+            int i = database_contact.get_ContactCount_DeviceID(table.getID());
             if (i == 0) {
                 //txt_No_Data_Contact.setVisibility(View.VISIBLE);
                 txt_No_Data_Contact.setText(MyApplication.getResourcses().getString(R.string.NoData));

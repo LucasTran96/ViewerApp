@@ -234,7 +234,7 @@ public class PhoneCallRecordHistory extends AppCompatActivity {
             int i;
             if(functionName.equals("GetPhoneRecording"))
             {
-                i = databasePhoneCallRecord.getPhoneCallRecordCount(table.getDevice_Identifier());
+                i = databasePhoneCallRecord.getPhoneCallRecordCount(table.getID());
                 if (i == 0) {
                     txt_No_Data_PhoneCallRecord.setText(MyApplication.getResourcses().getString(R.string.NoData));
                     txt_Total_Data.setText("0");

@@ -297,7 +297,7 @@ public class PhotoHistory extends AppCompatActivity {
             lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             // If there is no network, then take the image from SQLite.
-            int i = databasePhotos.getPhotoCount(table.getDevice_Identifier());
+            int i = databasePhotos.getPhotoCount(table.getID());
             if (i == 0) {
                 //txt_No_Data_Photo.setVisibility(View.VISIBLE);
                 txt_No_Data_Photo.setText(MyApplication.getResourcses().getString(R.string.NoData));

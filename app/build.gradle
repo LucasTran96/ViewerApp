@@ -61,8 +61,11 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     /*implementation 'com.github.bumptech.glide:glide:3.7.0'*/
+    implementation 'com.github.smhdk:KM-Popup-Image-Slider:v1.2.1' // Image slide
+
+
     // glide image library
-    implementation 'com.github.bumptech.glide:glide:3.6.1'
+    //implementation 'com.github.bumptech.glide:glide:3.6.1'
     // The library supports thumbnails view
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
 

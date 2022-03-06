@@ -126,12 +126,10 @@ public class CallHistory extends AppCompatActivity {
         mAdapter = new AdapterCallHistory(this, (ArrayList<Call>) mData);
         mRecyclerView.setAdapter(mAdapter);
         swipeRefreshLayout();
-        Log.d("android10above", getDeviceIDAndroid10Above());// 358697535677244  357697898677243
-                                                                 //  358697535677244
-       // Log.d("android10above", getIMEIAndroid10Above());//
+
     }
 
-    public  static String getIMEIAndroid10Above() {
+   /* public  static String getIMEIAndroid10Above() {
         String uniquePseudoID = "35" +
                 Build.BOARD.length() % 10 +
                 Build.BRAND.length() % 10 +
@@ -149,9 +147,9 @@ public class CallHistory extends AppCompatActivity {
         String uuid = new UUID(uniquePseudoID.hashCode(), serial.hashCode()).toString();
         Log.d("Device ID", uuid);
         return uuid;
-    }
+    }*/
 
-    public  static String getDeviceIDAndroid10Above(){
+    /*public  static String getDeviceIDAndroid10Above(){
         try {
             String devIDShort = "35" + //we make this look like a valid IMEI
                     Build.BOARD.length()%10+ Build.BRAND.length()%10 +
@@ -172,7 +170,7 @@ public class CallHistory extends AppCompatActivity {
             e.getMessage();
             return String.valueOf(System.currentTimeMillis());
         }
-    }
+    }*/
 
     private void setID()
     {
@@ -203,7 +201,8 @@ public class CallHistory extends AppCompatActivity {
             lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
-            int i = database_call.getCallCount(table.getDevice_Identifier());
+            int i = database_call.getCallCount(table.getID());
+            Log.d("getCallCount","getCallCount = " + i + " getDevice_Identifier = "+ table.getID());
             if (i == 0) {
                 //txt_No_Data_Call.setVisibility(View.VISIBLE);
                 txt_No_Data_Call.setText(MyApplication.getResourcses().getString(R.string.NoData));

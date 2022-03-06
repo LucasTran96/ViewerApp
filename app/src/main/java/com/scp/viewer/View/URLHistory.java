@@ -160,7 +160,7 @@ public class URLHistory extends AppCompatActivity {
             lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
-            int i = database_url.get_URLCount_DeviceID(table.getDevice_Identifier());
+            int i = database_url.get_URLCount_DeviceID(table.getID());
             if (i == 0) {
                 //txt_No_Data_URL.setVisibility(View.VISIBLE);
                 txt_No_Data_URL.setText(MyApplication.getResourcses().getString(R.string.NoData));

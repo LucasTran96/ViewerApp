@@ -178,7 +178,7 @@ public class HistoryLocation extends AppCompatActivity {
             lnl_Total.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
-            int i = databaseGetLocation.getLocationCount(table.getDevice_Identifier());
+            int i = databaseGetLocation.getLocationCount(table.getID());
             if (i == 0) {
                 //txt_No_Data_Location.setVisibility(View.VISIBLE);
                 txt_No_Data_Location.setText(MyApplication.getResourcses().getString(R.string.NoData));

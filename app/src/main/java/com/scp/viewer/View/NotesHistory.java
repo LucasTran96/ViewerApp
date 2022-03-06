@@ -116,7 +116,7 @@ public class NotesHistory extends AppCompatActivity {
         } else {
             Toast.makeText(this, R.string.TurnOn, Toast.LENGTH_SHORT).show();
             //int i= databaseDevice.getDeviceCount();
-            int i = database_notes.get_NotesCount_DeviceID(table.getDevice_Identifier());
+            int i = database_notes.get_NotesCount_DeviceID(table.getID());
             if (i == 0) {
                 txt_No_Data_Notes.setVisibility(View.VISIBLE);
                 txt_No_Data_Notes.setText(MyApplication.getResourcses().getString(R.string.NoData));

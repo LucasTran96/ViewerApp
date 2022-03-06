@@ -112,20 +112,21 @@
 
 
                      <ImageView
-                         android:layout_width="40dp"
-                         android:layout_height="40dp"
+                         android:layout_width="35dp"
+                         android:layout_height="35dp"
                          android:layout_gravity="center_horizontal|center_vertical"
                          android:id="@+id/img_Play_PhoneCallRecord"
                          android:src="@drawable/ic_stop_black_24dp" />
 
                      <com.wang.avi.AVLoadingIndicatorView
                          android:id="@+id/aviLoadingAmbient"
-                         android:layout_width="60dp"
-                         android:layout_height="60dp"
+                         android:layout_width="70dp"
+                         android:layout_height="70dp"
                          android:layout_gravity="center_vertical|center_horizontal"
                          android:visibility="visible"
-                         app:indicatorColor="@color/grey_250"
-                         app:indicatorName="BallSpinFadeLoaderIndicator" />
+                         app:indicatorColor="@color/white"
+                         app:indicatorName="BallClipRotatePulseIndicator" />
+                     <!--BallSpinFadeLoaderIndicator-->
 
                      <Button
                          android:layout_width="80dp"
